@@ -10,6 +10,7 @@
       <PackageReference Include="Bonyan.EntityFrameworkCore" Version="1.1.2-pre1" />
       <PackageReference Include="Bonyan.EntityFrameworkCore.Sqlite" Version="1.1.2-pre1" />
       <PackageReference Include="Bonyan.UserManagement.EntityFrameworkCore" Version="1.1.2-pre1" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     </ItemGroup>
 
     <ItemGroup>
