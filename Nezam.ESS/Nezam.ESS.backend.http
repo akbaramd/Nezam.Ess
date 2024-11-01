@@ -1,0 +1,6 @@
+@Nezam.ESS.backend_HostAddress = http://localhost:5097
+
+GET {{Nezam.ESS.backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

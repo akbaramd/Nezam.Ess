@@ -1,0 +1,10 @@
+﻿namespace Nezam.ESS.backend.Data.Models;
+
+public class TblMaliEngineersState
+{
+    public int Id { get; set; }
+
+    public string? Title { get; set; }
+
+    public int? Perc { get; set; }
+}

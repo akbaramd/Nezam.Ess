@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Nezam.Modular.ESS.Identity.Application</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Bonyan.Layer.Application" Version="1.1.2-pre1" />
+      <PackageReference Include="Bonyan.UserManagement.Application" Version="1.1.2-pre1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Nezam.Modular.ESS.Identity.Domain\Nezam.Modular.ESS.Identity.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Nezam.Modular.ESS.Identity.Domain\Nezam.Modular.ESS.Identity.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

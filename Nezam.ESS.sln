@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nezam.ESS", "Nezam.ESS\Nezam.ESS.csproj", "{EE6A1441-EEBB-4804-8053-E576C94A82CB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "New", "New", "{6AA013F1-77B7-4EE1-9DE9-30D36AC84E7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nezam.Modular.ESS.Identity.Domain", "Nezam.Modular.ESS.Identity.Domain\Nezam.Modular.ESS.Identity.Domain.csproj", "{A88D6694-579D-4E54-8A8C-B7A3FB2F4D63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nezam.Modular.ESS.WebApi", "Nezam.Modular.ESS.WebApi\Nezam.Modular.ESS.WebApi.csproj", "{DE8E3328-B212-4978-BA91-078F70949064}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{3FEE4764-F801-4A28-966B-0E625B0008E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nezam.Modular.ESS.Identity.Application", "Nezam.Modular.ESS.Identity.Application\Nezam.Modular.ESS.Identity.Application.csproj", "{B842BD6E-D85C-4BE3-8F54-298D81511D4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nezam.Modular.ESS.Identity.infrastructure", "Nezam.Modular.ESS.Identity.infrastructure\Nezam.Modular.ESS.Identity.infrastructure.csproj", "{CF018745-D164-42F4-90B4-598CF33B389E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE6A1441-EEBB-4804-8053-E576C94A82CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE6A1441-EEBB-4804-8053-E576C94A82CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE6A1441-EEBB-4804-8053-E576C94A82CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE6A1441-EEBB-4804-8053-E576C94A82CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A88D6694-579D-4E54-8A8C-B7A3FB2F4D63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A88D6694-579D-4E54-8A8C-B7A3FB2F4D63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A88D6694-579D-4E54-8A8C-B7A3FB2F4D63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A88D6694-579D-4E54-8A8C-B7A3FB2F4D63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE8E3328-B212-4978-BA91-078F70949064}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE8E3328-B212-4978-BA91-078F70949064}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE8E3328-B212-4978-BA91-078F70949064}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE8E3328-B212-4978-BA91-078F70949064}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B842BD6E-D85C-4BE3-8F54-298D81511D4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B842BD6E-D85C-4BE3-8F54-298D81511D4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B842BD6E-D85C-4BE3-8F54-298D81511D4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B842BD6E-D85C-4BE3-8F54-298D81511D4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF018745-D164-42F4-90B4-598CF33B389E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF018745-D164-42F4-90B4-598CF33B389E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF018745-D164-42F4-90B4-598CF33B389E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF018745-D164-42F4-90B4-598CF33B389E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DE8E3328-B212-4978-BA91-078F70949064} = {6AA013F1-77B7-4EE1-9DE9-30D36AC84E7D}
+		{3FEE4764-F801-4A28-966B-0E625B0008E2} = {6AA013F1-77B7-4EE1-9DE9-30D36AC84E7D}
+		{A88D6694-579D-4E54-8A8C-B7A3FB2F4D63} = {3FEE4764-F801-4A28-966B-0E625B0008E2}
+		{B842BD6E-D85C-4BE3-8F54-298D81511D4B} = {3FEE4764-F801-4A28-966B-0E625B0008E2}
+		{CF018745-D164-42F4-90B4-598CF33B389E} = {3FEE4764-F801-4A28-966B-0E625B0008E2}
+	EndGlobalSection
+EndGlobal

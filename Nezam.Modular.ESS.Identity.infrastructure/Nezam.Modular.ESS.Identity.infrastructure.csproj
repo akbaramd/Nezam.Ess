@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Bonyan.EntityFrameworkCore" Version="1.1.2-pre1" />
+      <PackageReference Include="Bonyan.EntityFrameworkCore.Sqlite" Version="1.1.2-pre1" />
+      <PackageReference Include="Bonyan.UserManagement.EntityFrameworkCore" Version="1.1.2-pre1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Nezam.Modular.ESS.Identity.Application\Nezam.Modular.ESS.Identity.Application.csproj" />
+      <ProjectReference Include="..\Nezam.Modular.ESS.Identity.Domain\Nezam.Modular.ESS.Identity.Domain.csproj" />
+    </ItemGroup>
+
+</Project>
