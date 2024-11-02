@@ -12,3 +12,4 @@ public class AuthJwtDto
     public string AccessToken { get; set; }
     public UserId UserId { get; set; }
 }
+

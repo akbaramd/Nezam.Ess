@@ -8,9 +8,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Bonyan.Layer.Application" Version="1.1.2-pre1" />
-      <PackageReference Include="Bonyan.UserManagement.Application" Version="1.1.2-pre1" />
+      <PackageReference Include="Bonyan.AspNetCore.Job" Version="1.1.2-pre6" />
+      <PackageReference Include="Bonyan.Layer.Application" Version="1.1.2-pre6" />
+      <PackageReference Include="Bonyan.UserManagement.Application" Version="1.1.2-pre6" />
+      <PackageReference Include="Dapper" Version="2.1.35" />
+      <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
       <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.1.2" />
+        <PackageReference Include="FastEndpoints.Security" Version="5.30.0.22-beta" />
     </ItemGroup>
 
     <ItemGroup>
@@ -19,6 +23,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Nezam.Modular.ESS.Identity.Domain\Nezam.Modular.ESS.Identity.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Auth\Jobs\" />
+      <Folder Include="Users\Jobs\" />
     </ItemGroup>
 
 </Project>

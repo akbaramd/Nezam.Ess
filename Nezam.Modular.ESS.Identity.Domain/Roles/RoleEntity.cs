@@ -26,8 +26,6 @@ public class RoleEntity : Entity<RoleId>
     public string Name { get; private set; }
     public string Title { get; private set; }
 
-    private readonly List<UserEntity> _users = new List<UserEntity>();
-    public IReadOnlyCollection<UserEntity> Users => _users.AsReadOnly();
 }
 
 public class RoleId : BusinessId<RoleId>

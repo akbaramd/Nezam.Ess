@@ -3,7 +3,9 @@ using System.Security.Claims;
 using System.Text;
 using Bonyan.Layer.Application.Services;
 using Bonyan.Security.Claims;
+using Bonyan.UserManagement.Application.Dtos;
 using Bonyan.UserManagement.Domain.Repositories;
+using FastEndpoints.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Nezam.Modular.ESS.Identity.Application.Auth.Dto;
@@ -23,7 +25,8 @@ namespace Nezam.Modular.ESS.Identity.Application.Auth
         public IUserRepository UserRepository =>
             LazyServiceProvider.LazyGetRequiredService<IUserRepository>();
 
-        public async Task<AuthJwtDto> LoginAsync(AuthLoginDto authLoginDto, CancellationToken cancellationToken = default)
+        public async Task<AuthJwtDto> LoginAsync(AuthLoginDto authLoginDto,
+            CancellationToken cancellationToken = default)
         {
             var user = await UserRepository.FindOneAsync(x => x.UserName.Equals(authLoginDto.Username));
 
@@ -32,43 +35,31 @@ namespace Nezam.Modular.ESS.Identity.Application.Auth
                 throw new UnauthorizedAccessException();
             }
 
-            var token = GenerateToken(user);
+            var jwtToken = JwtBearer.CreateToken(
+                o =>
+                {
+                    o.SigningKey = "asdsldaosjdisd2364723hy54u23g5835t237854234";
+                    o.ExpireAt = DateTime.UtcNow.AddDays(1);
+
+                    o.User.Claims.Add((BonyanClaimTypes.UserName, user.UserName));
+                    o.User.Claims.Add((BonyanClaimTypes.PhoneNumber, user.PhoneNumber?.Number ?? ""));
+                    o.User.Claims.Add((BonyanClaimTypes.UserId, user.Id.Value.ToString() ?? ""));
+                    o.User.Claims.Add((BonyanClaimTypes.Email, user.Email?.Address.ToString() ?? ""));
+                });
+
 
             return new AuthJwtDto
             {
-                AccessToken = token,
+                AccessToken = jwtToken,
                 UserId = user.Id
             };
         }
 
-        private string GenerateToken(UserEntity user)
+        public async Task<BonyanUserDto> CurrentUserProfileAsync(CancellationToken cancellationToken = default)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var user = await UserRepository.FindOneAsync(x => x.UserName == CurrentUser.UserName);
 
-            var claims = new List<Claim>
-            {
-                new Claim(BonyanClaimTypes.UserName, user.UserName.ToString()),
-                new Claim(BonyanClaimTypes.UserId, user.Id.Value.ToString()),
-                new Claim(BonyanClaimTypes.Email, user.Email?.Address.ToString() ?? string.Empty),
-                new Claim(BonyanClaimTypes.PhoneNumber, user.PhoneNumber?.Number.ToString() ?? string.Empty),
-            };
-
-            // Add role claims if user has roles (assuming roles are a property in your User object)
-            // foreach (var role in user.Roles)
-            // {
-                // claims.Add(new Claim(ClaimTypes.Role, role.Name));
-            // }
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["JwtSettings:Issuer"],
-                audience: _configuration["JwtSettings:Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["JwtSettings:ExpiresInMinutes"])),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return Mapper.Map<UserEntity, BonyanUserDto>(user ?? throw new InvalidOperationException());
         }
     }
 }
