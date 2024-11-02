@@ -14,8 +14,9 @@ public class EmployerEntity : Entity<EmployerId>
     
     protected EmployerEntity(){}
 
-    public EmployerEntity(UserEntity user, string firstName , string lastName)
+    public EmployerEntity(EmployerId id,UserEntity user, string firstName , string lastName)
     {
+        Id = id;
         FirstName = firstName;
         LastName = lastName;
         User = user;

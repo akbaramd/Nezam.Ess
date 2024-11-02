@@ -34,6 +34,7 @@ public class NezamEssIdentityInfrastructureModule : WebModule
         context.AddBonyanDbContext<IdentityDbContext>(c => { c.AddDefaultRepositories(true); });
         context.Services.AddTransient<IRoleRepository, RoleRepository>();
         context.Services.AddTransient<IUserRepository, UserRepository>();
+        context.Services.AddTransient<IUserVerificationTokenRepository, UserVerificationTokenRepository>();
         context.Services.AddTransient<IEmployerRepository, EmployerRepository>();
         context.Services.AddTransient<IEngineerRepository, EngineerRepository>();
 

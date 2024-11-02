@@ -6,10 +6,16 @@ namespace Nezam.Modular.ESS.Identity.Application.Auth;
 
 public interface IAuthService : IApplicationService
 {
-    public Task<AuthJwtDto> 
+    public Task<AuthJwtResult> 
         LoginAsync(AuthLoginDto authLoginDto,CancellationToken cancellationToken = default);
     
     
     public Task<BonyanUserDto> 
         CurrentUserProfileAsync(CancellationToken cancellationToken = default);
+    
+    public Task<AuhForgetPasswordResult> 
+        ForgetPasswordAsync(AuhForgetPasswordDto forgetPasswordDto,CancellationToken cancellationToken = default);
+    
+    public Task 
+        ResetPasswordAsync(AuthResetPasswordDto authResetPassword,CancellationToken cancellationToken = default);
 }

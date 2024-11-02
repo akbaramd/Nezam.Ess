@@ -36,6 +36,7 @@ namespace Nezam.Modular.ESS.Identity.Application.Engineers.Jobs
             _roleRepository = roleRepository;
         }
 
+        [UnitOfWork]
         public async Task ExecuteAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             var enginerRole = await _roleRepository.FindOneAsync(x => x.Name.Equals("engineer"));
@@ -48,13 +49,13 @@ namespace Nezam.Modular.ESS.Identity.Application.Engineers.Jobs
             
             // Connection string to the database
             const string connectionString =
-                "Data Source=192.168.200.17;Initial Catalog=map;User ID=new_site_user;Password=111qqqAAAn;Trust Server Certificate=True;";
+                "Data Source=85.185.6.4;Initial Catalog=map;User ID=new_site_user;Password=111qqqAAAn;Trust Server Certificate=True;";
 
             await using (var connection = new SqlConnection(connectionString))
             {
                 // Query all engineers from tbl_engineers
                 var engineers = await connection.QueryAsync<EngineerDto>(
-                    @$"SELECT 
+                    @$"SELECT Top 1000 
                         id AS Id, 
                         name AS Name, 
                         fname AS Fname, 
@@ -84,7 +85,6 @@ namespace Nezam.Modular.ESS.Identity.Application.Engineers.Jobs
                         continue;
                     }
 
-                    using var uow = _workManager.Begin();
                     try
                     {
                         // Check if the user already exists based on registration number or unique field
@@ -132,7 +132,6 @@ namespace Nezam.Modular.ESS.Identity.Application.Engineers.Jobs
                             await _engineerRepository.AddAsync(newEngineer,true);
                         }
 
-                        await uow.CompleteAsync(cancellationToken);
                         processedCount++;
 
                         _logger.LogInformation("Processed {processedCount} engineers from {count}.", processedCount, count);
@@ -141,7 +140,6 @@ namespace Nezam.Modular.ESS.Identity.Application.Engineers.Jobs
                     {
                         _logger.LogError(e, "An error occurred while processing engineer with OzviyatNo {OzviyatNo}.",
                             engineerDto.OzviyatNo);
-                        await uow.RollbackAsync(cancellationToken);
                     }
                 }
 

@@ -5,38 +5,38 @@ using Nezam.Modular.ESS.Identity.Application.Auth.Dto;
 
 namespace Nezam.Modular.ESS.WebApi.Endpoints.Authentication;
 
-public class AuthLoginEndpoint : Endpoint<AuthLoginDto,AuthJwtResult>
+public class AuthForgetPasswordEndpoint : Endpoint<AuhForgetPasswordDto,AuhForgetPasswordResult>
 {
     private readonly IAuthService _authService;
 
-    public AuthLoginEndpoint(IAuthService authService)
+    public AuthForgetPasswordEndpoint(IAuthService authService)
     {
         _authService = authService;
     }
 
     public override void Configure()
     {
-        Post("/api/auth/login");
+        Post("/api/auth/forget-password");
       
         Description(c =>
         {
-            c.Produces<AuthJwtResult>(200);
+            c.Produces<AuhForgetPasswordResult>(200);
             c.Produces<HttpExceptionModel>(500);
         });
         Summary(c =>
         {
-            c.ExampleRequest = new AuthLoginDto()
+            c.ExampleRequest = new AuhForgetPasswordDto()
             {
-                Username = "akbarsafari00",
-                Password = "Aa@123456"
+               Username  = "akbarsafari00",
+         
             };
         });
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(AuthLoginDto req, CancellationToken ct)
+    public override async Task HandleAsync(AuhForgetPasswordDto req, CancellationToken ct)
     {
-        var authJwtDto = await _authService.LoginAsync(req, ct);
+        var authJwtDto = await _authService.ForgetPasswordAsync(req, ct);
         await SendAsync(authJwtDto, cancellation: ct);
     }
 }

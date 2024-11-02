@@ -8,25 +8,25 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FastEndpoints" Version="5.26.0.20-beta"/>
-        <PackageReference Include="FastEndpoints.Security" Version="5.26.0.20-beta"/>
-        <PackageReference Include="FastEndpoints.Swagger" Version="5.26.0.20-beta"/>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.6"/>
+        <PackageReference Include="FastEndpoints" Version="5.30.0.23-beta" />
+        <PackageReference Include="FastEndpoints.Security" Version="5.30.0.23-beta" />
+        <PackageReference Include="FastEndpoints.Swagger" Version="5.30.0.23-beta" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.10" />
         <PackageReference Include="PersianDateTime" Version="1.1.5082.36395" />
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Dapper" Version="2.1.28"/>
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0-preview4.23342.2"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
+        <PackageReference Include="Dapper" Version="2.1.35" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.0-preview2.24304.8" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
     </ItemGroup>
     <ItemGroup>
-        <Folder Include="Data\"/>
+        <Folder Include="Data\" />
         <Folder Include="wwwroot\uploads\documents\" />
     </ItemGroup>
 

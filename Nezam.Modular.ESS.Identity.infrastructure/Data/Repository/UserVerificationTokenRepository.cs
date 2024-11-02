@@ -8,19 +8,18 @@ using Nezam.Modular.ESS.Identity.Domain.User;
 
 namespace Nezam.Modular.ESS.Identity.infrastructure.Data.Repository;
 
-public class UserRepository : EfCoreRepository<UserEntity, UserId, IdentityDbContext>, IUserRepository
+public class UserVerificationTokenRepository : EfCoreRepository<UserVerificationTokenEntity, IdentityDbContext>, IUserVerificationTokenRepository
 {
-    public UserRepository(IdentityDbContext userManagementDbContext) : base(userManagementDbContext)
+    public UserVerificationTokenRepository(IdentityDbContext userManagementDbContext) : base(userManagementDbContext)
     {
     }
 
 
-    public new async Task<UserEntity?> FindOneAsync(Expression<Func<UserEntity,bool>> specification)
+    public new async Task<UserVerificationTokenEntity?> FindOneAsync(Expression<Func<UserVerificationTokenEntity,bool>> specification)
     {
         var dbContet = await GetDbContextAsync();
-        var d = await dbContet.Users
-            .Include(x => x.Roles)
-            .Include(x=>x.VerificationTokens)
+        var d = await dbContet.UserVerificationToken
+            .Include(x => x.User)
             .FirstOrDefaultAsync(specification);
         return d;
     }

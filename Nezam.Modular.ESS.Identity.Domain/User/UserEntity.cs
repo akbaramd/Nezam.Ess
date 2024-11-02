@@ -17,6 +17,10 @@ public class UserEntity : BonyanUser
     
     private readonly List<RoleEntity> _roles = new List<RoleEntity>();
     public IReadOnlyCollection<RoleEntity> Roles => _roles.AsReadOnly();
+    
+    
+    private readonly List<UserVerificationTokenEntity> _verificationToken = new List<UserVerificationTokenEntity>();
+    public ICollection<UserVerificationTokenEntity> VerificationTokens => _verificationToken;
 
 
     public void TryAssignRole(RoleEntity role)
@@ -27,5 +31,16 @@ public class UserEntity : BonyanUser
         }
     }
     
+    public UserVerificationTokenEntity GenerateVerificationToken(UserVerificationTokenType type)
+    {
+        var token = new UserVerificationTokenEntity(type);
+        _verificationToken.Add(token);
+        return token;
+    }
+
+    public bool RemoveVerificationToken(UserVerificationTokenEntity token)
+    {
+        return _verificationToken.Remove(token);
+    }
 }
 

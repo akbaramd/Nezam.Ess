@@ -25,7 +25,10 @@ namespace Nezam.Modular.ESS.Identity.Application.Auth
         public IUserRepository UserRepository =>
             LazyServiceProvider.LazyGetRequiredService<IUserRepository>();
 
-        public async Task<AuthJwtDto> LoginAsync(AuthLoginDto authLoginDto,
+        public IUserVerificationTokenRepository VerificationTokenRepository =>
+            LazyServiceProvider.LazyGetRequiredService<IUserVerificationTokenRepository>();
+
+        public async Task<AuthJwtResult> LoginAsync(AuthLoginDto authLoginDto,
             CancellationToken cancellationToken = default)
         {
             var user = await UserRepository.FindOneAsync(x => x.UserName.Equals(authLoginDto.Username));
@@ -48,7 +51,7 @@ namespace Nezam.Modular.ESS.Identity.Application.Auth
                 });
 
 
-            return new AuthJwtDto
+            return new AuthJwtResult
             {
                 AccessToken = jwtToken,
                 UserId = user.Id
@@ -60,6 +63,55 @@ namespace Nezam.Modular.ESS.Identity.Application.Auth
             var user = await UserRepository.FindOneAsync(x => x.UserName == CurrentUser.UserName);
 
             return Mapper.Map<UserEntity, BonyanUserDto>(user ?? throw new InvalidOperationException());
+        }
+
+        public async Task<AuhForgetPasswordResult> ForgetPasswordAsync(AuhForgetPasswordDto forgetPasswordDto,
+            CancellationToken cancellationToken = default)
+        {
+            var user = await UserRepository.FindOneAsync(x => x.UserName.Equals(forgetPasswordDto.Username));
+
+            if (user == null)
+            {
+                throw new Exception("user not found");
+            }
+
+            var res = user.GenerateVerificationToken(UserVerificationTokenType.ForgetPassword);
+
+            await UserRepository.UpdateAsync(user, true);
+
+            return new AuhForgetPasswordResult()
+            {
+                VerificationToken = res.Token,
+                VerificationTokenType = res.Type
+            };
+        }
+
+        public async Task ResetPasswordAsync(AuthResetPasswordDto authResetPassword,
+            CancellationToken cancellationToken = default)
+        {
+            var token = await VerificationTokenRepository.FindOneAsync(x =>
+                x.Token.Equals(authResetPassword.VerificationToken));
+            if (token == null)
+            {
+                throw new Exception("token not found");
+            }
+
+            var user = token.User;
+            if (user == null)
+            {
+                throw new Exception("user not found");
+            }
+
+            if (authResetPassword.Password != authResetPassword.ConfirmPassword)
+            {
+                throw new Exception("password is incorrect");
+            }
+
+            user.SetPassword(authResetPassword.Password);
+
+            var res = user.RemoveVerificationToken(token);
+
+            await UserRepository.UpdateAsync(user, true);
         }
     }
 }

@@ -17,7 +17,9 @@ public class RoleEntity : Entity<RoleId>
         Name = name;
         Title = title;
     }
-
+   
+    private readonly List<UserEntity> _users = new List<UserEntity>();
+    public IReadOnlyCollection<UserEntity> Users => _users.AsReadOnly();
     public void UpdateTitle(string title)
     {
         Title = title;

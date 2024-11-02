@@ -1,4 +1,5 @@
-﻿using Bonyan.EntityFrameworkCore;
+﻿using Bonyan.AspNetCore.Job;
+using Bonyan.EntityFrameworkCore;
 using Bonyan.Job.Hangfire;
 using Bonyan.Modularity;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ public class NezamEssModule : WebModule
 {
     public NezamEssModule()
     {
-        DependOn<BonyanJobHangfireModule>();
+        DependOn<BonyanJobModule>();
         DependOn<NezamEssIdentityInfrastructureModule>();
     }
 
