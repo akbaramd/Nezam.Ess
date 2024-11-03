@@ -17,17 +17,18 @@ public class AuthResetPasswordEndpoint : Endpoint<AuthResetPasswordDto>
     public override void Configure()
     {
         Post("/api/auth/reset-password");
-      
+
         Description(c =>
         {
             c.Produces<HttpExceptionModel>(500);
+            c.WithTags("Authentication");
         });
         Summary(c =>
         {
             c.ExampleRequest = new AuthResetPasswordDto()
             {
-               Password  = "Aa@123456789",
-               ConfirmPassword  = "Aa@123456789",
+                Password = "Aa@123456789",
+                ConfirmPassword = "Aa@123456789",
                 VerificationToken = "xxxxxxxxxxxxxxxxxxxxxxx"
             };
         });
@@ -36,7 +37,7 @@ public class AuthResetPasswordEndpoint : Endpoint<AuthResetPasswordDto>
 
     public override async Task HandleAsync(AuthResetPasswordDto req, CancellationToken ct)
     {
-         await _authService.ResetPasswordAsync(req, ct);
+        await _authService.ResetPasswordAsync(req, ct);
         await SendOkAsync(ct);
     }
 }

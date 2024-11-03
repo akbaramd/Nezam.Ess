@@ -22,6 +22,7 @@ public class AuthLoginEndpoint : Endpoint<AuthLoginDto,AuthJwtResult>
         {
             c.Produces<AuthJwtResult>(200);
             c.Produces<HttpExceptionModel>(500);
+                c.WithTags("Authentication");
         });
         Summary(c =>
         {

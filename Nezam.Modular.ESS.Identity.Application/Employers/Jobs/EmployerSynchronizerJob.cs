@@ -16,6 +16,7 @@ using Nezam.Modular.ESS.Identity.Domain.Roles;
 
 namespace Nezam.Modular.ESS.Identity.Application.Employers.Jobs
 {
+    [CronJob("* 1 * * *")]
     public class EmployerSynchronizerJob : IJob
     {
         private readonly IEmployerRepository _employerRepository;

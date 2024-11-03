@@ -22,31 +22,44 @@ public class IdentityDbContext :BonyanDbContext<IdentityDbContext>, IBonUserMana
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.EnableSensitiveDataLogging();
+        // optionsBuilder.EnableSensitiveDataLogging();
         base.OnConfiguring(optionsBuilder);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+        
         modelBuilder.ConfigureUserManagementByConvention<UserEntity>();
         modelBuilder.Entity<RoleEntity>().ConfigureByConvention();
         modelBuilder.Entity<UserVerificationTokenEntity>().ConfigureByConvention();
         modelBuilder.Entity<EngineerEntity>().ConfigureByConvention();
         modelBuilder.Entity<EmployerEntity>().ConfigureByConvention();
 
-        modelBuilder.Entity<EmployerEntity>().HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId);
-        modelBuilder.Entity<EngineerEntity>().HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId);
+        modelBuilder.Entity<EngineerEntity>()
+            .HasOne(e => e.User)
+            .WithOne(c=>c.Engineer) // No navigation property on UserEntity side
+            .HasForeignKey<EngineerEntity>(e => e.UserId)
+            .OnDelete(DeleteBehavior.Restrict); 
+        
+        modelBuilder.Entity<EmployerEntity>()
+            .HasOne(x => x.User)
+            .WithOne(c=>c.Employer) // No navigation property on UserEntity side
+            .HasForeignKey<EmployerEntity>(e => e.UserId)
+            .OnDelete(DeleteBehavior.Restrict); 
         
         modelBuilder.Entity<UserEntity>().HasMany(x => x.Roles).WithMany(c=>c.Users).UsingEntity("UserRoles");
         modelBuilder.Entity<UserEntity>().HasMany(x => x.VerificationTokens).WithOne(x => x.User)
             .HasForeignKey(x => x.UserId);
 
         modelBuilder.Entity<RoleEntity>().HasIndex(x => x.Name);
+        modelBuilder.Ignore<UserVerificationTokenType>();   
+        modelBuilder.Entity<UserVerificationTokenEntity>()
+            .Property(x => x.Type)
+            .HasConversion<string>(
+                c => c.Name,
+                v =>  UserVerificationTokenType.Global
+            );
 
-        modelBuilder.Entity<UserVerificationTokenEntity>().HasKey(x => x.Token);
-        modelBuilder.Entity<UserVerificationTokenEntity>().Property(x => x.Type).HasConversion(c => c.Name.ToString(),
-            v => Enumeration.FromName<UserVerificationTokenType>(v) ?? UserVerificationTokenType.Global);
-        
-        base.OnModelCreating(modelBuilder);
     }
 }
