@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Nezam.Modular.ESS.Identity.infrastructure.Data;
+using Nezam.Modular.ESS.infrastructure.Data;
 
 #nullable disable
 
 namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20241103070256_Init6")]
-    partial class Init6
+    [Migration("20241103062825_Init2")]
+    partial class Init2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

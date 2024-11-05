@@ -1,6 +1,8 @@
 using System;
 using Bonyan.UserManagement.Application.Dtos;
+using Bonyan.UserManagement.Domain.ValueObjects;
 using FastEndpoints;
+using Microsoft.AspNetCore.Mvc;
 using Nezam.Modular.ESS.Identity.Application.Employers.Dtos;
 using Nezam.Modular.ESS.Identity.Application.Roles.Dto;
 using EngineerDto = Nezam.Modular.ESS.Identity.Application.Engineers.Jobs.EngineerDto;
@@ -38,3 +40,13 @@ public class UserFilterDto
     
     
 }
+
+public class UserUpdateDto 
+{
+    [FromRoute]
+    public Guid UserId { get; set; }
+    public string PhoneNumber { get; set; }
+    public string Email { get; set; }
+    public string[] Roles { get; set; }
+}
+

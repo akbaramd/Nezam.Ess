@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Nezam.Modular.ESS.Identity.infrastructure.Data;
+using Nezam.Modular.ESS.infrastructure.Data;
 
 #nullable disable
 
 namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20241103045713_Init")]
-    partial class Init
+    [Migration("20241103063853_Init3")]
+    partial class Init3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -139,7 +139,12 @@ namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
 
             modelBuilder.Entity("Nezam.Modular.ESS.Identity.Domain.User.UserVerificationTokenEntity", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Id");
+
                     b.Property<string>("Token")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Type")
@@ -150,7 +155,7 @@ namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("UserId");
 
-                    b.HasKey("Token");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId");
 

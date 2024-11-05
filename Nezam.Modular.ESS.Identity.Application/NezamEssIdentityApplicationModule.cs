@@ -41,7 +41,7 @@ public class NezamEssIdentityApplicationModule : Module
         });
 
         // context.AddJob<EngineerSynchronizerJob>();
-        // context.AddJob<EmployerSynchronizerJob>();
+        context.AddJob<EmployerSynchronizerJob>();
 
         return base.OnConfigureAsync(context);
     }

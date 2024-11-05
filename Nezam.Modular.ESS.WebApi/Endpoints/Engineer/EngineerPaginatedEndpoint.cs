@@ -1,10 +1,9 @@
-using System;
 using Bonyan.Layer.Domain.Model;
 using FastEndpoints;
 using Nezam.Modular.ESS.Identity.Application.Engineers;
 using Nezam.Modular.ESS.Identity.Application.Engineers.Dtos;
 
-namespace Nezam.Modular.ESS.WebApi.Endpoints.Engineers;
+namespace Nezam.Modular.ESS.WebApi.Endpoints.Engineer;
 
 public class EngineerPaginatedEndpoint : Endpoint<EngineerFilterDto,PaginatedResult<EngineerDtoWithDetails>>
 {

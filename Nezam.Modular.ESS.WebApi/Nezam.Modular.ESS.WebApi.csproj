@@ -25,7 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Nezam.Modular.ESS.Identity.infrastructure\Nezam.Modular.ESS.Identity.infrastructure.csproj" />
+      <ProjectReference Include="..\Nezam.Modular.ESS.infrastructure\Nezam.Modular.ESS.infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

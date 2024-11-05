@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Nezam.Modular.ESS.Identity.infrastructure.Data;
+using Nezam.Modular.ESS.infrastructure.Data;
 
 #nullable disable
 
 namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20241103065731_Init4")]
-    partial class Init4
+    [Migration("20241103070612_Init7")]
+    partial class Init7
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,6 +40,9 @@ namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
                     b.ToTable("Employers");
                 });
 
@@ -64,6 +67,9 @@ namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
                         .HasColumnName("UserId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Engineers");
                 });
@@ -103,14 +109,6 @@ namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("DeletedDate");
 
-                    b.Property<Guid?>("EmployerId")
-                        .HasColumnType("TEXT")
-                        .HasColumnName("EmployerId");
-
-                    b.Property<Guid?>("EngineerId")
-                        .HasColumnType("TEXT")
-                        .HasColumnName("EngineerId");
-
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
@@ -134,12 +132,6 @@ namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EmployerId")
-                        .IsUnique();
-
-                    b.HasIndex("EngineerId")
-                        .IsUnique();
 
                     b.HasIndex("UserName")
                         .IsUnique();
@@ -187,16 +179,30 @@ namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
                     b.ToTable("UserRoles");
                 });
 
+            modelBuilder.Entity("Nezam.Modular.ESS.Identity.Domain.Employer.EmployerEntity", b =>
+                {
+                    b.HasOne("Nezam.Modular.ESS.Identity.Domain.User.UserEntity", "User")
+                        .WithOne("Employer")
+                        .HasForeignKey("Nezam.Modular.ESS.Identity.Domain.Employer.EmployerEntity", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Nezam.Modular.ESS.Identity.Domain.Engineer.EngineerEntity", b =>
+                {
+                    b.HasOne("Nezam.Modular.ESS.Identity.Domain.User.UserEntity", "User")
+                        .WithOne("Engineer")
+                        .HasForeignKey("Nezam.Modular.ESS.Identity.Domain.Engineer.EngineerEntity", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Nezam.Modular.ESS.Identity.Domain.User.UserEntity", b =>
                 {
-                    b.HasOne("Nezam.Modular.ESS.Identity.Domain.Employer.EmployerEntity", "Employer")
-                        .WithOne("User")
-                        .HasForeignKey("Nezam.Modular.ESS.Identity.Domain.User.UserEntity", "EmployerId");
-
-                    b.HasOne("Nezam.Modular.ESS.Identity.Domain.Engineer.EngineerEntity", "Engineer")
-                        .WithOne("User")
-                        .HasForeignKey("Nezam.Modular.ESS.Identity.Domain.User.UserEntity", "EngineerId");
-
                     b.OwnsOne("Bonyan.UserManagement.Domain.ValueObjects.Email", "Email", b1 =>
                         {
                             b1.Property<Guid>("UserEntityId")
@@ -266,10 +272,6 @@ namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
 
                     b.Navigation("Email");
 
-                    b.Navigation("Employer");
-
-                    b.Navigation("Engineer");
-
                     b.Navigation("Password")
                         .IsRequired();
 
@@ -302,20 +304,14 @@ namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Nezam.Modular.ESS.Identity.Domain.Employer.EmployerEntity", b =>
-                {
-                    b.Navigation("User")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Nezam.Modular.ESS.Identity.Domain.Engineer.EngineerEntity", b =>
-                {
-                    b.Navigation("User")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Nezam.Modular.ESS.Identity.Domain.User.UserEntity", b =>
                 {
+                    b.Navigation("Employer")
+                        .IsRequired();
+
+                    b.Navigation("Engineer")
+                        .IsRequired();
+
                     b.Navigation("VerificationTokens");
                 });
 #pragma warning restore 612, 618

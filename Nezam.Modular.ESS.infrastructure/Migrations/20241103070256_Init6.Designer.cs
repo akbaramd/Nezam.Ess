@@ -2,17 +2,20 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Nezam.Modular.ESS.Identity.infrastructure.Data;
+using Nezam.Modular.ESS.infrastructure.Data;
 
 #nullable disable
 
 namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    partial class IdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241103070256_Init6")]
+    partial class Init6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
@@ -37,8 +40,7 @@ namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Employers");
                 });
@@ -65,8 +67,7 @@ namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Engineers");
                 });
@@ -179,9 +180,9 @@ namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
             modelBuilder.Entity("Nezam.Modular.ESS.Identity.Domain.Employer.EmployerEntity", b =>
                 {
                     b.HasOne("Nezam.Modular.ESS.Identity.Domain.User.UserEntity", "User")
-                        .WithOne("Employer")
-                        .HasForeignKey("Nezam.Modular.ESS.Identity.Domain.Employer.EmployerEntity", "UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -190,9 +191,9 @@ namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
             modelBuilder.Entity("Nezam.Modular.ESS.Identity.Domain.Engineer.EngineerEntity", b =>
                 {
                     b.HasOne("Nezam.Modular.ESS.Identity.Domain.User.UserEntity", "User")
-                        .WithOne("Engineer")
-                        .HasForeignKey("Nezam.Modular.ESS.Identity.Domain.Engineer.EngineerEntity", "UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -303,12 +304,6 @@ namespace Nezam.Modular.ESS.Identity.infrastructure.Migrations
 
             modelBuilder.Entity("Nezam.Modular.ESS.Identity.Domain.User.UserEntity", b =>
                 {
-                    b.Navigation("Employer")
-                        .IsRequired();
-
-                    b.Navigation("Engineer")
-                        .IsRequired();
-
                     b.Navigation("VerificationTokens");
                 });
 #pragma warning restore 612, 618

@@ -1,25 +1,20 @@
-﻿using System.Text;
-using Bonyan.EntityFrameworkCore;
+﻿using Bonyan.EntityFrameworkCore;
 using Bonyan.Modularity;
 using Bonyan.UserManagement.Domain.Enumerations;
-using Bonyan.UserManagement.Domain.Repositories;
 using Bonyan.UserManagement.Domain.ValueObjects;
 using Bonyan.UserManagement.EntityFrameworkCore;
-using Microsoft;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using Nezam.Modular.ESS.Identity.Application;
 using Nezam.Modular.ESS.Identity.Domain.Employer;
 using Nezam.Modular.ESS.Identity.Domain.Engineer;
 using Nezam.Modular.ESS.Identity.Domain.Roles;
 using Nezam.Modular.ESS.Identity.Domain.User;
-using Nezam.Modular.ESS.Identity.infrastructure.Data;
-using Nezam.Modular.ESS.Identity.infrastructure.Data.Repository;
+using Nezam.Modular.ESS.infrastructure.Data;
+using Nezam.Modular.ESS.infrastructure.Data.Repository;
 
-namespace Nezam.Modular.ESS.Identity.infrastructure;
+namespace Nezam.Modular.ESS.infrastructure;
 
 public class NezamEssIdentityInfrastructureModule : WebModule
 {

@@ -1,5 +1,4 @@
 ﻿using Bonyan.EntityFrameworkCore;
-using Bonyan.Layer.Domain.Enumerations;
 using Bonyan.UserManagement.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Nezam.Modular.ESS.Identity.Domain.Employer;
@@ -7,7 +6,7 @@ using Nezam.Modular.ESS.Identity.Domain.Engineer;
 using Nezam.Modular.ESS.Identity.Domain.Roles;
 using Nezam.Modular.ESS.Identity.Domain.User;
 
-namespace Nezam.Modular.ESS.Identity.infrastructure.Data;
+namespace Nezam.Modular.ESS.infrastructure.Data;
 
 public class IdentityDbContext :BonyanDbContext<IdentityDbContext>, IBonUserManagementDbContext<UserEntity>
 {
@@ -40,13 +39,13 @@ public class IdentityDbContext :BonyanDbContext<IdentityDbContext>, IBonUserMana
             .HasOne(e => e.User)
             .WithOne(c=>c.Engineer) // No navigation property on UserEntity side
             .HasForeignKey<EngineerEntity>(e => e.UserId)
-            .OnDelete(DeleteBehavior.Restrict); 
+            .OnDelete(DeleteBehavior.Cascade); 
         
         modelBuilder.Entity<EmployerEntity>()
             .HasOne(x => x.User)
             .WithOne(c=>c.Employer) // No navigation property on UserEntity side
             .HasForeignKey<EmployerEntity>(e => e.UserId)
-            .OnDelete(DeleteBehavior.Restrict); 
+            .OnDelete(DeleteBehavior.Cascade); 
         
         modelBuilder.Entity<UserEntity>().HasMany(x => x.Roles).WithMany(c=>c.Users).UsingEntity("UserRoles");
         modelBuilder.Entity<UserEntity>().HasMany(x => x.VerificationTokens).WithOne(x => x.User)

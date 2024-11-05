@@ -21,10 +21,8 @@ public class UserEntity : BonyanUser
     private List<RoleEntity> _roles = new List<RoleEntity>();
     public IReadOnlyCollection<RoleEntity> Roles => _roles;
 
-
     private List<UserVerificationTokenEntity> _verificationToken = new List<UserVerificationTokenEntity>();
     public IReadOnlyCollection<UserVerificationTokenEntity> VerificationTokens => _verificationToken;
-
 
     public EngineerEntity Engineer { get; set; }
     public EmployerEntity Employer { get; set; }
@@ -34,6 +32,15 @@ public class UserEntity : BonyanUser
         if (!Roles.Any(x => x.Name.Equals(role.Name)))
         {
             _roles.Add(role);
+        }
+    }
+
+    public void TryRemoveRole(RoleEntity role)
+    {
+        var existingRole = _roles.FirstOrDefault(x => x.Name.Equals(role.Name));
+        if (existingRole != null)
+        {
+            _roles.Remove(existingRole);
         }
     }
 
@@ -47,5 +54,11 @@ public class UserEntity : BonyanUser
     public bool RemoveVerificationToken(UserVerificationTokenEntity token)
     {
         return _verificationToken.Remove(token);
+    }
+
+    public void UpdateContactInfo(string email, string phoneNumber)
+    {
+        SetEmail(new Email(email));
+        SetPhoneNumber(new PhoneNumber(phoneNumber));
     }
 }
