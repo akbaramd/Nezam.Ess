@@ -164,19 +164,20 @@ public class DocumentAggregateRoot : FullAuditableAggregateRoot<DocumentId>
         if (referral == null)
             throw new InvalidOperationException("Referral not found.");
 
-        // اگر این ارجاع یا ارجاع موازی دیگری در این مرحله پاسخ داده نشده باشد، اجازه پاسخ‌گویی می‌دهیم
-        if (_referrals.Any(r => r.DocumentId == referral.DocumentId && r.Status == ReferralStatus.New && r.Id != referralId))
-        {
-            // ارجاعات موازی دیگر که جدید هستند، لغو می‌شوند
-            foreach (var otherReferral in _referrals.Where(r => r.DocumentId == referral.DocumentId && r.Status == ReferralStatus.New && r.Id != referralId))
-            {
-                otherReferral.Cancel();
-            }
-        }
-    
+        // بررسی وضعیت‌های ارجاعات موازی
+        if (_referrals.Any(r => r.DocumentId == referral.DocumentId && r.Status == ReferralStatus.Responded))
+            throw new InvalidOperationException("Referral has already been responded to.");
+
         // ثبت پاسخ در ارجاع فعلی
         referral.Respond(responseContent);
+
+        // لغو ارجاعات موازی دیگر که جدید هستند
+        foreach (var otherReferral in _referrals.Where(r => r.DocumentId == referral.DocumentId && r.Status == ReferralStatus.New && r.Id != referralId))
+        {
+            otherReferral.Cancel();
+        }
     }
+
 
 
 
