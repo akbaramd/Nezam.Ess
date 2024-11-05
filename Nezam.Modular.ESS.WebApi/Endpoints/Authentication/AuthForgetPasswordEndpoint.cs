@@ -17,11 +17,12 @@ public class AuthForgetPasswordEndpoint : Endpoint<AuhForgetPasswordDto,AuhForge
     public override void Configure()
     {
         Post("/api/auth/forget-password");
-      
+
         Description(c =>
         {
             c.Produces<AuhForgetPasswordResult>(200);
             c.Produces<HttpExceptionModel>(500);
+            c.WithTags("Authentication");
         });
         Summary(c =>
         {

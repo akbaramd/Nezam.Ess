@@ -11,134 +11,123 @@ using Bonyan.UnitOfWork;
 using Bonyan.UserManagement.Domain.Enumerations;
 using Bonyan.UserManagement.Domain.ValueObjects;
 using Microsoft.Data.SqlClient;
-using Nezam.Modular.ESS.Identity.Domain.Employer;
+using Nezam.Modular.ESS.Identity.Domain.DomainServices;
 using Nezam.Modular.ESS.Identity.Domain.Roles;
 
 namespace Nezam.Modular.ESS.Identity.Application.Employers.Jobs
 {
+    [CronJob("0/1 * * * *")]
     public class EmployerSynchronizerJob : IJob
     {
+        private const string ConnectionString = "Data Source=85.185.6.4;Initial Catalog=map;User ID=new_site_user;Password=111qqqAAAn;Trust Server Certificate=True;";
+        
         private readonly IEmployerRepository _employerRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly IRoleRepository _roleRepository;
+        private readonly UserManager _userManager;
+        private readonly RoleManager _roleManager;
         private readonly IUnitOfWorkManager _workManager;
         private readonly ILogger<EmployerSynchronizerJob> _logger;
 
         public EmployerSynchronizerJob(
             IEmployerRepository employerRepository,
-            IUserRepository userRepository,
+            UserManager userManager,
+            RoleManager roleManager,
             IUnitOfWorkManager workManager,
-            ILogger<EmployerSynchronizerJob> logger, IRoleRepository roleRepository)
+            ILogger<EmployerSynchronizerJob> logger)
         {
-            _employerRepository = employerRepository;
-            _userRepository = userRepository;
-            _workManager = workManager;
-            _logger = logger;
-            _roleRepository = roleRepository;
+            _employerRepository = employerRepository ?? throw new ArgumentNullException(nameof(employerRepository));
+            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
+            _workManager = workManager ?? throw new ArgumentNullException(nameof(workManager));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        [UnitOfWork]
-        public async Task ExecuteAsync(CancellationToken cancellationToken = new CancellationToken())
+
+        public async Task ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            var enginerRole = await _roleRepository.FindOneAsync(x => x.Name.Equals("employer"));
-
-            if (enginerRole==null)
+            using var uow = _workManager.Begin();
+            try
             {
-                enginerRole = new RoleEntity(RoleId.CreateNew(), "employer", "Employer");
-                await _roleRepository.AddAsync(enginerRole);
-            }
-            
-            // Connection string to the database
-            const string connectionString =
-                "Data Source=85.185.6.4;Initial Catalog=map;User ID=new_site_user;Password=111qqqAAAn;Trust Server Certificate=True;";
-
-            await using (var connection = new SqlConnection(connectionString))
-            {
-                // Query all employers from tbl_employers
-                var employers = await connection.QueryAsync<KarbaranDataDto>(
-                    @$"select 
-	tbl_karbaran.kname as UserName ,
-	tbl_karbaran.pwd as Password ,
-	tbl_karbaran.comment as FullName 
-from tbl_karbaran where is_personel = 1");
+                await _roleManager.CreateAsync(RoleConstants.EmployerName, RoleConstants.EmployerTitle);
+                
+                await using var connection = new SqlConnection(ConnectionString);
+                var employers = (await connection.QueryAsync<KarbaranDataDto>(
+                    @"SELECT 
+                        tbl_karbaran.kname AS UserName,
+                        tbl_karbaran.pwd AS Password,
+                        tbl_karbaran.comment AS FullName 
+                      FROM tbl_karbaran 
+                      WHERE is_personel = 1")).ToList();
 
                 int processedCount = 0;
-                var employerDtos = employers.ToList();
-                var count = employerDtos.Count();
-                foreach (var employerDto in employerDtos)
-                {
-                    var username =
-                        employerDto.UserName;
+                var totalEmployers = employers.Count;
 
-                    if (username == null)
+                foreach (var employerDto in employers)
+                {
+                    if (string.IsNullOrEmpty(employerDto.UserName))
                     {
-                        _logger.LogWarning(
-                            "Employer with Username: {username} has a null Username and will be skipped.",
-                            employerDto.UserName);
+                        _logger.LogWarning("Employer entry with a null or empty username is skipped.");
                         continue;
                     }
 
                     try
                     {
-                        // Check if the user already exists based on registration number or unique field
-                        var existingUser =
-                            await _userRepository.FindOneAsync(x => x.UserName == username);
-
+                        var existingUser = await _userManager.FindByUserNameAsync(employerDto.UserName);
                         UserEntity userEntity;
+
                         if (existingUser == null)
                         {
-                            // Create a new user if not exists
-                            userEntity = new UserEntity(UserId.CreateNew(), username);
-                            userEntity.SetPassword(employerDto.Password is { Length: >= 3 }
-                                ? employerDto.Password
-                                : employerDto.UserName);
+                            userEntity = new UserEntity(UserId.CreateNew(), employerDto.UserName);
                             userEntity.ChangeStatus(UserStatus.PendingApproval);
-                            userEntity.TryAssignRole(enginerRole);
-                            await _userRepository.AddAsync(userEntity,true);
+
+                            string password = !string.IsNullOrEmpty(employerDto.Password) && employerDto.Password.Length >= 3
+                                ? employerDto.Password
+                                : employerDto.UserName;
+
+                            await _userManager.CreateAsync(userEntity, password);
+                            await _userManager.AssignRoles(userEntity, RoleConstants.EmployerName);
                         }
                         else
                         {
                             userEntity = existingUser;
-                            userEntity.SetPassword(employerDto.Password is { Length: >= 3 }
+                            string newPassword = !string.IsNullOrEmpty(employerDto.Password) && employerDto.Password.Length >= 3
                                 ? employerDto.Password
-                                : employerDto?.UserName ?? string.Empty);
-                          
-                            userEntity.TryAssignRole(enginerRole);
-                            await _userRepository.UpdateAsync(userEntity,true);
+                                : employerDto.UserName;
+
+                            userEntity.SetPassword(newPassword);
+                            await _userManager.AssignRoles(userEntity, RoleConstants.EmployerName);
+                            await _userManager.UpdateAsync(userEntity);
                         }
 
-                        // Check if the employer entity already exists
                         var existingEmployer = await _employerRepository.FindOneAsync(x => x.UserId == userEntity.Id);
                         if (existingEmployer == null)
                         {
-                            // Create and add a new employer entity
-                            var newEmployer = new EmployerEntity(EmployerId.CreateNew(), userEntity, employerDto?.FullName,
-                                string.Empty);
-                            await _employerRepository.AddAsync(newEmployer,true);
+                            var newEmployer = new EmployerEntity(EmployerId.CreateNew(), userEntity, employerDto.FullName ?? string.Empty, string.Empty);
+                            await _employerRepository.AddAsync(newEmployer, true);
                         }
 
                         processedCount++;
-
-                        _logger.LogInformation("Processed {processedCount} employers from {count}.", processedCount, count);
+                        _logger.LogInformation("Processed {ProcessedCount}/{TotalEmployers} employers.", processedCount, totalEmployers);
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        _logger.LogError(e, "An error occurred while processing employer with OzviyatNo {OzviyatNo}.",
-                            employerDto.UserName);
+                        _logger.LogError(ex, "An error occurred while processing employer with username {Username}.", employerDto.UserName);
                     }
                 }
 
-                _logger.LogInformation("Synchronization completed. Total processed: {TotalCount}", processedCount);
+                _logger.LogInformation("Employer synchronization completed. Total processed: {TotalCount}", processedCount);
+                await uow.CompleteAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred during the synchronization job.");
             }
         }
     }
 
-    // DTO for Dapper query
     public class KarbaranDataDto
     {
         public string? UserName { get; set; }
         public string? Password { get; set; }
         public string? FullName { get; set; }
- 
     }
 }

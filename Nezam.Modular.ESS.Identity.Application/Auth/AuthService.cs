@@ -4,11 +4,14 @@ using System.Text;
 using Bonyan.Layer.Application.Services;
 using Bonyan.Security.Claims;
 using Bonyan.UserManagement.Application.Dtos;
+using Bonyan.UserManagement.Domain.Enumerations;
 using Bonyan.UserManagement.Domain.Repositories;
 using FastEndpoints.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Nezam.Modular.ESS.Identity.Application.Auth.Dto;
+using Nezam.Modular.ESS.Identity.Application.Users.Dto;
+using Nezam.Modular.ESS.Identity.Application.Users.Specs;
 using Nezam.Modular.ESS.Identity.Domain.User;
 
 namespace Nezam.Modular.ESS.Identity.Application.Auth
@@ -50,7 +53,9 @@ namespace Nezam.Modular.ESS.Identity.Application.Auth
                     o.User.Claims.Add((BonyanClaimTypes.Email, user.Email?.Address.ToString() ?? ""));
                 });
 
-
+            
+            user.ChangeStatus(UserStatus.Active);
+            await UserRepository.UpdateAsync(user);
             return new AuthJwtResult
             {
                 AccessToken = jwtToken,
@@ -58,11 +63,11 @@ namespace Nezam.Modular.ESS.Identity.Application.Auth
             };
         }
 
-        public async Task<BonyanUserDto> CurrentUserProfileAsync(CancellationToken cancellationToken = default)
+        public async Task<UserDtoWithDetail> CurrentUserProfileAsync(CancellationToken cancellationToken = default)
         {
-            var user = await UserRepository.FindOneAsync(x => x.UserName == CurrentUser.UserName);
+            var user = await UserRepository.FindOneAsync(new UserByUsernameSpec(CurrentUser.UserName));
 
-            return Mapper.Map<UserEntity, BonyanUserDto>(user ?? throw new InvalidOperationException());
+            return Mapper.Map<UserEntity, UserDtoWithDetail>(user ?? throw new InvalidOperationException());
         }
 
         public async Task<AuhForgetPasswordResult> ForgetPasswordAsync(AuhForgetPasswordDto forgetPasswordDto,

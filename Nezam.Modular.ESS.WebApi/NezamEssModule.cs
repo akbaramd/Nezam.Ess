@@ -4,6 +4,7 @@ using Bonyan.Job.Hangfire;
 using Bonyan.Modularity;
 using Microsoft.EntityFrameworkCore;
 using Nezam.Modular.ESS.Identity.infrastructure;
+using Nezam.Modular.ESS.infrastructure;
 
 namespace Nezam.Modular.ESS.WebApi;
 
@@ -12,7 +13,7 @@ public class NezamEssModule : WebModule
 {
     public NezamEssModule()
     {
-        DependOn<BonyanJobModule>();
+        DependOn<BonyanJobHangfireModule>();
         DependOn<NezamEssIdentityInfrastructureModule>();
     }
 

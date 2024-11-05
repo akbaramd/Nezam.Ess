@@ -28,6 +28,8 @@ builder.Services.AddEndpointsApiExplorer();
 var app = await builder.BuildAsync();
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 app//add this
     .UseFastEndpoints()
     .UseSwaggerGen();;
