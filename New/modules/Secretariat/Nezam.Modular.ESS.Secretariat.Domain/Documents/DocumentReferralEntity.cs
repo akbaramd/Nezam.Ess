@@ -1,66 +1,82 @@
 ﻿using Bonyan.Layer.Domain.Entities;
 using Bonyan.UserManagement.Domain.ValueObjects;
+using System;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents.Enumerations;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
-
-namespace Nezam.Modular.ESS.Secretariat.Domain.Documents;
-
-public class DocumentReferralEntity : Entity<DocumentReferralId>
+namespace Nezam.Modular.ESS.Secretariat.Domain.Documents
 {
-    public DocumentId DocumentId { get; private set; }
-    public UserId ReferrerUserId { get; private set; } // The user who created this referral
-    public UserId ReceiverUserId { get; private set; }
-    public ReferralStatus Status { get; private set; }
-    public DateTime ReferralDate { get; private set; }
-    public DateTime? ViewedDate { get; private set; }
-    public DateTime? RespondedDate { get; private set; }
-    public string ResponseContent { get; private set; }
-    public DocumentReferralId? NextReferralId { get; private set; } // Link to the next referral in the pipeline
-
-    // Updated Constructor with ReferrerUserId
-    public DocumentReferralEntity(DocumentId documentId, UserId referrerUserId, UserId receiverUserId)
+    public class DocumentReferralEntity : Entity<DocumentReferralId>
     {
-        DocumentId = documentId;
-        ReferrerUserId = referrerUserId;
-        ReceiverUserId = receiverUserId;
-        Status = ReferralStatus.New;
-        ReferralDate = DateTime.UtcNow;
-    }
+        public DocumentId DocumentId { get; private set; }
+        public UserId ReferrerUserId { get; private set; }
+        public UserId ReceiverUserId { get; private set; }
+        public ReferralStatus Status { get; private set; }
+        public DateTime ReferralDate { get; private set; }
+        public DateTime? ViewedDate { get; private set; }
+        public DateTime? RespondedDate { get; private set; }
+        public string ResponseContent { get; private set; }
+        public DocumentReferralId? ParentReferralId { get; private set; } // Parent referral for hierarchy management
 
-    // Behavior to mark referral as viewed by receiver
-    public void MarkAsViewed()
-    {
-        if (Status == ReferralStatus.Responded)
-            throw new InvalidOperationException("Cannot mark a responded referral as viewed.");
+        // Updated constructor with validation
+        public DocumentReferralEntity(DocumentId documentId, UserId referrerUserId, UserId receiverUserId, DocumentReferralId? parentReferralId = null)
+        {
+            Id = DocumentReferralId.CreateNew();
+            DocumentId = documentId ?? throw new ArgumentNullException(nameof(documentId));
+            ReferrerUserId = referrerUserId ?? throw new ArgumentNullException(nameof(referrerUserId));
+            ReceiverUserId = receiverUserId ?? throw new ArgumentNullException(nameof(receiverUserId));
+            Status = ReferralStatus.Pending;
+            ReferralDate = DateTime.UtcNow;
+            ParentReferralId = parentReferralId;
+        }
 
-        Status = ReferralStatus.Viewed;
-        ViewedDate = DateTime.UtcNow;
-    }
+        public void MarkAsViewed()
+        {
+            if (Status == ReferralStatus.Responded)
+                throw new InvalidOperationException("Cannot mark a responded referral as viewed.");
+            if (Status == ReferralStatus.Canceled)
+                throw new InvalidOperationException("Cannot mark a canceled referral as viewed.");
 
-    // Behavior to respond to the referral
-    public void Respond(string responseContent)
-    {
-        if (Status == ReferralStatus.Responded)
-            throw new InvalidOperationException("Referral has already been responded to.");
+            Status = ReferralStatus.Viewed;
+            ViewedDate = DateTime.UtcNow;
 
-        Status = ReferralStatus.Responded;
-        RespondedDate = DateTime.UtcNow;
-        ResponseContent = responseContent;
-    }
+            // Optional: Trigger a domain event for referral viewed
+            // AddDomainEvent(new ReferralViewedEvent(this.Id));
+        }
 
-    public void Cancel()
-    {
-        Status = ReferralStatus.Canceled;
-    }
-    
-    // Behavior to set the next referral in the pipeline
-    public void SetNextReferral(DocumentReferralId nextReferralId)
-    {
-        NextReferralId = nextReferralId;
-    }
+        public void Respond(string responseContent)
+        {
+            if (Status == ReferralStatus.Responded)
+                throw new InvalidOperationException("Referral has already been responded to.");
+            if (Status == ReferralStatus.Canceled)
+                throw new InvalidOperationException("Cannot respond to a canceled referral.");
+            if (string.IsNullOrWhiteSpace(responseContent))
+                throw new ArgumentException("Response content cannot be empty.", nameof(responseContent));
 
-    // Check if this referral has been fully processed (responded)
-    public bool IsProcessed()
-    {
-        return Status == ReferralStatus.Responded;
+            Status = ReferralStatus.Responded;
+            RespondedDate = DateTime.UtcNow;
+            ResponseContent = responseContent;
+
+            // Optional: Trigger a domain event for referral responded
+            // AddDomainEvent(new ReferralRespondedEvent(this.Id));
+        }
+
+        public void Cancel()
+        {
+            if (Status == ReferralStatus.Responded)
+                throw new InvalidOperationException("Cannot cancel a referral that has been responded to.");
+            if (Status == ReferralStatus.Canceled)
+                throw new InvalidOperationException("Referral is already canceled.");
+
+            Status = ReferralStatus.Canceled;
+
+            // Optional: Trigger a domain event for referral canceled
+            // AddDomainEvent(new ReferralCanceledEvent(this.Id));
+        }
+
+        public bool IsProcessed()
+        {
+            return Status == ReferralStatus.Responded;
+        }
     }
 }

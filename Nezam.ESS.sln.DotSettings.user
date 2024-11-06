@@ -1,6 +1,11 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=bbac9194_002D7d2c_002D4f27_002Dae07_002D75a5ef73d8d7/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="DocumentReferralWorkflow_ShouldWorkCorrectly" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=bbac9194_002D7d2c_002D4f27_002Dae07_002D75a5ef73d8d7/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="DocumentReferralWorkflow_ShouldWorkCorrectly" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::B0C49B64-3808-4DF7-9823-21A230AE558E::net8.0::DocumentAggregateRootTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::B0C49B64-3808-4DF7-9823-21A230AE558E::net8.0::Nezam.Modular.ESS.Secretariat.Domain.Test.DocumentAggregateRootTests&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ce4379f5_002Dd207_002D497b_002D88bb_002Ddfd76524756d/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Document_Activity_Log_Should_Record_All_Actions" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::B0C49B64-3808-4DF7-9823-21A230AE558E::net8.0::Nezam.Modular.ESS.Secretariat.Domain.Test.DocumentAggregateRootTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

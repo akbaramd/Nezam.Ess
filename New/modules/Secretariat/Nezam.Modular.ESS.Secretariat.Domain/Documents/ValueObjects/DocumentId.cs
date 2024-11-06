@@ -1,6 +1,6 @@
 ﻿using Bonyan.Layer.Domain.ValueObjects;
 
-namespace Nezam.Modular.ESS.Secretariat.Domain.Documents;
+namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
 public class DocumentId : BusinessId<DocumentId>
 {

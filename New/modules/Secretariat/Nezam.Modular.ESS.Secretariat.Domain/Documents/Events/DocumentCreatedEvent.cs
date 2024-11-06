@@ -1,5 +1,6 @@
 ﻿using Bonyan.Layer.Domain.Events;
 using System;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.Events
 {

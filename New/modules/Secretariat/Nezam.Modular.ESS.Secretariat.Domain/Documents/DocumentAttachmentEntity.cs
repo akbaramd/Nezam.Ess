@@ -1,35 +1,70 @@
 ﻿using Bonyan.Layer.Domain.Entities;
 using System;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
-namespace Nezam.Modular.ESS.Secretariat.Domain.Documents;
-
-public class DocumentAttachmentEntity : Entity<DocumentAttachmentId>
+namespace Nezam.Modular.ESS.Secretariat.Domain.Documents
 {
-    public string FileName { get; private set; }
-    public string FileType { get; private set; }
-    public long FileSize { get; private set; }
-    public string FilePath { get; private set; }
-    public DateTime UploadDate { get; private set; }
-
-    // Required for EF Core
-    private DocumentAttachmentEntity() { }
-
-    // Constructor
-    public DocumentAttachmentEntity(string fileName, string fileType, long fileSize, string filePath)
+    public class DocumentAttachmentEntity : Entity<DocumentAttachmentId>
     {
-        FileName = fileName;
-        FileType = fileType;
-        FileSize = fileSize;
-        FilePath = filePath;
-        UploadDate = DateTime.UtcNow;
-    }
+        public string FileName { get; private set; }
+        public string FileType { get; private set; }
+        public long FileSize { get; private set; }
+        public string FilePath { get; private set; }
+        public DateTime UploadDate { get; private set; }
 
-    // Method to update file details if needed
-    public void UpdateFileInfo(string newFileName, string newFileType, long newFileSize, string newFilePath)
-    {
-        FileName = newFileName;
-        FileType = newFileType;
-        FileSize = newFileSize;
-        FilePath = newFilePath;
+        // Required for EF Core
+        private DocumentAttachmentEntity() { }
+
+        // Constructor with validation
+        public DocumentAttachmentEntity(string fileName, string fileType, long fileSize, string filePath)
+        {
+            SetFileName(fileName);
+            SetFileType(fileType);
+            SetFileSize(fileSize);
+            SetFilePath(filePath);
+            UploadDate = DateTime.UtcNow;
+        }
+
+        // Method to update file details with validation
+        public void UpdateFileInfo(string newFileName, string newFileType, long newFileSize, string newFilePath)
+        {
+            SetFileName(newFileName);
+            SetFileType(newFileType);
+            SetFileSize(newFileSize);
+            SetFilePath(newFilePath);
+        }
+
+        // Private helper methods for validation
+        private void SetFileName(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName))
+                throw new ArgumentException("File name cannot be empty or whitespace.", nameof(fileName));
+
+            FileName = fileName;
+        }
+
+        private void SetFileType(string fileType)
+        {
+            if (string.IsNullOrWhiteSpace(fileType))
+                throw new ArgumentException("File type cannot be empty or whitespace.", nameof(fileType));
+
+            FileType = fileType;
+        }
+
+        private void SetFileSize(long fileSize)
+        {
+            if (fileSize <= 0)
+                throw new ArgumentException("File size must be a positive number.", nameof(fileSize));
+
+            FileSize = fileSize;
+        }
+
+        private void SetFilePath(string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentException("File path cannot be empty or whitespace.", nameof(filePath));
+
+            FilePath = filePath;
+        }
     }
 }

@@ -2,4 +2,7 @@
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
-public class DocumentReferralId : BusinessId<DocumentReferralId> {}
+public class DocumentVersionId : BusinessId<DocumentVersionId>
+{
+    
+}

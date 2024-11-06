@@ -84,7 +84,7 @@ namespace Nezam.Modular.ESS.Identity.Application.Employers.Jobs
                                 : employerDto.UserName;
 
                             await _userManager.CreateAsync(userEntity, password);
-                            await _userManager.AssignRoles(userEntity, RoleConstants.EmployerName);
+                            await _userManager.AssignRolesAsync(userEntity, RoleConstants.EmployerName);
                         }
                         else
                         {
@@ -94,7 +94,7 @@ namespace Nezam.Modular.ESS.Identity.Application.Employers.Jobs
                                 : employerDto.UserName;
 
                             userEntity.SetPassword(newPassword);
-                            await _userManager.AssignRoles(userEntity, RoleConstants.EmployerName);
+                            await _userManager.AssignRolesAsync(userEntity, RoleConstants.EmployerName);
                             await _userManager.UpdateAsync(userEntity);
                         }
 

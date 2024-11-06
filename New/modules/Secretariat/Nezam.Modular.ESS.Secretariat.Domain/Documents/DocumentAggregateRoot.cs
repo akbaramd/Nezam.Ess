@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Bonyan.Layer.Domain.Aggregates;
 using Bonyan.UserManagement.Domain.ValueObjects;
 using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents.Enumerations;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents.Events;
-using System;
-
-namespace Nezam.Modular.ESS.Secretariat.Domain.Documents;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents.Exceptions;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
 public class DocumentAggregateRoot : FullAuditableAggregateRoot<DocumentId>
 {
@@ -17,173 +20,206 @@ public class DocumentAggregateRoot : FullAuditableAggregateRoot<DocumentId>
     public DocumentType Type { get; private set; }
     public DocumentStatus Status { get; private set; }
 
-    // Replace IReadOnlyCollection with List for EF Core compatibility
     private readonly List<DocumentAttachmentEntity> _attachments = new List<DocumentAttachmentEntity>();
     public IReadOnlyList<DocumentAttachmentEntity> Attachments => _attachments;
 
     private readonly List<DocumentReferralEntity> _referrals = new List<DocumentReferralEntity>();
     public IReadOnlyList<DocumentReferralEntity> Referrals => _referrals;
 
+    private readonly List<DocumentVersion> _versions = new List<DocumentVersion>();
+    public IReadOnlyList<DocumentVersion> Versions => _versions;
+
+    private readonly List<DocumentActivityLog> _activityLogs = new List<DocumentActivityLog>();
+    public IReadOnlyList<DocumentActivityLog> ActivityLogs => _activityLogs;
+
     public DocumentAggregateRoot(string title, string content, UserId senderUserId, DocumentType type)
     {
-        Title = title;
-        Content = content;
-        SenderUserId = senderUserId;
+        Id = DocumentId.CreateNew();
+        Title = title ?? throw new ArgumentNullException(nameof(title));
+        Content = content ?? throw new ArgumentNullException(nameof(content));
+        SenderUserId = senderUserId ?? throw new ArgumentNullException(nameof(senderUserId));
         Type = type;
-        Status = DocumentStatus.Draft; // Default status when a document is created
+        Status = DocumentStatus.Draft;
+
+        LogActivity(senderUserId, "Document created");
+        AddVersion(senderUserId, title,content); // Capture initial version
     }
 
-    // Behavior to Update Document Content
-    public void UpdateContent(string newContent)
+    private void EnsureNotArchived()
     {
         if (Status == DocumentStatus.Archive)
-            throw new InvalidOperationException("Cannot update content of an archived document.");
+            throw new InvalidOperationException("Operation cannot be performed on an archived document.");
+    }
 
+    public void UpdateContent(string newContent, UserId editorId)
+    {
+        EnsureNotArchived();
         Content = newContent;
+        LogActivity(editorId, "Content updated");
+        AddVersion(editorId,Title, newContent); // Capture version for content update
         AddDomainEvent(new DocumentContentUpdatedEvent(this.Id));
     }
 
-    // Behavior to Send Document
-    public void Send()
+    public void Publish(UserId userId)
     {
-        if (Status == DocumentStatus.Send)
-            throw new InvalidOperationException("Document is already sent.");
-        if (Status == DocumentStatus.Archive)
-            throw new InvalidOperationException("Cannot send an archived document.");
+        EnsureNotArchived();
+        if (Status == DocumentStatus.Published)
+            throw new InvalidOperationException("Document is already published.");
 
-        Status = DocumentStatus.Send;
+        Status = DocumentStatus.Published;
+        LogActivity(userId, "Document published");
         AddDomainEvent(new DocumentSentEvent(this.Id));
     }
 
-    // Behavior to Archive Document
-    public void Archive()
+    public DocumentReferralEntity AddInitialReferral(UserId initialReceiverUserId, UserId createdBy)
     {
-        if (Status == DocumentStatus.Archive)
-            throw new InvalidOperationException("Document is already archived.");
+        if (Status != DocumentStatus.Published)
+            throw new InvalidOperationException("Cannot add referral to an unpublished document.");
 
+        var initialReferral = new DocumentReferralEntity(this.Id, SenderUserId, initialReceiverUserId, null);
+        _referrals.Add(initialReferral);
+        LogActivity(createdBy, "Initial referral added");
+        AddDomainEvent(new DocumentReferralCreatedEvent(this.Id, initialReferral.Id, initialReceiverUserId, SenderUserId));
+
+        return initialReferral;
+    }
+
+    public void Archive(UserId userId)
+    {
         Status = DocumentStatus.Archive;
+        LogActivity(userId, "Document archived");
         AddDomainEvent(new DocumentArchivedEvent(this.Id));
     }
 
-    // Behavior to Update Title
-    public void UpdateTitle(string newTitle)
+    public void UpdateTitle(string newTitle, UserId editorId)
     {
-        if (Status == DocumentStatus.Archive)
-            throw new InvalidOperationException("Cannot update title of an archived document.");
-
+        EnsureNotArchived();
         Title = newTitle;
+        LogActivity(editorId, "Title updated");
+        AddVersion(editorId, newTitle,Content); // Capture version for title update
         AddDomainEvent(new DocumentTitleUpdatedEvent(this.Id));
     }
 
-    // Behavior to Change Document Type (e.g., Incoming, Outgoing, Internal)
-    public void ChangeType(DocumentType newType)
+    public void ChangeType(DocumentType newType, UserId userId)
     {
-        if (Status == DocumentStatus.Archive)
-            throw new InvalidOperationException("Cannot change the type of an archived document.");
-
+        EnsureNotArchived();
         Type = newType;
+        LogActivity(userId, "Document type changed");
+        AddVersion(userId,Title, Content); // Capture version for type change
         AddDomainEvent(new DocumentTypeChangedEvent(this.Id));
     }
 
-    // Additional behavior: Revert Document to Draft (optional)
-    public void RevertToDraft()
+    public void RevertToDraft(UserId userId)
     {
-        if (Status == DocumentStatus.Archive)
-            throw new InvalidOperationException("Cannot revert an archived document to draft.");
+        if (Status != DocumentStatus.Published && Status != DocumentStatus.Draft)
+            throw new InvalidOperationException("Only published or draft documents can be reverted to draft.");
 
         Status = DocumentStatus.Draft;
+        LogActivity(userId, "Document reverted to draft");
         AddDomainEvent(new DocumentRevertedToDraftEvent(this.Id));
     }
 
-    // Attachment-related behaviors
-    public void AddAttachment(string fileName, string fileType, long fileSize, string filePath)
+    public void AddAttachment(string fileName, string fileType, long fileSize, string filePath, UserId userId)
     {
-        if (Status == DocumentStatus.Archive)
-            throw new InvalidOperationException("Cannot add attachments to an archived document.");
+        EnsureNotArchived();
+        if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentException("File name cannot be empty.");
+        if (string.IsNullOrWhiteSpace(fileType)) throw new ArgumentException("File type cannot be empty.");
+        if (fileSize <= 0) throw new ArgumentException("File size must be greater than zero.");
 
         var attachment = new DocumentAttachmentEntity(fileName, fileType, fileSize, filePath);
         _attachments.Add(attachment);
-
+        LogActivity(userId, "Attachment added");
         AddDomainEvent(new DocumentAttachmentAddedEvent(this.Id, attachment.Id));
     }
 
-    public void RemoveAttachment(DocumentAttachmentId attachmentId)
+    public void RemoveAttachment(DocumentAttachmentId attachmentId, UserId userId)
     {
+        EnsureNotArchived();
         var attachment = _attachments.FirstOrDefault(a => a.Id == attachmentId);
         if (attachment == null)
             throw new InvalidOperationException("Attachment not found.");
 
         _attachments.Remove(attachment);
+        LogActivity(userId, "Attachment removed");
         AddDomainEvent(new DocumentAttachmentRemovedEvent(this.Id, attachmentId));
     }
 
-    public void UpdateAttachment(DocumentAttachmentId attachmentId, string newFileName, string newFileType, long newFileSize, string newFilePath)
+    public void UpdateAttachment(DocumentAttachmentId attachmentId, string newFileName, string newFileType,
+        long newFileSize, string newFilePath, UserId userId)
     {
+        EnsureNotArchived();
         var attachment = _attachments.FirstOrDefault(a => a.Id == attachmentId);
         if (attachment == null)
             throw new InvalidOperationException("Attachment not found.");
 
         attachment.UpdateFileInfo(newFileName, newFileType, newFileSize, newFilePath);
+        LogActivity(userId, "Attachment updated");
         AddDomainEvent(new DocumentAttachmentUpdatedEvent(this.Id, attachmentId));
     }
 
-    // Behavior to Add a Referral
-    public DocumentReferralEntity AddReferral(UserId referrerUserId, UserId receiverUserId)
+    public DocumentReferralEntity AddReferral(DocumentReferralId parentReferralId, UserId receiverUserId, UserId createdBy)
     {
-        var referral = new DocumentReferralEntity(this.Id, referrerUserId, receiverUserId);
-        _referrals.Add(referral);
+        if (Status != DocumentStatus.Published)
+            throw new InvalidOperationException("Referrals can only be added to published documents.");
 
-        AddDomainEvent(new DocumentReferralCreatedEvent(this.Id, referral.Id, receiverUserId, referrerUserId));
+        var parentReferral = _referrals.FirstOrDefault(r => r.Id == parentReferralId)
+                             ?? throw new InvalidOperationException("Parent referral not found or invalid.");
+
+        var referral = new DocumentReferralEntity(this.Id, parentReferral.ReceiverUserId, receiverUserId, parentReferralId);
+        _referrals.Add(referral);
+        LogActivity(createdBy, "Referral added");
+        AddDomainEvent(new DocumentReferralCreatedEvent(this.Id, referral.Id, receiverUserId, parentReferral.ReceiverUserId));
+
         return referral;
     }
 
-    // Behavior to Set Next Referral in Pipeline (Sequential Workflow)
-    public void SetNextReferral(DocumentReferralId currentReferralId, DocumentReferralId nextReferralId)
+    public void RespondToReferral(DocumentReferralId referralId, string responseContent, UserId responderId)
     {
-        var currentReferral = _referrals.FirstOrDefault(r => r.Id == currentReferralId);
-        if (currentReferral == null)
-            throw new InvalidOperationException("Current referral not found.");
+        var referral = _referrals.FirstOrDefault(r => r.Id == referralId)
+                       ?? throw new ReferralNotFoundException(parameters: new { referralId });
 
-        currentReferral.SetNextReferral(nextReferralId);
-    }
+        if (referral.Status == ReferralStatus.Canceled)
+            throw new ReferralCanceledException(parameters: new { referralId });
 
-    // Behavior to Mark Referral as Viewed
-    public void MarkReferralAsViewed(DocumentReferralId referralId)
-    {
-        var referral = _referrals.FirstOrDefault(r => r.Id == referralId);
-        if (referral == null)
-            throw new InvalidOperationException("Referral not found.");
+        if (referral.Status == ReferralStatus.Responded)
+            throw new ReferralAlreadyRespondedException(parameters: new { referralId });
 
-        referral.MarkAsViewed();
-    }
-
-    public void RespondToReferral(DocumentReferralId referralId, string responseContent)
-    {
-        // یافتن ارجاعی که باید به آن پاسخ داده شود
-        var referral = _referrals.FirstOrDefault(r => r.Id == referralId);
-        if (referral == null)
-            throw new InvalidOperationException("Referral not found.");
-
-        // بررسی وضعیت‌های ارجاعات موازی
-        if (_referrals.Any(r => r.DocumentId == referral.DocumentId && r.Status == ReferralStatus.Responded))
-            throw new InvalidOperationException("Referral has already been responded to.");
-
-        // ثبت پاسخ در ارجاع فعلی
         referral.Respond(responseContent);
-
-        // لغو ارجاعات موازی دیگر که جدید هستند
-        foreach (var otherReferral in _referrals.Where(r => r.DocumentId == referral.DocumentId && r.Status == ReferralStatus.New && r.Id != referralId))
-        {
-            otherReferral.Cancel();
-        }
+        LogActivity(responderId, "Referral responded");
+        AddDomainEvent(new DocumentReferralRespondedEvent(this.Id, referralId));
     }
 
-
-
-
-    // Behavior to Get Active Referrals (For parallel processing)
     public IEnumerable<DocumentReferralEntity> GetActiveReferrals()
     {
-        return _referrals.Where(r => !r.IsProcessed());
+        return _referrals.Where(r => r.Status == ReferralStatus.Pending);
+    }
+
+    private void AddVersion(UserId editorId,string titleSnapshot, string contentSnapshot)
+    {
+        var version = new DocumentVersion(_versions.Count + 1, DateTime.UtcNow, editorId,titleSnapshot, contentSnapshot);
+        _versions.Add(version);
+    }
+
+    private void LogActivity(UserId userId, string description)
+    {
+        var log = new DocumentActivityLog(DateTime.UtcNow, userId, description);
+        _activityLogs.Add(log);
+    }
+
+    public override string ToString()
+    {
+        var documentSchema = new StringBuilder();
+        documentSchema.AppendLine("=== Document Summary ===");
+        documentSchema.AppendLine($"Title: {Title}");
+        documentSchema.AppendLine($"Content: {Content}");
+        documentSchema.AppendLine($"Type: {Type}");
+        documentSchema.AppendLine($"Status: {Status}");
+        documentSchema.AppendLine($"Sender: {SenderUserId}");
+        documentSchema.AppendLine($"Attachments: {Attachments.Count}");
+        documentSchema.AppendLine($"Referrals: {Referrals.Count}");
+        documentSchema.AppendLine($"Versions: {Versions.Count}");
+        documentSchema.AppendLine($"Activity Logs: {ActivityLogs.Count}");
+
+        return documentSchema.ToString();
     }
 }

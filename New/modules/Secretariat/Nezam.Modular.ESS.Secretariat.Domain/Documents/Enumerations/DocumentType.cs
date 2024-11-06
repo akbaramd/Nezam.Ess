@@ -1,6 +1,6 @@
 ﻿using Bonyan.Layer.Domain.Enumerations;
 
-namespace Nezam.Modular.ESS.Secretariat.Domain.Documents;
+namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.Enumerations;
 
 public class DocumentType : Enumeration
 {

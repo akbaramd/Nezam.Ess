@@ -1,7 +1,8 @@
 ﻿using Bonyan.Layer.Domain.Events;
 using Bonyan.UserManagement.Domain.ValueObjects;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
-namespace Nezam.Modular.ESS.Secretariat.Domain.Documents;
+namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.Events;
 
 public class DocumentReferralCreatedEvent : DomainEventBase
 {

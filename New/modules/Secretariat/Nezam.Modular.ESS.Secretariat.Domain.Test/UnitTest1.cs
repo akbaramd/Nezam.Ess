@@ -1,80 +1,24 @@
-using System;
-using Xunit;
-using Nezam.Modular.ESS.Secretariat.Domain.Documents;
-using Bonyan.UserManagement.Domain.ValueObjects;
-using System.Collections.Generic;
 using System.Linq;
+using Bonyan.UserManagement.Domain.ValueObjects;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents.Enumerations;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents.Exceptions;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace Nezam.Modular.ESS.Secretariat.Domain.Test;
 
 public class DocumentAggregateRootTests
 {
-    [Fact]
-    public void Only_First_Response_Should_Be_Accepted_When_Multiple_Referrals()
+    private readonly ITestOutputHelper _testOutputHelper;
+
+    public DocumentAggregateRootTests(ITestOutputHelper testOutputHelper)
     {
-        // Arrange
-        var senderId = UserId.CreateNew();
-        var managerId = UserId.CreateNew();
-        var employee1Id = UserId.CreateNew();
-        var employee2Id = UserId.CreateNew();
-
-        var title = "Test Document";
-        var content = "Sample Content";
-        var documentType = DocumentType.Internal;
-
-        var document = new DocumentAggregateRoot(title, content, senderId, documentType);
-
-        // Act
-        // 1. Sender refers the document to the manager
-        var referralToManager = document.AddReferral(senderId, managerId);
-
-        // 2. Manager refers the document to Employee 1 and Employee 2 (parallel referrals)
-        var referralToEmployee1 = document.AddReferral(managerId, employee1Id);
-        var referralToEmployee2 = document.AddReferral(managerId, employee2Id);
-
-        // 3. Employee 1 responds to the referral
-        document.RespondToReferral(referralToEmployee1.Id, "Reviewed by Employee 1");
-
-        // Assert
-        Assert.Equal(ReferralStatus.Responded, referralToEmployee1.Status);
-        Assert.Equal(ReferralStatus.Canceled, referralToEmployee2.Status); // Employee 2's referral should be canceled
-
-        // 4. Trying to respond to the canceled referral (Employee 2) should throw an exception
-        Assert.Throws<InvalidOperationException>(() => document.RespondToReferral(referralToEmployee2.Id, "Reviewed by Employee 2"));
+        _testOutputHelper = testOutputHelper;
     }
 
     [Fact]
-    public void Referral_Cancellation_Should_Not_Interfere_With_Sequential_Workflow()
-    {
-        // Arrange
-        var senderId = UserId.CreateNew();
-        var managerId = UserId.CreateNew();
-        var engineerId = UserId.CreateNew();
-
-        var title = "Project Document";
-        var content = "Project Details";
-        var documentType = DocumentType.Outgoing;
-
-        var document = new DocumentAggregateRoot(title, content, senderId, documentType);
-
-        // Act
-        // 1. Sender refers to manager
-        var referralToManager = document.AddReferral(senderId, managerId);
-
-        // 2. Manager refers to engineer
-        var referralToEngineer = document.AddReferral(managerId, engineerId);
-
-        // Assert initial statuses
-        Assert.Equal(ReferralStatus.New, referralToEngineer.Status);
-
-        // 3. Engineer responds to the referral
-        document.RespondToReferral(referralToEngineer.Id, "Approved by Engineer");
-
-        // Assert
-        Assert.Equal(ReferralStatus.Responded, referralToEngineer.Status);
-        Assert.True(referralToEngineer.IsProcessed());
-    }
-
-    [Fact]
-    public void Multiple_Sequential_Referrals_Should_Work_Correctly()
+    public void All_Users_Can_Respond_And_Refer_To_Others()
     {
         // Arrange
         var senderId = UserId.CreateNew();
@@ -82,41 +26,170 @@ public class DocumentAggregateRootTests
         var employee1Id = UserId.CreateNew();
         var employee2Id = UserId.CreateNew();
         var engineerId = UserId.CreateNew();
+        var finalReviewerId = UserId.CreateNew();
 
-        var title = "Multi-Step Document";
-        var content = "Content for multiple steps";
-        var documentType = DocumentType.Internal;
-
-        var document = new DocumentAggregateRoot(title, content, senderId, documentType);
+        var document = new DocumentAggregateRoot("Complex Document", "Content for complex workflow", senderId, DocumentType.Internal);
+        document.Publish(senderId);
 
         // Act
-        // 1. Sender refers the document to the manager
-        var referralToManager = document.AddReferral(senderId, managerId);
+        var referralToManager = document.AddInitialReferral(managerId, senderId);
+        document.RespondToReferral(referralToManager.Id, "Reviewed by Manager", managerId);
 
-        // 2. Manager refers to Employee 1 and Employee 2
-        var referralToEmployee1 = document.AddReferral(managerId, employee1Id);
-        var referralToEmployee2 = document.AddReferral(managerId, employee2Id);
+        var referralToEmployee1 = document.AddReferral(referralToManager.Id, employee1Id, managerId);
+        var referralToEmployee2 = document.AddReferral(referralToManager.Id, employee2Id, managerId);
 
-        // Employee 1 responds
-        document.RespondToReferral(referralToEmployee1.Id, "Reviewed by Employee 1");
+        // Each employee can respond and refer further
+        document.RespondToReferral(referralToEmployee1.Id, "Reviewed by Employee 1", employee1Id);
+        var referralFromEmployee1ToEngineer = document.AddReferral(referralToEmployee1.Id, engineerId, employee1Id);
 
-        // 3. Manager refers to Engineer
-        var referralToEngineer = document.AddReferral(managerId, engineerId);
+        document.RespondToReferral(referralToEmployee2.Id, "Reviewed by Employee 2", employee2Id);
+        var referralFromEmployee2ToFinalReviewer = document.AddReferral(referralToEmployee2.Id, finalReviewerId, employee2Id);
 
-        // Engineer responds
-        document.RespondToReferral(referralToEngineer.Id, "Approved by Engineer");
+        // Engineer and Final Reviewer respond to their referrals
+        document.RespondToReferral(referralFromEmployee1ToEngineer.Id, "Reviewed by Engineer", engineerId);
+        document.RespondToReferral(referralFromEmployee2ToFinalReviewer.Id, "Reviewed by Final Reviewer", finalReviewerId);
+
+        // Assert that all referrals are correctly processed
+        Assert.All(document.Referrals, referral => 
+            Assert.Equal(ReferralStatus.Responded, referral.Status));
+    }
+
+    [Fact]
+    public void All_Referrals_Are_Pending_If_Not_Responded()
+    {
+        // Arrange
+        var senderId = UserId.CreateNew();
+        var employeeId1 = UserId.CreateNew();
+        var employeeId2 = UserId.CreateNew();
+        
+        var document = new DocumentAggregateRoot("Document Workflow", "Workflow with multiple users", senderId, DocumentType.Outgoing);
+        document.Publish(senderId);
+
+        // Act
+        var referralToEmployee1 = document.AddInitialReferral(employeeId1, senderId);
+        var referralToEmployee2 = document.AddInitialReferral(employeeId2, senderId);
 
         // Assert
-        Assert.Equal(ReferralStatus.Responded, referralToEmployee1.Status);
-        Assert.Equal(ReferralStatus.Canceled, referralToEmployee2.Status); // Only Employee 1’s response is accepted
-        Assert.Equal(ReferralStatus.Responded, referralToEngineer.Status);
+        Assert.Equal(ReferralStatus.Pending, referralToEmployee1.Status);
+        Assert.Equal(ReferralStatus.Pending, referralToEmployee2.Status);
+        Assert.Contains(referralToEmployee1, document.GetActiveReferrals());
+        Assert.Contains(referralToEmployee2, document.GetActiveReferrals());
+    }
 
-        // Verify referral path
-        var referrals = document.Referrals.ToList();
-        Assert.Equal(senderId, referrals[0].ReferrerUserId);
-        Assert.Equal(managerId, referrals[1].ReferrerUserId);
-        Assert.Equal(managerId, referrals[2].ReferrerUserId);
-        Assert.Equal(employee1Id, referrals[3].ReferrerUserId);
-        Assert.Equal(managerId, referrals[4].ReferrerUserId);
+    [Fact]
+    public void Multiple_Responses_And_Referrals()
+    {
+        // Arrange
+        var senderId = UserId.CreateNew();
+        var managerId = UserId.CreateNew();
+        var employeeId = UserId.CreateNew();
+        
+        var document = new DocumentAggregateRoot("Multiple Responses", "Complex multi-response workflow", senderId, DocumentType.Internal);
+        document.Publish(senderId);
+        
+        // Act
+        var referralToManager = document.AddInitialReferral(managerId, senderId);
+        document.RespondToReferral(referralToManager.Id, "Reviewed by Manager", managerId);
+
+        var referralFromManagerToEmployee = document.AddReferral(referralToManager.Id, employeeId, managerId);
+        document.RespondToReferral(referralFromManagerToEmployee.Id, "Reviewed by Employee", employeeId);
+
+        // Assert all referrals are correctly responded
+        Assert.Equal(ReferralStatus.Responded, referralToManager.Status);
+        Assert.Equal(ReferralStatus.Responded, referralFromManagerToEmployee.Status);
+        
+        _testOutputHelper.WriteLine(document.ToString());
+    }
+
+    [Fact]
+    public void Trying_To_Respond_To_Already_Responded_Referral_Should_Throw_Exception()
+    {
+        // Arrange
+        var senderId = UserId.CreateNew();
+        var managerId = UserId.CreateNew();
+        
+        var document = new DocumentAggregateRoot("Single Referral Test", "Test to ensure double response throws exception", senderId, DocumentType.Internal);
+        document.Publish(senderId);
+
+        // Act
+        var referralToManager = document.AddInitialReferral(managerId, senderId);
+        document.RespondToReferral(referralToManager.Id, "Reviewed by Manager", managerId);
+
+        // Assert that responding again throws an exception
+        Assert.Throws<ReferralAlreadyRespondedException>(() => document.RespondToReferral(referralToManager.Id, "Attempting second response", managerId));
+    }
+
+    [Fact]
+    public void Document_Versions_Are_Created_On_Content_Update()
+    {
+        // Arrange
+        var senderId = UserId.CreateNew();
+        var document = new DocumentAggregateRoot("Initial Title", "Initial Content", senderId, DocumentType.Internal);
+        document.Publish(senderId);
+        
+        // Act
+        document.UpdateContent("Updated Content 1", senderId);
+        document.UpdateContent("Updated Content 2", senderId);
+
+        // Assert: Verify version history
+        Assert.Equal(3, document.Versions.Count); // Initial + 2 updates
+        Assert.Contains(document.Versions, v => v.ContentSnapshot == "Initial Content");
+        Assert.Contains(document.Versions, v => v.ContentSnapshot == "Updated Content 1");
+        Assert.Contains(document.Versions, v => v.ContentSnapshot == "Updated Content 2");
+    }
+
+    [Fact]
+    public void Document_Activity_Log_Should_Record_All_Actions()
+    {
+        // Arrange
+        var senderId = UserId.CreateNew();
+        var managerId = UserId.CreateNew();
+        
+        var document = new DocumentAggregateRoot("Activity Log Test", "Initial Content", senderId, DocumentType.Internal);
+        
+        // Act
+        document.Publish(senderId);
+        document.AddInitialReferral(managerId, senderId);
+        document.UpdateContent("Updated Content", senderId);
+        document.Archive(senderId);
+
+        // Assert: Check that each activity is logged
+        Assert.Equal(5, document.ActivityLogs.Count); // Publish, AddReferral, UpdateContent, Archive
+    }
+
+    [Fact]
+    public void Updating_Title_And_Type_Should_Create_New_Versions()
+    {
+        // Arrange
+        var senderId = UserId.CreateNew();
+        var document = new DocumentAggregateRoot("Initial Title", "Initial Content", senderId, DocumentType.Internal);
+        
+        // Act
+        document.Publish(senderId);
+        document.UpdateTitle("Updated Title", senderId);
+        document.ChangeType(DocumentType.Outgoing, senderId);
+
+        // Assert: Verify versions are created for each update
+        Assert.Equal(3, document.Versions.Count); // Initial + title update + type change
+        Assert.Contains(document.Versions, v => v.TitleSnapshot == "Initial Title");
+        Assert.Contains(document.Versions, v => v.TitleSnapshot == "Updated Title");
+    }
+
+    [Fact]
+    public void Archiving_Document_Should_Not_Allow_Further_Changes()
+    {
+        // Arrange
+        var senderId = UserId.CreateNew();
+        var document = new DocumentAggregateRoot("Archivable Document", "Archivable Content", senderId, DocumentType.Internal);
+        document.Publish(senderId);
+
+        // Act
+        document.Archive(senderId);
+
+        // Assert: Ensure archived document cannot be updated or changed
+        Assert.Throws<InvalidOperationException>(() => document.UpdateContent("New Content", senderId));
+        Assert.Throws<InvalidOperationException>(() => document.UpdateTitle("New Title", senderId));
+        Assert.Throws<InvalidOperationException>(() => document.ChangeType(DocumentType.Outgoing, senderId));
+        Assert.Equal(DocumentStatus.Archive, document.Status);
     }
 }
