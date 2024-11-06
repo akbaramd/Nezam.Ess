@@ -8,4 +8,10 @@
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::B0C49B64-3808-4DF7-9823-21A230AE558E::net8.0::Nezam.Modular.ESS.Secretariat.Domain.Test.DocumentAggregateRootTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
-&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
+&lt;/SessionState&gt;</s:String>
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=New_002FModules_002FSecretariat_002FNezam_002EModular_002EESS_002ESecretariat_002EApplciation_002FResources_002FDocumentProfile/@EntryIndexedValue">False</s:Boolean>
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=New_002FModules_002FSecretariat_002FNezam_002EModular_002EESS_002ESecretariat_002EApplciation_002FResources_002FDocumentProfile/@EntryIndexRemoved">True</s:Boolean>
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=New_002FModules_002FSecretariat_002FNezam_002EModular_002EESS_002ESecretariat_002EApplciation_002FResources_002FDocumentTranslates/@EntryIndexedValue">False</s:Boolean>
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=New_002FModules_002FSecretariat_002FNezam_002EModular_002EESS_002ESecretariat_002EApplciation_002FResources_002FDocumentTranslates/@EntryIndexRemoved">True</s:Boolean>
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=New_002FModules_002FSecretariat_002FNezam_002EModular_002EESS_002ESecretariat_002EApplication_002FResources_002FDocumentTranslates/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/Initialized/@EntryValue">True</s:Boolean></wpf:ResourceDictionary>

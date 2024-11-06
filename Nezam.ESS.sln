@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{3FEE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nezam.Modular.ESS.Identity.Application", "Nezam.Modular.ESS.Identity.Application\Nezam.Modular.ESS.Identity.Application.csproj", "{B842BD6E-D85C-4BE3-8F54-298D81511D4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nezam.Modular.ESS.infrastructure", "Nezam.Modular.ESS.infrastructure\Nezam.Modular.ESS.infrastructure.csproj", "{CF018745-D164-42F4-90B4-598CF33B389E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nezam.Modular.ESS.Infrastructure", "Nezam.Modular.ESS.Infrastructure\Nezam.Modular.ESS.Infrastructure.csproj", "{CF018745-D164-42F4-90B4-598CF33B389E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{170678A2-3A34-42A1-B26C-E08780F3B1E7}"
 EndProject
@@ -21,6 +21,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nezam.Modular.ESS.Secretariat.Domain", "New\modules\Secretariat\Nezam.Modular.ESS.Secretariat.Domain\Nezam.Modular.ESS.Secretariat.Domain.csproj", "{6E54672F-562E-4CA4-80B8-A561EB0939DB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nezam.Modular.ESS.Secretariat.Domain.Test", "New\modules\Secretariat\Nezam.Modular.ESS.Secretariat.Domain.Test\Nezam.Modular.ESS.Secretariat.Domain.Test.csproj", "{B0C49B64-3808-4DF7-9823-21A230AE558E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nezam.Modular.ESS.Secretariat.Application", "New\modules\Secretariat\Nezam.Modular.ESS.Secretariat.Application\Nezam.Modular.ESS.Secretariat.Application.csproj", "{72CF7D7D-B0E1-411C-8256-AD05A87A380B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +58,10 @@ Global
 		{B0C49B64-3808-4DF7-9823-21A230AE558E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0C49B64-3808-4DF7-9823-21A230AE558E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0C49B64-3808-4DF7-9823-21A230AE558E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72CF7D7D-B0E1-411C-8256-AD05A87A380B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72CF7D7D-B0E1-411C-8256-AD05A87A380B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72CF7D7D-B0E1-411C-8256-AD05A87A380B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72CF7D7D-B0E1-411C-8256-AD05A87A380B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{DE8E3328-B212-4978-BA91-078F70949064} = {6AA013F1-77B7-4EE1-9DE9-30D36AC84E7D}
@@ -67,5 +73,6 @@ Global
 		{9D76E5D1-A436-419A-9E93-A8A86172FD78} = {3FEE4764-F801-4A28-966B-0E625B0008E2}
 		{6E54672F-562E-4CA4-80B8-A561EB0939DB} = {9D76E5D1-A436-419A-9E93-A8A86172FD78}
 		{B0C49B64-3808-4DF7-9823-21A230AE558E} = {9D76E5D1-A436-419A-9E93-A8A86172FD78}
+		{72CF7D7D-B0E1-411C-8256-AD05A87A380B} = {9D76E5D1-A436-419A-9E93-A8A86172FD78}
 	EndGlobalSection
 EndGlobal

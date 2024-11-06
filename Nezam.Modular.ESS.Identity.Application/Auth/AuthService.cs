@@ -51,6 +51,11 @@ namespace Nezam.Modular.ESS.Identity.Application.Auth
                     o.User.Claims.Add((BonyanClaimTypes.PhoneNumber, user.PhoneNumber?.Number ?? ""));
                     o.User.Claims.Add((BonyanClaimTypes.UserId, user.Id.Value.ToString() ?? ""));
                     o.User.Claims.Add((BonyanClaimTypes.Email, user.Email?.Address.ToString() ?? ""));
+
+                    foreach (var role in user.Roles)
+                    {
+                        o.User.Roles.Add(role.Name);
+                    }
                 });
 
             

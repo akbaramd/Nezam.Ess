@@ -4,7 +4,7 @@ using Bonyan.UserManagement.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Nezam.Modular.ESS.Identity.Domain.User;
 
-namespace Nezam.Modular.ESS.infrastructure.Data.Repository;
+namespace Nezam.Modular.ESS.Infrastructure.Data.Repository;
 
 public class UserRepository : EfCoreRepository<UserEntity, UserId, IdentityDbContext>, IUserRepository
 {
@@ -12,14 +12,11 @@ public class UserRepository : EfCoreRepository<UserEntity, UserId, IdentityDbCon
     {
     }
 
-
-    public new async Task<UserEntity?> FindOneAsync(Expression<Func<UserEntity,bool>> specification)
+    protected override IQueryable<UserEntity> PrepareQuery(DbSet<UserEntity> dbSet)
     {
-        var dbContet = await GetDbContextAsync();
-        var d = await dbContet.Users
-            .Include(x => x.Roles)
-            .Include(x=>x.VerificationTokens)
-            .FirstOrDefaultAsync(specification);
-        return d;
+        return dbSet.Include(x => x.Roles)
+            .Include(x => x.VerificationTokens);
     }
+
+
 }

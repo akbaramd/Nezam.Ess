@@ -8,9 +8,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FastEndpoints" Version="5.30.0.23-beta" />
-        <PackageReference Include="FastEndpoints.Security" Version="5.30.0.23-beta" />
-        <PackageReference Include="FastEndpoints.Swagger" Version="5.30.0.23-beta" />
+        <PackageReference Include="FastEndpoints" Version="5.31.0.3-beta" />
+        <PackageReference Include="FastEndpoints.Security" Version="5.31.0.3-beta" />
+        <PackageReference Include="FastEndpoints.Swagger" Version="5.31.0.3-beta" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.10" />
         <PackageReference Include="PersianDateTime" Version="1.1.5082.36395" />
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />

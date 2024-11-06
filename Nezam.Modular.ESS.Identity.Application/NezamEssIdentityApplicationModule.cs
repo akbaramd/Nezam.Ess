@@ -39,7 +39,11 @@ public class NezamEssIdentityApplicationModule : Module
             c.AddProfile<EngineerProfile>();
             c.AddProfile<EmployerProfile>();
         });
-
+        context.Services.AddTransient<AuthProfile>();
+        context.Services.AddTransient<RoleProfile>();
+        context.Services.AddTransient<UserProfile>();
+        context.Services.AddTransient<EngineerProfile>();
+        context.Services.AddTransient<EmployerProfile>();
         // context.AddJob<EngineerSynchronizerJob>();
         context.AddJob<EmployerSynchronizerJob>();
 

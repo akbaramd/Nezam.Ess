@@ -1,5 +1,5 @@
 ﻿# Define the project path for the update command
-$projectPath = "..\Nezam.Modular.ESS.Identity.infrastructure\Nezam.Modular.ESS.Identity.infrastructure.csproj"
+$projectPath = "..\Nezam.Modular.ESS.Identity.Infrastructure\Nezam.Modular.ESS.Identity.Infrastructure.csproj"
 
 function Show-Menu {
     Clear-Host

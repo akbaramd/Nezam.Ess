@@ -4,3 +4,8 @@ public class EmployerCreateDto
 {
     
 }
+
+public class EmployerUpdateDto
+{
+    
+}

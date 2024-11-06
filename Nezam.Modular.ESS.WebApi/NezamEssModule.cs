@@ -3,8 +3,7 @@ using Bonyan.EntityFrameworkCore;
 using Bonyan.Job.Hangfire;
 using Bonyan.Modularity;
 using Microsoft.EntityFrameworkCore;
-using Nezam.Modular.ESS.Identity.infrastructure;
-using Nezam.Modular.ESS.infrastructure;
+using Nezam.Modular.ESS.Infrastructure;
 
 namespace Nezam.Modular.ESS.WebApi;
 

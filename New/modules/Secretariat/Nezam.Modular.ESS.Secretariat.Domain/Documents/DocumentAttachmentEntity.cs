@@ -12,12 +12,15 @@ namespace Nezam.Modular.ESS.Secretariat.Domain.Documents
         public string FilePath { get; private set; }
         public DateTime UploadDate { get; private set; }
 
+        public DocumentId DocumentId { get;private set; }
+        
         // Required for EF Core
         private DocumentAttachmentEntity() { }
 
         // Constructor with validation
-        public DocumentAttachmentEntity(string fileName, string fileType, long fileSize, string filePath)
+        public DocumentAttachmentEntity(DocumentId documentId,string fileName, string fileType, long fileSize, string filePath)
         {
+            DocumentId = documentId;
             SetFileName(fileName);
             SetFileType(fileType);
             SetFileSize(fileSize);

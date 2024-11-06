@@ -1,7 +1,7 @@
 ﻿using Bonyan.Layer.Domain;
 using Nezam.Modular.ESS.Identity.Domain.Employer;
 
-namespace Nezam.Modular.ESS.infrastructure.Data.Repository;
+namespace Nezam.Modular.ESS.Infrastructure.Data.Repository;
 
 public class EmployerRepository : EfCoreRepository<EmployerEntity,EmployerId, IdentityDbContext>, IEmployerRepository
 {

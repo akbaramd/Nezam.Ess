@@ -11,10 +11,12 @@ using Nezam.Modular.ESS.Identity.Domain.Employer;
 using Nezam.Modular.ESS.Identity.Domain.Engineer;
 using Nezam.Modular.ESS.Identity.Domain.Roles;
 using Nezam.Modular.ESS.Identity.Domain.User;
-using Nezam.Modular.ESS.infrastructure.Data;
-using Nezam.Modular.ESS.infrastructure.Data.Repository;
+using Nezam.Modular.ESS.Infrastructure.Data;
+using Nezam.Modular.ESS.Infrastructure.Data.Repository;
+using Nezam.Modular.ESS.Secretariat.Application;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents.Repositories;
 
-namespace Nezam.Modular.ESS.infrastructure;
+namespace Nezam.Modular.ESS.Infrastructure;
 
 public class NezamEssIdentityInfrastructureModule : WebModule
 {
@@ -22,6 +24,7 @@ public class NezamEssIdentityInfrastructureModule : WebModule
     {
         DependOn<BonyanUserManagementEntityFrameworkModule<UserEntity>>();
         DependOn<NezamEssIdentityApplicationModule>();
+        DependOn<NezamEssSecretariatApplicationModule>();
     }
 
     public override Task OnConfigureAsync(ServiceConfigurationContext context)
@@ -32,6 +35,8 @@ public class NezamEssIdentityInfrastructureModule : WebModule
         context.Services.AddTransient<IUserVerificationTokenRepository, UserVerificationTokenRepository>();
         context.Services.AddTransient<IEmployerRepository, EmployerRepository>();
         context.Services.AddTransient<IEngineerRepository, EngineerRepository>();
+        context.Services.AddTransient<IDocumentReadOnlyRepository, DocumentReadOnlyRepository>();
+        context.Services.AddTransient<IDocumentRepository, DocumentRepository>();
 
         var configuration = context.Services.BuildServiceProvider().GetRequiredService<IConfiguration>() ??
                             throw new ArgumentNullException("context.Services.GetRequiredService<IConfiguration>()");

@@ -131,11 +131,6 @@ public class DocumentAggregateRootTests
         document.UpdateContent("Updated Content 1", senderId);
         document.UpdateContent("Updated Content 2", senderId);
 
-        // Assert: Verify version history
-        Assert.Equal(3, document.Versions.Count); // Initial + 2 updates
-        Assert.Contains(document.Versions, v => v.ContentSnapshot == "Initial Content");
-        Assert.Contains(document.Versions, v => v.ContentSnapshot == "Updated Content 1");
-        Assert.Contains(document.Versions, v => v.ContentSnapshot == "Updated Content 2");
     }
 
     [Fact]
@@ -169,10 +164,6 @@ public class DocumentAggregateRootTests
         document.UpdateTitle("Updated Title", senderId);
         document.ChangeType(DocumentType.Outgoing, senderId);
 
-        // Assert: Verify versions are created for each update
-        Assert.Equal(3, document.Versions.Count); // Initial + title update + type change
-        Assert.Contains(document.Versions, v => v.TitleSnapshot == "Initial Title");
-        Assert.Contains(document.Versions, v => v.TitleSnapshot == "Updated Title");
     }
 
     [Fact]

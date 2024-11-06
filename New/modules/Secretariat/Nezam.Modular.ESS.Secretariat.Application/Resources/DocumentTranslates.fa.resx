@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+
+    <data name="DocumentCreated" xml:space="preserve">
+        <value>سند با موفقیت ایجاد شد.</value>
+    </data>
+    <data name="ContentUpdated" xml:space="preserve">
+        <value>محتوا به‌روزرسانی شد.</value>
+    </data>
+    <data name="DocumentPublished" xml:space="preserve">
+        <value>سند منتشر شد.</value>
+    </data>
+    <data name="InitialReferralAdded" xml:space="preserve">
+        <value>ارجاع اولیه اضافه شد.</value>
+    </data>
+    <data name="DocumentArchived" xml:space="preserve">
+        <value>سند بایگانی شد.</value>
+    </data>
+    <data name="TitleUpdated" xml:space="preserve">
+        <value>عنوان به‌روزرسانی شد.</value>
+    </data>
+    <data name="TypeChanged" xml:space="preserve">
+        <value>نوع سند تغییر کرد.</value>
+    </data>
+    <data name="DocumentRevertedToDraft" xml:space="preserve">
+        <value>سند به پیش‌نویس بازگشت.</value>
+    </data>
+    <data name="AttachmentAdded" xml:space="preserve">
+        <value>پیوست اضافه شد.</value>
+    </data>
+    <data name="AttachmentRemoved" xml:space="preserve">
+        <value>پیوست حذف شد.</value>
+    </data>
+    <data name="AttachmentUpdated" xml:space="preserve">
+        <value>پیوست به‌روزرسانی شد.</value>
+    </data>
+    <data name="ReferralAdded" xml:space="preserve">
+        <value>ارجاع اضافه شد.</value>
+    </data>
+    <data name="ReferralResponded" xml:space="preserve">
+        <value>به ارجاع پاسخ داده شد.</value>
+    </data>
+</root>

@@ -3,7 +3,7 @@ using Bonyan.Layer.Domain;
 using Microsoft.EntityFrameworkCore;
 using Nezam.Modular.ESS.Identity.Domain.User;
 
-namespace Nezam.Modular.ESS.infrastructure.Data.Repository;
+namespace Nezam.Modular.ESS.Infrastructure.Data.Repository;
 
 public class UserVerificationTokenRepository : EfCoreRepository<UserVerificationTokenEntity, IdentityDbContext>, IUserVerificationTokenRepository
 {
@@ -15,7 +15,7 @@ public class UserVerificationTokenRepository : EfCoreRepository<UserVerification
     public new async Task<UserVerificationTokenEntity?> FindOneAsync(Expression<Func<UserVerificationTokenEntity,bool>> specification)
     {
         var dbContet = await GetDbContextAsync();
-        var d = await dbContet.UserVerificationToken
+        var d = await dbContet.UserVerificationTokens
             .Include(x => x.User)
             .FirstOrDefaultAsync(specification);
         return d;
