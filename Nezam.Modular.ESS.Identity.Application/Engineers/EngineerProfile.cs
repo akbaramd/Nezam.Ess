@@ -1,9 +1,10 @@
 using AutoMapper;
 using Bonyan.Layer.Domain.Model;
-using Nezam.Modular.ESS.Identity.Application.Engineers.Dtos;
-using Nezam.Modular.ESS.Identity.Domain.Engineer;
+using Nezam.Modular.ESS.IdEntity.Application.Engineers.Dtos;
+using Nezam.Modular.ESS.IdEntity.Domain.Engineer;
+using EngineerDto = Nezam.Modular.ESS.Identity.Application.Engineers.Jobs.EngineerDto;
 
-namespace Nezam.Modular.ESS.Identity.Application.Engineers;
+namespace Nezam.Modular.ESS.IdEntity.Application.Engineers;
 
 public class EngineerProfile : Profile
 {
@@ -11,7 +12,7 @@ public class EngineerProfile : Profile
     {
         CreateMap<EngineerEntity,EngineerDto>();
         CreateMap<EngineerEntity,EngineerDtoWithDetails>();
-        CreateMap<PaginatedResult<EngineerEntity>,PaginatedResult<EngineerDto>>();
-        CreateMap<PaginatedResult<EngineerEntity>,PaginatedResult<EngineerDtoWithDetails>>();
+        CreateMap<BonPaginatedResult<EngineerEntity>,BonPaginatedResult<EngineerDto>>();
+        CreateMap<BonPaginatedResult<EngineerEntity>,BonPaginatedResult<EngineerDtoWithDetails>>();
     }
 }

@@ -1,10 +1,8 @@
 using Bonyan.Layer.Domain.Specifications;
-using Nezam.Modular.ESS.Identity.Application.Engineers.Dtos;
-using Nezam.Modular.ESS.Identity.Application.Users.Dto;
-using Nezam.Modular.ESS.Identity.Domain.Engineer;
-using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.IdEntity.Application.Engineers.Dtos;
+using Nezam.Modular.ESS.IdEntity.Domain.Engineer;
 
-namespace Nezam.Modular.ESS.Identity.Application.Engineers.Specs;
+namespace Nezam.Modular.ESS.IdEntity.Application.Engineers.Specs;
 
 public class EngineerFilterSpec : PaginatedSpecification<EngineerEntity>
 {
@@ -14,7 +12,5 @@ public class EngineerFilterSpec : PaginatedSpecification<EngineerEntity>
 
     public override void Handle(ISpecificationContext<EngineerEntity> context)
     {
-        context
-            .AddInclude(x => x.User);
     }
 }

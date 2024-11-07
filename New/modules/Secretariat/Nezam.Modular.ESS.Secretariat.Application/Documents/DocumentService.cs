@@ -1,15 +1,15 @@
 ﻿using Bonyan.Layer.Application.Services;
 using Bonyan.Layer.Domain.Enumerations;
 using Bonyan.UserManagement.Domain.ValueObjects;
-using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.IdEntity.Domain.User;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents;
-using Nezam.Modular.ESS.Secretariat.Domain.Documents.Enumerations;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents.BonEnumerations;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents.Repositories;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
 namespace Nezam.Modular.ESS.Secretariat.Application.Documents;
 
-public class DocumentApplicationService : ApplicationService, IDocumentApplicationService
+public class DocumentApplicationService : BonApplicationService, IDocumentApplicationService
 {
     private IDocumentRepository DocumentRepository => LazyServiceProvider.LazyGetRequiredService<IDocumentRepository>();
 
@@ -19,10 +19,10 @@ public class DocumentApplicationService : ApplicationService, IDocumentApplicati
     private IUserRepository UserRepository => LazyServiceProvider.LazyGetRequiredService<IUserRepository>();
 
     // 1. ایجاد یا برگرداندن نامه پیشنویس خالی
-    public async Task<DocumentDto> CreateOrGetEmptyDraftAsync(UserId userId)
+    public async Task<DocumentDto> CreateOrGetEmptyDraftAsync(BonUserId BonUserId)
     {
         // تلاش برای یافتن یک نامه پیشنویس خالی بدون گیرنده و پیوست
-        var existingDraft = await DocumentReadOnlyRepository.GetEmptyDraftByUserAsync(userId);
+        var existingDraft = await DocumentReadOnlyRepository.GetEmptyDraftByUserAsync(BonUserId);
         if (existingDraft != null && existingDraft.Status == DocumentStatus.Draft && !existingDraft.Attachments.Any() &&
             !existingDraft.Referrals.Any())
         {
@@ -33,7 +33,7 @@ public class DocumentApplicationService : ApplicationService, IDocumentApplicati
         var newDraft = new DocumentAggregateRoot(
             title: string.Empty,
             content: string.Empty,
-            senderUserId: userId,
+            senderBonUserId: BonUserId,
             type: DocumentType.Internal
         );
 
@@ -41,19 +41,19 @@ public class DocumentApplicationService : ApplicationService, IDocumentApplicati
         return Mapper.Map<DocumentDto>(newDraft);
     }
 
-    public async Task<DocumentDto> UpdateAsync(DocumentId documentId, DocumentUpdateDto dto, UserId userId)
+    public async Task<DocumentDto> UpdateAsync(DocumentId documentId, DocumentUpdateDto dto, BonUserId BonUserId)
     {
         var document = await DocumentReadOnlyRepository.GetByIdAsync(documentId);
         if (document == null)
             throw new Exception("documentId");
 
-        document.UpdateContent(dto.Content, userId);
-        document.UpdateTitle(dto.Title, userId);
-        var type = Enumeration.FromId<DocumentType>(dto.Type);
+        document.UpdateContent(dto.Content, BonUserId);
+        document.UpdateTitle(dto.Title, BonUserId);
+        var type = BonEnumeration.FromId<DocumentType>(dto.Type);
 
         if (type != null)
         {
-            document.ChangeType(type, userId);
+            document.ChangeType(type, BonUserId);
         }
 
         await DocumentRepository.UpdateAsync(document);
@@ -62,7 +62,7 @@ public class DocumentApplicationService : ApplicationService, IDocumentApplicati
     }
 
     // 2. اضافه کردن گیرنده اصلی
-    public async Task AddPrimaryRecipientAsync(DocumentId documentId, UserId receiverUserId, UserId currentUserId)
+    public async Task AddPrimaryRecipientAsync(DocumentId documentId, BonUserId receiverBonUserId, BonUserId currentBonUserId)
     {
         var document = await DocumentReadOnlyRepository.GetByIdAsync(documentId);
         if (document == null)
@@ -70,33 +70,33 @@ public class DocumentApplicationService : ApplicationService, IDocumentApplicati
 
         // بررسی ارجاعات موجود برای این گیرنده خاص
         var existingReferral = document.Referrals
-            .FirstOrDefault(r => r.ReceiverUserId == receiverUserId &&
+            .FirstOrDefault(r => r.ReceiverBonUserId == receiverBonUserId &&
                                  r.Status == ReferralStatus.Pending);
         // اضافه کردن گیرنده به عنوان ارجاع اصلی
-        document.AddInitialReferral(receiverUserId, currentUserId);
+        document.AddInitialReferral(receiverBonUserId, currentBonUserId);
         await DocumentRepository.UpdateAsync(document);
     }
 
     // 3. اضافه کردن پیوست
     public async Task AddAttachmentAsync(DocumentId documentId, string fileName, string fileType, long fileSize,
-        string filePath, UserId userId)
+        string filePath, BonUserId BonUserId)
     {
         var document = await DocumentReadOnlyRepository.GetByIdAsync(documentId);
         if (document == null)
             throw new Exception("documentId");
 
-        document.AddAttachment(fileName, fileType, fileSize, filePath, userId);
+        document.AddAttachment(fileName, fileType, fileSize, filePath, BonUserId);
         await DocumentRepository.UpdateAsync(document);
     }
 
     // 4. حذف پیوست
-    public async Task RemoveAttachmentAsync(DocumentId documentId, DocumentAttachmentId attachmentId, UserId userId)
+    public async Task RemoveAttachmentAsync(DocumentId documentId, DocumentAttachmentId attachmentId, BonUserId BonUserId)
     {
         var document = await DocumentReadOnlyRepository.GetByIdAsync(documentId);
         if (document == null)
             throw new Exception("documentId");
 
-        document.RemoveAttachment(attachmentId, userId);
+        document.RemoveAttachment(attachmentId, BonUserId);
         await DocumentRepository.UpdateAsync(document);
     }
 
@@ -111,7 +111,7 @@ public class DocumentApplicationService : ApplicationService, IDocumentApplicati
     }
 
     // 6. ارسال نامه
-    public async Task SendDocumentAsync(DocumentId documentId, UserId senderId)
+    public async Task SendDocumentAsync(DocumentId documentId, BonUserId senderId)
     {
         var document = await DocumentReadOnlyRepository.GetByIdAsync(documentId);
         if (document == null)

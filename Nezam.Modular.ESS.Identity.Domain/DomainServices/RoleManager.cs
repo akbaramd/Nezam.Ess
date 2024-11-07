@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Bonyan.Layer.Domain.Services;
+﻿using Bonyan.Layer.Domain.Services;
 using Microsoft.Extensions.Logging;
-using Nezam.Modular.ESS.Identity.Domain.Roles;
-using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.IdEntity.Domain.Roles;
+using Nezam.Modular.ESS.IdEntity.Domain.User;
 
-namespace Nezam.Modular.ESS.Identity.Domain.DomainServices
+namespace Nezam.Modular.ESS.IdEntity.Domain.DomainServices
 {
-    public class RoleManager : DomainService
+    public class RoleManager : BonDomainService
     {
         public IRoleRepository RoleRepository => LazyServiceProvider.LazyGetRequiredService<IRoleRepository>();
         public IUserRepository UserRepository => LazyServiceProvider.LazyGetRequiredService<IUserRepository>();
@@ -37,11 +33,11 @@ namespace Nezam.Modular.ESS.Identity.Domain.DomainServices
         }
 
         // Update role details
-        public async Task<bool> UpdateAsync(RoleEntity entity)
+        public async Task<bool> UpdateAsync(RoleEntity Entity)
         {
             try
             {
-                await RoleRepository.UpdateAsync(entity, true);
+                await RoleRepository.UpdateAsync(Entity, true);
                 return true;
             }
             catch (Exception e)
@@ -117,7 +113,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.DomainServices
         // Check if a role exists by name
         public async Task<bool> RoleExistsAsync(string roleName)
         {
-            return await RoleRepository.ExistsAsync(r => r.Name.Equals(roleName, StringComparison.OrdinalIgnoreCase));
+            return await RoleRepository.ExistsAsync(r => r.Name == roleName);
         }
     }
 }

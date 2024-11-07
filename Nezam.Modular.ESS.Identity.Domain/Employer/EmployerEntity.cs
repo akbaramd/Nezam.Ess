@@ -1,29 +1,47 @@
 ﻿using Bonyan.Layer.Domain.Entities;
 using Bonyan.Layer.Domain.ValueObjects;
 using Bonyan.UserManagement.Domain.ValueObjects;
-using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.IdEntity.Domain.User;
+using System;
 
-namespace Nezam.Modular.ESS.Identity.Domain.Employer;
-
-public class EmployerEntity : Entity<EmployerId>
+namespace Nezam.Modular.ESS.IdEntity.Domain.Employer
 {
-    public UserEntity User { get; set; }
-    public UserId UserId { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    
-    protected EmployerEntity(){}
-
-    public EmployerEntity(EmployerId id,UserEntity user, string firstName , string lastName)
+    public class EmployerEntity : BonEntity<EmployerId>
     {
-        Id = id;
-        FirstName = firstName;
-        LastName = lastName;
-        User = user;
-        UserId = user.Id;
-    }
-}
+        // Constructors
+        protected EmployerEntity() { }
 
-public class EmployerId : BusinessId<EmployerId>
-{
+        public EmployerEntity(EmployerId employerId, BonUserId bonUserId, string firstName, string? lastName)
+        {
+            Id = employerId ?? throw new ArgumentNullException(nameof(employerId));
+            BonUserId = bonUserId ?? throw new ArgumentNullException(nameof(bonUserId));
+            FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
+            LastName = lastName;
+        }
+
+        // Properties
+        public BonUserId BonUserId { get; private set; }
+        public UserEntity BonUser { get; set; }
+        public string FirstName { get; private set; }
+        public string? LastName { get; private set; }
+
+        // Update Methods
+
+        /// <summary>
+        /// Updates the employer's personal details.
+        /// </summary>
+        public void UpdateDetails(string firstName, string? lastName)
+        {
+            if (string.IsNullOrWhiteSpace(firstName)) throw new ArgumentException("First name is required.", nameof(firstName));
+
+            FirstName = firstName;
+            LastName = lastName;
+            // Trigger domain event: EmployerDetailsUpdated (if needed)
+        }
+    }
+
+    // Custom ID class for EmployerEntity
+    public class EmployerId : BonBusinessId<EmployerId>
+    {
+    }
 }

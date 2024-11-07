@@ -1,13 +1,13 @@
 using Bonyan.Layer.Application.Services;
 using Bonyan.Layer.Domain.Model;
-using Nezam.Modular.ESS.Identity.Application.Employers.Dtos;
-using Nezam.Modular.ESS.Identity.Domain.Employer;
+using Nezam.Modular.ESS.IdEntity.Application.Employers.Dtos;
+using Nezam.Modular.ESS.IdEntity.Domain.Employer;
 
-namespace Nezam.Modular.ESS.Identity.Application.Employers;
+namespace Nezam.Modular.ESS.IdEntity.Application.Employers;
 
-public interface IEmployerService : IApplicationService
+public interface IEmployerService : IBonApplicationService
 {
-    Task<PaginatedResult<EmployerDto>> GetPaginatedResult(EmployerFilterDto filterDto);
+    Task<BonPaginatedResult<EmployerDto>> GetBonPaginatedResult(EmployerFilterDto filterDto);
     Task<EmployerDto> GetEmployerByIdAsync(EmployerId employerId);
     Task<EmployerDto> AddEmployerAsync(EmployerCreateDto createDto);
     Task<EmployerDto> UpdateEmployerAsync(EmployerId employerId, EmployerUpdateDto updateDto);

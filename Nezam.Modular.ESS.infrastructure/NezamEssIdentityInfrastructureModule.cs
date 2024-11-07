@@ -1,4 +1,4 @@
-﻿using Bonyan.EntityFrameworkCore;
+﻿using Bonyan.DependencyInjection;
 using Bonyan.Modularity;
 using Bonyan.UserManagement.Domain.Enumerations;
 using Bonyan.UserManagement.Domain.ValueObjects;
@@ -6,11 +6,11 @@ using Bonyan.UserManagement.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Nezam.Modular.ESS.Identity.Application;
-using Nezam.Modular.ESS.Identity.Domain.Employer;
-using Nezam.Modular.ESS.Identity.Domain.Engineer;
-using Nezam.Modular.ESS.Identity.Domain.Roles;
-using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.IdEntity.Application;
+using Nezam.Modular.ESS.IdEntity.Domain.Employer;
+using Nezam.Modular.ESS.IdEntity.Domain.Engineer;
+using Nezam.Modular.ESS.IdEntity.Domain.Roles;
+using Nezam.Modular.ESS.IdEntity.Domain.User;
 using Nezam.Modular.ESS.Infrastructure.Data;
 using Nezam.Modular.ESS.Infrastructure.Data.Repository;
 using Nezam.Modular.ESS.Secretariat.Application;
@@ -18,18 +18,18 @@ using Nezam.Modular.ESS.Secretariat.Domain.Documents.Repositories;
 
 namespace Nezam.Modular.ESS.Infrastructure;
 
-public class NezamEssIdentityInfrastructureModule : WebModule
+public class NezamEssIdEntityInfrastructureModule : WebModule
 {
-    public NezamEssIdentityInfrastructureModule()
+    public NezamEssIdEntityInfrastructureModule()
     {
-        DependOn<BonyanUserManagementEntityFrameworkModule<UserEntity>>();
-        DependOn<NezamEssIdentityApplicationModule>();
+        DependOn<BonUserManagementEntityFrameworkModule<UserEntity>>();
+        DependOn<NezamEssIdEntityApplicationModule>();
         DependOn<NezamEssSecretariatApplicationModule>();
     }
 
-    public override Task OnConfigureAsync(ServiceConfigurationContext context)
+    public override Task OnConfigureAsync(BonConfigurationContext context)
     {
-        context.AddBonyanDbContext<IdentityDbContext>(c => { c.AddDefaultRepositories(true); });
+        context.AddBonDbContext<IdEntityDbContext>(c => { c.AddDefaultRepositories(true); });
         context.Services.AddTransient<IRoleRepository, RoleRepository>();
         context.Services.AddTransient<IUserRepository, UserRepository>();
         context.Services.AddTransient<IUserVerificationTokenRepository, UserVerificationTokenRepository>();
@@ -46,13 +46,13 @@ public class NezamEssIdentityInfrastructureModule : WebModule
         return base.OnConfigureAsync(context);
     }
 
-    public override Task OnPreApplicationAsync(ApplicationContext context)
+    public override Task OnPreApplicationAsync(BonContext context)
     {
         context.Application.UseAuthentication();
         return base.OnPreApplicationAsync(context);
     }
 
-    public override async Task OnPostApplicationAsync(ApplicationContext context)
+    public override async Task OnPostApplicationAsync(BonContext context)
     {
         await SeedRoles(context.RequireService<IRoleRepository>());
         await SeedUser(context.RequireService<IUserRepository>());
@@ -64,7 +64,7 @@ public class NezamEssIdentityInfrastructureModule : WebModule
     {
         if (!await requireService.ExistsAsync(x => x.UserName.Equals("akbarsafari00")))
         {
-            var user = new UserEntity(UserId.CreateNew(), "akbarsafari00");
+            var user = UserEntity.Create(BonUserId.CreateNew(), "akbarsafari00");
             user.SetEmail(new Email("akbarsafari00@gmail.com"));
             user.VerifyEmail();
             user.SetPhoneNumber(new PhoneNumber("9371770774"));

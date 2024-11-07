@@ -1,11 +1,11 @@
 using Bonyan.Layer.Domain.Model;
 using FastEndpoints;
-using Nezam.Modular.ESS.Identity.Application.Engineers;
-using Nezam.Modular.ESS.Identity.Application.Engineers.Dtos;
+using Nezam.Modular.ESS.IdEntity.Application.Engineers;
+using Nezam.Modular.ESS.IdEntity.Application.Engineers.Dtos;
 
 namespace Nezam.Modular.ESS.WebApi.Endpoints.Engineer;
 
-public class EngineerPaginatedEndpoint : Endpoint<EngineerFilterDto,PaginatedResult<EngineerDtoWithDetails>>
+public class EngineerPaginatedEndpoint : Endpoint<EngineerFilterDto,BonPaginatedResult<EngineerDtoWithDetails>>
 {
     private readonly IEngineerService userService;
 
@@ -27,7 +27,7 @@ public class EngineerPaginatedEndpoint : Endpoint<EngineerFilterDto,PaginatedRes
 
     public override async Task HandleAsync(EngineerFilterDto dto,CancellationToken ct)
     {
-        var userPagianted = await userService.GetPaginatedResult(dto);
+        var userPagianted = await userService.GetBonPaginatedResult(dto);
         await SendOkAsync(userPagianted,ct);
     }
 

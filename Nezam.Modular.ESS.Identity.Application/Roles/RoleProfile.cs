@@ -1,16 +1,15 @@
-using System;
 using AutoMapper;
 using Bonyan.Layer.Domain.Model;
-using Nezam.Modular.ESS.Identity.Application.Roles.Dto;
-using Nezam.Modular.ESS.Identity.Domain.Roles;
+using Nezam.Modular.ESS.IdEntity.Application.Roles.Dto;
+using Nezam.Modular.ESS.IdEntity.Domain.Roles;
 
-namespace Nezam.Modular.ESS.Identity.Application.Roles;
+namespace Nezam.Modular.ESS.IdEntity.Application.Roles;
 
 public class RoleProfile : Profile
 {
     public RoleProfile()
     {
         CreateMap<RoleEntity,RoleDto>();
-        CreateMap<PaginatedResult<RoleEntity>,PaginatedResult<RoleDto>>();
+        CreateMap<BonPaginatedResult<RoleEntity>,BonPaginatedResult<RoleDto>>();
     }
 }

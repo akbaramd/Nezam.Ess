@@ -1,8 +1,8 @@
 ﻿using Bonyan.Layer.Domain.Enumerations;
 
-namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.Enumerations;
+namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.BonEnumerations;
 
-public class DocumentType : Enumeration
+public class DocumentType : BonEnumeration
 {
     public static readonly DocumentType Outgoing = new DocumentType(0, nameof(Outgoing));
     public static readonly DocumentType Incoming = new DocumentType(1, nameof(Incoming));

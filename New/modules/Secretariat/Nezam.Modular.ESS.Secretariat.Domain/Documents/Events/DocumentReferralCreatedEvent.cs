@@ -4,9 +4,9 @@ using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.Events;
 
-public class DocumentReferralCreatedEvent : DomainEventBase
+public class DocumentReferralCreatedEvent : BonDomainEventBase
 {
-    public DocumentReferralCreatedEvent(DocumentId id, DocumentReferralId referralId, UserId receiverUserId,UserId referrerUserId)
+    public DocumentReferralCreatedEvent(DocumentId id, DocumentReferralId referralId, BonUserId receiverBonUserId,BonUserId referrerBonUserId)
     {
     }
 }

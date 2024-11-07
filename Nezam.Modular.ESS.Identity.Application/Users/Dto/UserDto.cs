@@ -1,15 +1,12 @@
-using System;
 using Bonyan.UserManagement.Application.Dtos;
-using Bonyan.UserManagement.Domain.ValueObjects;
 using FastEndpoints;
 using Microsoft.AspNetCore.Mvc;
-using Nezam.Modular.ESS.Identity.Application.Employers.Dtos;
-using Nezam.Modular.ESS.Identity.Application.Roles.Dto;
-using EngineerDto = Nezam.Modular.ESS.Identity.Application.Engineers.Jobs.EngineerDto;
+using Nezam.Modular.ESS.IdEntity.Application.Employers.Dtos;
+using Nezam.Modular.ESS.IdEntity.Application.Roles.Dto;
 
-namespace Nezam.Modular.ESS.Identity.Application.Users.Dto;
+namespace Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
 
-public class UserDto : BonyanUserDto
+public class UserDto : BonUserDto
 {
     public IReadOnlyCollection<RoleDto> Roles { get; set; }
 
@@ -19,7 +16,7 @@ public class UserDtoWithDetail : UserDto
 {
 
     public EmployerDto? Employer { get; set; }
-    public EngineerDto? Engineer { get; set; }
+    public Engineers.Dtos.EngineerDto? Engineer { get; set; }
 }
 public class UserFilterDto 
 {
@@ -44,7 +41,7 @@ public class UserFilterDto
 public class UserUpdateDto 
 {
     [FromRoute]
-    public Guid UserId { get; set; }
+    public Guid BonUserId { get; set; }
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
     public string[] Roles { get; set; }

@@ -1,20 +1,19 @@
 ﻿using Bonyan.Modularity;
 using Bonyan.Modularity.Abstractions;
 using Bonyan.UserManagement.Domain;
-using Microsoft;
 using Microsoft.Extensions.DependencyInjection;
-using Nezam.Modular.ESS.Identity.Domain.DomainServices;
-using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.IdEntity.Domain.DomainServices;
+using Nezam.Modular.ESS.IdEntity.Domain.User;
 
-namespace Nezam.Modular.ESS.Identity.Domain;
+namespace Nezam.Modular.ESS.IdEntity.Domain;
 
-public class NezamEssIdentityDomainModule : Module
+public class NezamEssIdEntityDomainModule : BonModule
 {
-    public NezamEssIdentityDomainModule()
+    public NezamEssIdEntityDomainModule()
     {
-        DependOn<BonyanUserManagementDomainModule<UserEntity>>();
+        DependOn<BonUserManagementDomainModule<UserEntity>>();
     }
-    public override Task OnConfigureAsync(ServiceConfigurationContext context)
+    public override Task OnConfigureAsync(BonConfigurationContext context)
     {
         context.Services.AddTransient<UserManager>();
         context.Services.AddTransient<RoleManager>();

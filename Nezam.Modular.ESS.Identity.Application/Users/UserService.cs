@@ -1,16 +1,16 @@
 using Bonyan.Layer.Application.Services;
 using Bonyan.Layer.Domain.Model;
 using Bonyan.UserManagement.Domain.ValueObjects;
-using Nezam.Modular.ESS.Identity.Application.Roles.Dto;
-using Nezam.Modular.ESS.Identity.Application.Users.Dto;
-using Nezam.Modular.ESS.Identity.Application.Users.Specs;
-using Nezam.Modular.ESS.Identity.Domain.DomainServices;
-using Nezam.Modular.ESS.Identity.Domain.Roles;
-using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.IdEntity.Application.Roles.Dto;
+using Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
+using Nezam.Modular.ESS.IdEntity.Application.Users.Specs;
+using Nezam.Modular.ESS.IdEntity.Domain.DomainServices;
+using Nezam.Modular.ESS.IdEntity.Domain.Roles;
+using Nezam.Modular.ESS.IdEntity.Domain.User;
 
-namespace Nezam.Modular.ESS.Identity.Application.Users;
+namespace Nezam.Modular.ESS.IdEntity.Application.Users;
 
-public class UserService : ApplicationService, IUserService
+public class UserService : BonApplicationService, IUserService
 {
     public IUserRepository UserRepository => LazyServiceProvider.LazyGetRequiredService<IUserRepository>();
     public IRoleRepository RoleRepository => LazyServiceProvider.LazyGetRequiredService<IRoleRepository>();
@@ -18,25 +18,25 @@ public class UserService : ApplicationService, IUserService
     public RoleManager RoleManager => LazyServiceProvider.LazyGetRequiredService<RoleManager>();
 
     // Retrieves paginated user results based on the provided filter
-    public async Task<PaginatedResult<UserDtoWithDetail>> GetPaginatedResult(UserFilterDto filterDto)
+    public async Task<BonPaginatedResult<UserDtoWithDetail>> GetBonPaginatedResult(UserFilterDto filterDto)
     {
         var result = await UserRepository.PaginatedAsync(new UsersFilterSpec(filterDto));
-        return Mapper.Map<PaginatedResult<UserEntity>, PaginatedResult<UserDtoWithDetail>>(result);
+        return Mapper.Map<BonPaginatedResult<UserEntity>, BonPaginatedResult<UserDtoWithDetail>>(result);
     }
 
     // Gets a user by their ID
-    public async Task<UserDtoWithDetail> GetUserByIdAsync(UserId userId)
+    public async Task<UserDtoWithDetail> GetUserByIdAsync(BonUserId BonUserId)
     {
-        var user = await UserRepository.GetOneAsync(new UserByIdSpec(userId));
+        var user = await UserRepository.GetOneAsync(new UserByIdSpec(BonUserId));
         if (user == null) throw new Exception("User not found");
 
         return Mapper.Map<UserEntity, UserDtoWithDetail>(user);
     }
 
     // Updates a user's contact info and roles
-    public async Task<UserDtoWithDetail> UpdateUserAsync(UserId userId, UserUpdateDto updateUserDto)
+    public async Task<UserDtoWithDetail> UpdateUserAsync(BonUserId BonUserId, UserUpdateDto updateUserDto)
     {
-        var user = await UserRepository.GetOneAsync(new UserByIdSpec(userId));
+        var user = await UserRepository.GetOneAsync(new UserByIdSpec(BonUserId));
         if (user == null) throw new Exception("User not found");
 
         // Update contact info using encapsulated method
@@ -53,9 +53,9 @@ public class UserService : ApplicationService, IUserService
     }
 
     // Deletes a user by their ID
-    public async Task<bool> DeleteUserAsync(UserId userId)
+    public async Task<bool> DeleteUserAsync(BonUserId BonUserId)
     {
-        var user = await UserRepository.GetByIdAsync(userId);
+        var user = await UserRepository.GetByIdAsync(BonUserId);
         if (user == null) return false;
 
         await UserRepository.DeleteAsync(user);
@@ -63,9 +63,9 @@ public class UserService : ApplicationService, IUserService
     }
 
     // Gets the roles assigned to a specific user
-    public async Task<List<RoleDto>> GetUserRolesAsync(UserId userId)
+    public async Task<List<RoleDto>> GetUserRolesAsync(BonUserId BonUserId)
     {
-        var user = await UserRepository.GetByIdAsync(userId);
+        var user = await UserRepository.GetByIdAsync(BonUserId);
         if (user == null) throw new Exception("User not found");
 
         return Mapper.Map<IReadOnlyCollection<RoleEntity>, List<RoleDto>>(user.Roles);
@@ -75,9 +75,9 @@ public class UserService : ApplicationService, IUserService
 
 
     // Resets a user's password
-    public async Task<bool> ResetPasswordAsync(UserId userId, string newPassword)
+    public async Task<bool> ResetPasswordAsync(BonUserId BonUserId, string newPassword)
     {
-        var user = await UserRepository.GetByIdAsync(userId);
+        var user = await UserRepository.GetByIdAsync(BonUserId);
         if (user == null) throw new Exception("User not found");
 
         return await UserManager.ResetPasswordAsync(user, newPassword);

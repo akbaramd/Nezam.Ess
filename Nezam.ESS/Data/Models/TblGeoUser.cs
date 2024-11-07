@@ -2,7 +2,7 @@
 
 public class TblGeoUser
 {
-    public int UserId { get; set; }
+    public int BonUserId { get; set; }
 
     public string? UserName { get; set; }
 

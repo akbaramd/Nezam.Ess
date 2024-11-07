@@ -9,9 +9,9 @@ namespace Nezam.Modular.ESS.WebApi.Endpoints.Documents;
 public class UpdateDocumentEndpoint : Endpoint<DocumentUpdateDto, DocumentDto>
 {
     private readonly IDocumentApplicationService _documentService;
-    private readonly ICurrentUser _currentUser;
+    private readonly IBonCurrentUser _currentUser;
 
-    public UpdateDocumentEndpoint(IDocumentApplicationService documentService, ICurrentUser currentUser)
+    public UpdateDocumentEndpoint(IDocumentApplicationService documentService, IBonCurrentUser currentUser)
     {
         _documentService = documentService;
         _currentUser = currentUser;
@@ -35,7 +35,7 @@ public class UpdateDocumentEndpoint : Endpoint<DocumentUpdateDto, DocumentDto>
         var documentId = DocumentId.FromGuid(Route<Guid>("DocumentId"));
         
         // فراخوانی متد به‌روزرسانی در سرویس
-        var updatedDocument = await _documentService.UpdateAsync(documentId, req,UserId.FromGuid(_currentUser.Id!.Value!));
+        var updatedDocument = await _documentService.UpdateAsync(documentId, req,BonUserId.FromGuid(_currentUser.Id!.Value!));
 
         if (updatedDocument == null)
         {

@@ -3,7 +3,7 @@ using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.Events;
 
-public class DocumentAttachmentRemovedEvent : DomainEventBase
+public class DocumentAttachmentRemovedEvent : BonDomainEventBase
 {
     public DocumentId DocumentId { get; }
     public DocumentAttachmentId AttachmentId { get; }

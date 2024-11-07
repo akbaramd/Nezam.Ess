@@ -1,10 +1,9 @@
 ﻿using Bonyan.Layer.Domain.Entities;
-using System;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents
 {
-    public class DocumentAttachmentEntity : Entity<DocumentAttachmentId>
+    public class DocumentAttachmentEntity : BonEntity<DocumentAttachmentId>
     {
         public string FileName { get; private set; }
         public string FileType { get; private set; }

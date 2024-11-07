@@ -1,7 +1,7 @@
 ﻿using Bonyan.UserManagement.Domain.ValueObjects;
-using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.IdEntity.Domain.User;
 
-namespace Nezam.Modular.ESS.Identity.Application.Auth.Dto;
+namespace Nezam.Modular.ESS.IdEntity.Application.Auth.Dto;
 
 public class AuthLoginDto
 {
@@ -29,6 +29,6 @@ public class AuthResetPasswordDto
 public class AuthJwtResult
 {
     public string AccessToken { get; set; }
-    public UserId UserId { get; set; }
+    public BonUserId BonUserId { get; set; }
 }
 

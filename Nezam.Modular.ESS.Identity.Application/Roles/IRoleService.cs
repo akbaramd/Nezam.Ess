@@ -1,11 +1,10 @@
-using System;
 using Bonyan.Layer.Application.Services;
 using Bonyan.Layer.Domain.Model;
-using Nezam.Modular.ESS.Identity.Application.Roles.Dto;
+using Nezam.Modular.ESS.IdEntity.Application.Roles.Dto;
 
-namespace Nezam.Modular.ESS.Identity.Application.Roles;
+namespace Nezam.Modular.ESS.IdEntity.Application.Roles;
 
-public interface IRoleService : IApplicationService
+public interface IRoleService : IBonApplicationService
 {
-    Task<PaginatedResult<RoleDto>> GetPaginatedResult(RoleFilterDto filterDto);
+    Task<BonPaginatedResult<RoleDto>> GetBonPaginatedResult(RoleFilterDto filterDto);
 }

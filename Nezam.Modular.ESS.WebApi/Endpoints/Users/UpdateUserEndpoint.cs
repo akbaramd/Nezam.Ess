@@ -1,8 +1,7 @@
-﻿        using Bonyan.Layer.Domain.Model;
-        using Bonyan.UserManagement.Domain.ValueObjects;
+﻿using Bonyan.UserManagement.Domain.ValueObjects;
         using FastEndpoints;
-        using Nezam.Modular.ESS.Identity.Application.Users;
-        using Nezam.Modular.ESS.Identity.Application.Users.Dto;
+        using Nezam.Modular.ESS.IdEntity.Application.Users;
+        using Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
 
         namespace Nezam.Modular.ESS.WebApi.Endpoints.Users;
 
@@ -17,7 +16,7 @@
 
             public override void Configure()
             {
-                Put("/api/user/{UserId:guid}");
+                Put("/api/user/{BonUserId:guid}");
 
                 Description(c =>
                 {
@@ -29,7 +28,7 @@
 
             public override async Task HandleAsync(UserUpdateDto req, CancellationToken ct)
             {
-                var updatedUser = await userService.UpdateUserAsync(UserId.FromGuid(req.UserId), req);
+                var updatedUser = await userService.UpdateUserAsync(BonUserId.FromGuid(req.BonUserId), req);
                 if (updatedUser == null)
                 {
                     await SendNotFoundAsync(ct);

@@ -1,11 +1,10 @@
 ﻿using Bonyan.Layer.Domain.Events;
-using System;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.Events
 {
     // Event raised when a document is created
-    public class DocumentCreatedEvent : DomainEventBase
+    public class DocumentCreatedEvent : BonDomainEventBase
     {
         public DocumentId DocumentId { get; }
         

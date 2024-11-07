@@ -2,7 +2,7 @@
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
-public class DocumentActivityLogId : BusinessId<DocumentActivityLogId>
+public class DocumentActivityLogId : BonBusinessId<DocumentActivityLogId>
 {
     
 }

@@ -1,15 +1,6 @@
-﻿using System.Globalization;
-using FastEndpoints;
+﻿using FastEndpoints;
 using Nezam.ESS.backend.Data;
-using Nezam.ESS.backend.Data.Models;
-
-
-
-using System.Globalization;
-using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
-using Nezam.ESS.backend.Data;
-using Nezam.ESS.backend.Data.Models;
 
 namespace Nezam.ESS.backend.Endpoints;
 

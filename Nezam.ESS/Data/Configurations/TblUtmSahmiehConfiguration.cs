@@ -6,27 +6,27 @@ namespace Nezam.ESS.backend.Data.Configurations;
 
 public class TblUtmSahmiehConfiguration : IEntityTypeConfiguration<TblUtmSahmieh>
 {
-    public void Configure(EntityTypeBuilder<TblUtmSahmieh> entity)
+    public void Configure(EntityTypeBuilder<TblUtmSahmieh> Entity)
     {
-        entity.ToTable("tbl_UTM_sahmieh");
+        Entity.ToTable("tbl_UTM_sahmieh");
 
-        entity.Property(e => e.Id).HasColumnName("id");
-        entity.Property(e => e.Comments)
+        Entity.Property(e => e.Id).HasColumnName("id");
+        Entity.Property(e => e.Comments)
             .HasMaxLength(50)
             .HasColumnName("comments");
-        entity.Property(e => e.EngCod).HasColumnName("eng_cod");
-        entity.Property(e => e.KarbarId).HasColumnName("karbar_id");
-        entity.Property(e => e.SabtDat)
+        Entity.Property(e => e.EngCod).HasColumnName("eng_cod");
+        Entity.Property(e => e.KarbarId).HasColumnName("karbar_id");
+        Entity.Property(e => e.SabtDat)
             .HasDefaultValueSql("(getdate())")
             .HasColumnType("datetime")
             .HasColumnName("sabt_dat");
-        entity.Property(e => e.State)
+        Entity.Property(e => e.State)
             .HasDefaultValue(1)
             .HasColumnName("state");
-        entity.Property(e => e.Utminfoid).HasColumnName("utminfoid");
+        Entity.Property(e => e.Utminfoid).HasColumnName("utminfoid");
 
 
-        entity.HasOne(x => x.Eng)
+        Entity.HasOne(x => x.Eng)
             .WithMany(x => x.TblUtmSahmiehs)
             .HasForeignKey(x => x.EngCod)
             .HasPrincipalKey(x => x.EngCod);

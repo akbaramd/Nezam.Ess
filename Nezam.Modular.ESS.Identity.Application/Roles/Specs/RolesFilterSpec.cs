@@ -1,9 +1,8 @@
-using System;
 using Bonyan.Layer.Domain.Specifications;
-using Nezam.Modular.ESS.Identity.Application.Roles.Dto;
-using Nezam.Modular.ESS.Identity.Domain.Roles;
+using Nezam.Modular.ESS.IdEntity.Application.Roles.Dto;
+using Nezam.Modular.ESS.IdEntity.Domain.Roles;
 
-namespace Nezam.Modular.ESS.Identity.Application.Roles.Specs;
+namespace Nezam.Modular.ESS.IdEntity.Application.Roles.Specs;
 
 public class RolesFilterSpec : PaginatedSpecification<RoleEntity>
 {

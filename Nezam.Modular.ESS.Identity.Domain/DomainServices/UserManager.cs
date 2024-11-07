@@ -1,31 +1,28 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Bonyan.Layer.Domain.Services;
+﻿using Bonyan.Layer.Domain.Services;
 using Microsoft.Extensions.Logging;
-using Nezam.Modular.ESS.Identity.Domain.Roles;
-using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.IdEntity.Domain.Roles;
+using Nezam.Modular.ESS.IdEntity.Domain.User;
 
-namespace Nezam.Modular.ESS.Identity.Domain.DomainServices
+namespace Nezam.Modular.ESS.IdEntity.Domain.DomainServices
 {
-    public class UserManager : DomainService
+    public class UserManager : BonDomainService
     {
         public IRoleRepository RoleRepository => LazyServiceProvider.LazyGetRequiredService<IRoleRepository>();
         public IUserRepository UserRepository => LazyServiceProvider.LazyGetRequiredService<IUserRepository>();
 
         // Create a new user and set an initial password
-        public async Task<bool> CreateAsync(UserEntity entity, string password)
+        public async Task<bool> CreateAsync(UserEntity Entity, string password)
         {
             try
             {
-                if (await UserRepository.ExistsAsync(x => x.UserName.Equals(entity.UserName)))
+                if (await UserRepository.ExistsAsync(x => x.UserName.Equals(Entity.UserName)))
                 {
-                    Logger.LogWarning($"User with username {entity.UserName} already exists.");
+                    Logger.LogWarning($"User with username {Entity.UserName} already exists.");
                     return false;
                 }
 
-                entity.SetPassword(password);
-                await UserRepository.AddAsync(entity, true);
+                Entity.SetPassword(password);
+                await UserRepository.AddAsync(Entity, true);
                 return true;
             }
             catch (Exception e)
@@ -36,11 +33,11 @@ namespace Nezam.Modular.ESS.Identity.Domain.DomainServices
         }
 
         // Update user information
-        public async Task<bool> UpdateAsync(UserEntity entity)
+        public async Task<bool> UpdateAsync(UserEntity Entity)
         {
             try
             {
-                await UserRepository.UpdateAsync(entity, true);
+                await UserRepository.UpdateAsync(Entity, true);
                 return true;
             }
             catch (Exception e)
@@ -65,27 +62,27 @@ namespace Nezam.Modular.ESS.Identity.Domain.DomainServices
         }
 
         // Change a user's password
-        public async Task<bool> ChangePasswordAsync(UserEntity entity, string currentPassword, string newPassword)
+        public async Task<bool> ChangePasswordAsync(UserEntity Entity, string currentPassword, string newPassword)
         {
-            if (!entity.VerifyPassword(currentPassword))
+            if (!Entity.VerifyPassword(currentPassword))
             {
                 Logger.LogWarning("Current password does not match.");
                 return false;
             }
 
-            entity.SetPassword(newPassword);
-            return await UpdateAsync(entity);
+            Entity.SetPassword(newPassword);
+            return await UpdateAsync(Entity);
         }
 
         // Reset a user's password directly (for admin use cases)
-        public async Task<bool> ResetPasswordAsync(UserEntity entity, string newPassword)
+        public async Task<bool> ResetPasswordAsync(UserEntity Entity, string newPassword)
         {
-            entity.SetPassword(newPassword);
-            return await UpdateAsync(entity);
+            Entity.SetPassword(newPassword);
+            return await UpdateAsync(Entity);
         }
 
         // Assign multiple roles to a user
-        public async Task<bool> AssignRolesAsync(UserEntity entity, params string[] roles)
+        public async Task<bool> AssignRolesAsync(UserEntity Entity, params string[] roles)
         {
             try
             {
@@ -94,11 +91,11 @@ namespace Nezam.Modular.ESS.Identity.Domain.DomainServices
                     var findRole = await RoleRepository.FindOneAsync(x => x.Name.Equals(role));
                     if (findRole != null)
                     {
-                        entity.TryAssignRole(findRole);
+                        Entity.TryAssignRole(findRole);
                     }
                 }
 
-                await UserRepository.UpdateAsync(entity, true);
+                await UserRepository.UpdateAsync(Entity, true);
                 return true;
             }
             catch (Exception e)
@@ -109,7 +106,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.DomainServices
         }
 
         // Remove multiple roles from a user
-        public async Task<bool> RemoveRolesAsync(UserEntity entity, params string[] roles)
+        public async Task<bool> RemoveRolesAsync(UserEntity Entity, params string[] roles)
         {
             try
             {
@@ -118,11 +115,11 @@ namespace Nezam.Modular.ESS.Identity.Domain.DomainServices
                     var role = await RoleRepository.FindOneAsync(x => x.Name.Equals(roleName));
                     if (role != null)
                     {
-                        entity.TryRemoveRole(role);
+                        Entity.TryRemoveRole(role);
                     }
                 }
 
-                await UserRepository.UpdateAsync(entity, true);
+                await UserRepository.UpdateAsync(Entity, true);
                 return true;
             }
             catch (Exception e)

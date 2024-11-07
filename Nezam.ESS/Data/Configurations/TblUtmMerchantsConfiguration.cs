@@ -6,10 +6,10 @@ namespace Nezam.ESS.backend.Data.Configurations;
 
 public class TblUtmMerchantsConfiguration : IEntityTypeConfiguration<TblUtmMerchants>
 {
-    public void Configure(EntityTypeBuilder<TblUtmMerchants> entity)
+    public void Configure(EntityTypeBuilder<TblUtmMerchants> Entity)
     {
-        entity.ToTable("tbl_UTM_merchants");
+        Entity.ToTable("tbl_UTM_merchants");
 
-        entity.Property(e => e.id).HasColumnName("id");
+        Entity.Property(e => e.id).HasColumnName("id");
     }
 }

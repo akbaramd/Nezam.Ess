@@ -1,11 +1,10 @@
 ﻿using Bonyan.Layer.Application.Services;
-using Bonyan.UserManagement.Application.Dtos;
-using Nezam.Modular.ESS.Identity.Application.Auth.Dto;
-using Nezam.Modular.ESS.Identity.Application.Users.Dto;
+using Nezam.Modular.ESS.IdEntity.Application.Auth.Dto;
+using Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
 
-namespace Nezam.Modular.ESS.Identity.Application.Auth;
+namespace Nezam.Modular.ESS.IdEntity.Application.Auth;
 
-public interface IAuthService : IApplicationService
+public interface IAuthService : IBonApplicationService
 {
     public Task<AuthJwtResult> 
         LoginAsync(AuthLoginDto authLoginDto,CancellationToken cancellationToken = default);

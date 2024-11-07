@@ -1,7 +1,6 @@
 ﻿using Bonyan.UserManagement.Domain.ValueObjects;
 using FastEndpoints;
-using Nezam.Modular.ESS.Identity.Application.Users;
-using Nezam.Modular.ESS.Identity.Application.Users.Dto;
+using Nezam.Modular.ESS.IdEntity.Application.Users;
 
 namespace Nezam.Modular.ESS.WebApi.Endpoints.Users;
 
@@ -16,7 +15,7 @@ public class DeleteUserEndpoint : Endpoint<DeleteUserRequest>
 
     public override void Configure()
     {
-        Delete("/api/user/{UserId}");
+        Delete("/api/user/{BonUserId}");
 
         Description(c =>
         {
@@ -28,7 +27,7 @@ public class DeleteUserEndpoint : Endpoint<DeleteUserRequest>
 
     public override async Task HandleAsync(DeleteUserRequest req, CancellationToken ct)
     {
-        var result = await userService.DeleteUserAsync(UserId.FromGuid(req.UserId));
+        var result = await userService.DeleteUserAsync(BonUserId.FromGuid(req.BonUserId));
         if (!result)
         {
             await SendNotFoundAsync(ct);
@@ -40,6 +39,6 @@ public class DeleteUserEndpoint : Endpoint<DeleteUserRequest>
 
 public class DeleteUserRequest
 {
-    public Guid UserId { get; set; }
+    public Guid BonUserId { get; set; }
 }
 

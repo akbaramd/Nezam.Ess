@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using Bonyan.Layer.Domain.Entities;
+﻿using Bonyan.Layer.Domain.Entities;
 using Bonyan.Layer.Domain.ValueObjects;
-using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.IdEntity.Domain.User;
 
-namespace Nezam.Modular.ESS.Identity.Domain.Roles
+namespace Nezam.Modular.ESS.IdEntity.Domain.Roles
 {
-    public class RoleEntity : Entity<RoleId>
+    public class RoleEntity : BonEntity<RoleId>
     {
         // EF Core requires a parameterless constructor
         protected RoleEntity() { }
@@ -33,7 +32,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.Roles
     }
 
     // Value object for RoleId
-    public class RoleId : BusinessId<RoleId>
+    public class RoleId : BonBusinessId<RoleId>
     {
     }
 }

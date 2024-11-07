@@ -1,11 +1,10 @@
-using System;
 using Bonyan.Layer.Application.Dto;
 using FastEndpoints;
-using Nezam.Modular.ESS.Identity.Domain.Roles;
+using Nezam.Modular.ESS.IdEntity.Domain.Roles;
 
-namespace Nezam.Modular.ESS.Identity.Application.Roles.Dto;
+namespace Nezam.Modular.ESS.IdEntity.Application.Roles.Dto;
 
-public class RoleDto : EntityDto<RoleId>
+public class RoleDto : BonEntityDto<RoleId>
 {
         public string Name { get; set; }
     public string Title { get; set; }

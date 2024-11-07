@@ -1,29 +1,30 @@
 ﻿using Bonyan.AutoMapper;
+using Bonyan.DependencyInjection;
 using Bonyan.Modularity;
 using Bonyan.Modularity.Abstractions;
 using Bonyan.UserManagement.Application;
 using Microsoft.Extensions.DependencyInjection;
-using Nezam.Modular.ESS.Identity.Application.Auth;
-using Nezam.Modular.ESS.Identity.Application.Employers;
-using Nezam.Modular.ESS.Identity.Application.Employers.Jobs;
-using Nezam.Modular.ESS.Identity.Application.Engineers;
+using Nezam.Modular.ESS.IdEntity.Application.Auth;
+using Nezam.Modular.ESS.IdEntity.Application.Employers;
+using Nezam.Modular.ESS.IdEntity.Application.Employers.Jobs;
+using Nezam.Modular.ESS.IdEntity.Application.Engineers;
 using Nezam.Modular.ESS.Identity.Application.Engineers.Jobs;
-using Nezam.Modular.ESS.Identity.Application.Roles;
-using Nezam.Modular.ESS.Identity.Application.Users;
-using Nezam.Modular.ESS.Identity.Domain;
-using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.IdEntity.Application.Roles;
+using Nezam.Modular.ESS.IdEntity.Application.Users;
+using Nezam.Modular.ESS.IdEntity.Domain;
+using Nezam.Modular.ESS.IdEntity.Domain.User;
 
-namespace Nezam.Modular.ESS.Identity.Application;
+namespace Nezam.Modular.ESS.IdEntity.Application;
 
-public class NezamEssIdentityApplicationModule : Module
+public class NezamEssIdEntityApplicationModule : BonModule
 {
-    public NezamEssIdentityApplicationModule()
+    public NezamEssIdEntityApplicationModule()
     {
-        DependOn<BonyanUserManagementApplicationModule<UserEntity>>();
-        DependOn<NezamEssIdentityDomainModule>();
+        DependOn<BonUserManagementApplicationModule<UserEntity>>();
+        DependOn<NezamEssIdEntityDomainModule>();
     }
 
-    public override Task OnConfigureAsync(ServiceConfigurationContext context)
+    public override Task OnConfigureAsync(BonConfigurationContext context)
     {
         context.Services.AddTransient<IAuthService, AuthService>();
         context.Services.AddTransient<IRoleService, RoleService>();
@@ -31,7 +32,7 @@ public class NezamEssIdentityApplicationModule : Module
         context.Services.AddTransient<IEmployerService, EmployerService>();
         context.Services.AddTransient<IEngineerService, EngineerService>();
 
-        context.Services.Configure<BonyanAutoMapperOptions>(c =>
+        context.Services.Configure<BonAutoMapperOptions>(c =>
         {
             c.AddProfile<AuthProfile>();
             c.AddProfile<RoleProfile>();
@@ -44,9 +45,16 @@ public class NezamEssIdentityApplicationModule : Module
         context.Services.AddTransient<UserProfile>();
         context.Services.AddTransient<EngineerProfile>();
         context.Services.AddTransient<EmployerProfile>();
-        // context.AddJob<EngineerSynchronizerJob>();
-        context.AddJob<EmployerSynchronizerJob>();
 
+        context.Services.AddSingleton<EmployerSynchronizerJob>();
+        context.Services.AddSingleton<EngineerSynchronizerWorker>();
         return base.OnConfigureAsync(context);
+    }
+
+    public override Task OnInitializeAsync(ServiceInitializationContext context)
+    {
+        context.AddCronWorkerAsync<EmployerSynchronizerJob>("*/1 * * * *");
+        context.AddCronWorkerAsync<EngineerSynchronizerWorker>("*/1 * * * *");
+        return base.OnInitializeAsync(context);
     }
 }

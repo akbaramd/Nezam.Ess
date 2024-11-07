@@ -1,8 +1,8 @@
 ﻿using Bonyan.Layer.Domain.Abstractions;
 
-namespace Nezam.Modular.ESS.Identity.Domain.Roles;
+namespace Nezam.Modular.ESS.IdEntity.Domain.Roles;
 
-public interface IRoleRepository : IRepository<RoleEntity,RoleId>
+public interface IRoleRepository : IBonRepository<RoleEntity,RoleId>
 {
     
 }

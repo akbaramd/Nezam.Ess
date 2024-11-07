@@ -1,7 +1,7 @@
 ﻿using Bonyan.UserManagement.Domain.ValueObjects;
 using FastEndpoints;
-using Nezam.Modular.ESS.Identity.Application.Users;
-using Nezam.Modular.ESS.Identity.Application.Users.Dto;
+using Nezam.Modular.ESS.IdEntity.Application.Users;
+using Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
 
 namespace Nezam.Modular.ESS.WebApi.Endpoints.Users;
 
@@ -16,7 +16,7 @@ public class GetUserByIdEndpoint : Endpoint<GetUserByIdRequest, UserDtoWithDetai
 
     public override void Configure()
     {
-        Get("/api/user/{UserId}");
+        Get("/api/user/{BonUserId}");
 
         Description(c =>
         {
@@ -28,7 +28,7 @@ public class GetUserByIdEndpoint : Endpoint<GetUserByIdRequest, UserDtoWithDetai
 
     public override async Task HandleAsync(GetUserByIdRequest req, CancellationToken ct)
     {
-        var user = await userService.GetUserByIdAsync(UserId.FromGuid(req.UserId));
+        var user = await userService.GetUserByIdAsync(BonUserId.FromGuid(req.BonUserId));
         if (user == null)
         {
             await SendNotFoundAsync(ct);
@@ -40,5 +40,5 @@ public class GetUserByIdEndpoint : Endpoint<GetUserByIdRequest, UserDtoWithDetai
 
 public class GetUserByIdRequest
 {
-    public Guid UserId { get; set; }
+    public Guid BonUserId { get; set; }
 }

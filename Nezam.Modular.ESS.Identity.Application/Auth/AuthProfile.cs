@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Bonyan.UserManagement.Application.Dtos;
-using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.IdEntity.Domain.User;
 
-namespace Nezam.Modular.ESS.Identity.Application.Auth;
+namespace Nezam.Modular.ESS.IdEntity.Application.Auth;
 
 public class AuthProfile : Profile
 {
     public AuthProfile()
     {
-        CreateMap<UserEntity, BonyanUserDto>();
+        CreateMap<UserEntity, BonUserDto>();
     }
 }

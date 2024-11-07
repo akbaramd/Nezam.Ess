@@ -6,26 +6,26 @@ namespace Nezam.ESS.backend.Data.Configurations;
 
 public class TblUtmEngConfiguration : IEntityTypeConfiguration<TblUtmEng>
 {
-    public void Configure(EntityTypeBuilder<TblUtmEng> entity)
+    public void Configure(EntityTypeBuilder<TblUtmEng> Entity)
     {
-        entity.ToTable("tbl_UTM_engs");
+        Entity.ToTable("tbl_UTM_engs");
 
-        entity.Property(e => e.Id).HasColumnName("id");
-        entity.Property(e => e.ActiveType)
+        Entity.Property(e => e.Id).HasColumnName("id");
+        Entity.Property(e => e.ActiveType)
             .HasDefaultValue(1)
             .HasColumnName("active_type");
-        entity.Property(e => e.Comments)
+        Entity.Property(e => e.Comments)
             .HasMaxLength(255)
             .HasColumnName("comments");
-        entity.Property(e => e.EngCod).HasColumnName("eng_cod");
-        entity.Property(e => e.KarbarId).HasColumnName("karbar_id");
-        entity.Property(e => e.OzviyatNo).HasColumnName("ozviyat_no");
-        entity.Property(e => e.SabtDat)
+        Entity.Property(e => e.EngCod).HasColumnName("eng_cod");
+        Entity.Property(e => e.KarbarId).HasColumnName("karbar_id");
+        Entity.Property(e => e.OzviyatNo).HasColumnName("ozviyat_no");
+        Entity.Property(e => e.SabtDat)
             .HasDefaultValueSql("(getdate())")
             .HasColumnType("datetime")
             .HasColumnName("sabt_dat");
 
-        entity
+        Entity
             .HasOne(d => d.OzviyatNoNavigation)
             .WithMany(p => p.TblUtmEngs)
             .HasForeignKey(d => d.OzviyatNo)

@@ -2,4 +2,4 @@
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
-public class DocumentAttachmentId : BusinessId<DocumentAttachmentId> {}
+public class DocumentAttachmentId : BonBusinessId<DocumentAttachmentId> {}

@@ -1,8 +1,8 @@
 ﻿using Bonyan.Layer.Domain.Abstractions;
 
-namespace Nezam.Modular.ESS.Identity.Domain.Employer;
+namespace Nezam.Modular.ESS.IdEntity.Domain.Employer;
 
-public interface IEmployerRepository : IRepository<EmployerEntity,EmployerId>
+public interface IEmployerRepository : IBonRepository<EmployerEntity,EmployerId>
 {
     
 }

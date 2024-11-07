@@ -1,12 +1,11 @@
-using System;
 using Bonyan.Layer.Domain.Model;
 using FastEndpoints;
-using Nezam.Modular.ESS.Identity.Application.Roles;
-using Nezam.Modular.ESS.Identity.Application.Roles.Dto;
+using Nezam.Modular.ESS.IdEntity.Application.Roles;
+using Nezam.Modular.ESS.IdEntity.Application.Roles.Dto;
 
 namespace Nezam.Modular.ESS.WebApi.Endpoints.Roles;
 
-public class RolePaginatedEndpoint : Endpoint<RoleFilterDto,PaginatedResult<RoleDto>>
+public class RolePaginatedEndpoint : Endpoint<RoleFilterDto,BonPaginatedResult<RoleDto>>
 {
     private readonly IRoleService roleService;
 
@@ -32,7 +31,7 @@ public class RolePaginatedEndpoint : Endpoint<RoleFilterDto,PaginatedResult<Role
     {
 
 
-        var rolePagianted = await roleService.GetPaginatedResult(dto);
+        var rolePagianted = await roleService.GetBonPaginatedResult(dto);
         await SendOkAsync(rolePagianted,ct);
     }
 

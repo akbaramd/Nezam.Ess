@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-using System.Security.Cryptography;
-using FastEndpoints;
+﻿using FastEndpoints;
 using Nezam.ESS.backend.Data;
 using Nezam.ESS.backend.Data.Models;
 using SixLabors.ImageSharp;
@@ -52,7 +50,7 @@ public class DocumentUploadEndpoint : Endpoint<DocumentUploadEndpointRequest, Do
     {
         if (req.Upload.Length <= 0) return;
 
-       var userId = int.Parse(User.Claims.First(x => x.Type == "Id").Value);
+       var BonUserId = int.Parse(User.Claims.First(x => x.Type == "Id").Value);
             
         var createdAt = DateTime.Now;
         var trackingCode = createdAt.ToString("yyMMddHHmmss");
@@ -66,7 +64,7 @@ public class DocumentUploadEndpoint : Endpoint<DocumentUploadEndpointRequest, Do
         }
 
         var yearFolder = new PersianDateTime(createdAt).ToString("yyyy");
-        var filePath = Path.Combine("uploads", "documents", yearFolder, $"{userId}-{trackingCode}{extension}");
+        var filePath = Path.Combine("uploads", "documents", yearFolder, $"{BonUserId}-{trackingCode}{extension}");
         var fullPath = Path.Combine(basePath, filePath);
 
         Directory.CreateDirectory(Path.GetDirectoryName(fullPath) ?? throw new InvalidOperationException("Directory path is invalid"));
@@ -82,7 +80,7 @@ public class DocumentUploadEndpoint : Endpoint<DocumentUploadEndpointRequest, Do
 
         var document = new TblEesDocuments
         {
-            UserId = userId,
+            BonUserId = BonUserId,
             TrackingCode = trackingCode,
             Title = req.Title,
             FilePath = filePath,

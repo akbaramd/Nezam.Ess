@@ -1,11 +1,12 @@
 ﻿using Bonyan.Layer.Application.Dto;
+using Bonyan.UserManagement.Domain.ValueObjects;
 using FastEndpoints;
-using Nezam.Modular.ESS.Identity.Application.Users.Dto;
-using Nezam.Modular.ESS.Identity.Domain.Engineer;
+using Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
+using Nezam.Modular.ESS.IdEntity.Domain.Engineer;
 
-namespace Nezam.Modular.ESS.Identity.Application.Engineers.Dtos;
+namespace Nezam.Modular.ESS.IdEntity.Application.Engineers.Dtos;
 
-public class EngineerDto : EntityDto<EngineerId>
+public class EngineerDto : BonEntityDto<EngineerId>
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
@@ -14,7 +15,7 @@ public class EngineerDto : EntityDto<EngineerId>
 
 public class EngineerDtoWithDetails : EngineerDto
 {
-    public UserDto User { get; set; }
+    public BonUserId BonUserId { get; set; }
 }
 
 public class EngineerFilterDto 

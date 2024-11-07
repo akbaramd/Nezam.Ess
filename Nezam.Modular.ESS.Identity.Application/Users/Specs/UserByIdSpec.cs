@@ -1,18 +1,16 @@
-using System;
 using Bonyan.Layer.Domain.Specifications;
 using Bonyan.UserManagement.Domain.ValueObjects;
-using Nezam.Modular.ESS.Identity.Application.Users.Dto;
-using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.IdEntity.Domain.User;
 
-namespace Nezam.Modular.ESS.Identity.Application.Users.Specs;
+namespace Nezam.Modular.ESS.IdEntity.Application.Users.Specs;
 
 public class UserByIdSpec : Specification<UserEntity>
 {
-    private readonly UserId _userId;
+    private readonly BonUserId _BonUserId;
 
-    public UserByIdSpec(UserId id)
+    public UserByIdSpec(BonUserId id)
     {
-        _userId = id;
+        _BonUserId = id;
     }
 
     public override void Handle(ISpecificationContext<UserEntity> context)
@@ -23,6 +21,6 @@ public class UserByIdSpec : Specification<UserEntity>
         context.AddInclude(x => x.Engineer)
             ;
 
-        context.AddCriteria(x => x.Id.Equals(_userId));
+        context.AddCriteria(x => x.Id.Equals(_BonUserId));
     }
 }

@@ -6,14 +6,14 @@ namespace Nezam.ESS.backend.Data.Configurations;
 
 public class TblUtmMantagehConfiguration : IEntityTypeConfiguration<TblUtmMantageh>
 {
-    public void Configure(EntityTypeBuilder<TblUtmMantageh> entity)
+    public void Configure(EntityTypeBuilder<TblUtmMantageh> Entity)
     {
-        entity.ToTable("tbl_UTM_mantageh");
+        Entity.ToTable("tbl_UTM_mantageh");
 
-        entity.Property(e => e.Id)
+        Entity.Property(e => e.Id)
             .ValueGeneratedNever()
             .HasColumnName("id");
-        entity.Property(e => e.Title)
+        Entity.Property(e => e.Title)
             .HasMaxLength(50)
             .HasColumnName("title");
     }

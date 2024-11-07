@@ -8,9 +8,9 @@ namespace Nezam.Modular.ESS.WebApi.Endpoints.Documents;
 public class CreateOrGetDraftDocumentEndpoint : EndpointWithoutRequest<DocumentDto>
 {
     private readonly IDocumentApplicationService _documentService;
-    private readonly ICurrentUser _currentUser;
+    private readonly IBonCurrentUser _currentUser;
 
-    public CreateOrGetDraftDocumentEndpoint(IDocumentApplicationService documentService, ICurrentUser currentUser)
+    public CreateOrGetDraftDocumentEndpoint(IDocumentApplicationService documentService, IBonCurrentUser currentUser)
     {
         _documentService = documentService;
         _currentUser = currentUser;
@@ -29,8 +29,8 @@ public class CreateOrGetDraftDocumentEndpoint : EndpointWithoutRequest<DocumentD
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var userId = UserId.FromGuid(_currentUser.Id!.Value); // Assuming `GetUserId` fetches UserId from claims
-        var documentDraft = await _documentService.CreateOrGetEmptyDraftAsync(userId);
+        var bonUserId = BonUserId.FromGuid(_currentUser.Id!.Value); // Assuming `GetBonUserId` fetches BonUserId from claims
+        var documentDraft = await _documentService.CreateOrGetEmptyDraftAsync(bonUserId);
 
         await SendOkAsync(documentDraft, ct);
     }

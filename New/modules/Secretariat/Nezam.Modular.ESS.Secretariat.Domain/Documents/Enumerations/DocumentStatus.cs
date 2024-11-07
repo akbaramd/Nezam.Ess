@@ -1,8 +1,8 @@
 ﻿using Bonyan.Layer.Domain.Enumerations;
 
-namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.Enumerations;
+namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.BonEnumerations;
 
-public class DocumentStatus : Enumeration
+public class DocumentStatus : BonEnumeration
 {
     public static readonly DocumentStatus Draft = new DocumentStatus(0, nameof(Draft));
     public static readonly DocumentStatus Published = new DocumentStatus(1, nameof(Published));

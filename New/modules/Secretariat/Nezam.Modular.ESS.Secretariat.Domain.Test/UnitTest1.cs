@@ -1,9 +1,7 @@
-using System.Linq;
 using Bonyan.UserManagement.Domain.ValueObjects;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents;
-using Nezam.Modular.ESS.Secretariat.Domain.Documents.Enumerations;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents.BonEnumerations;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents.Exceptions;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Test;
@@ -21,12 +19,12 @@ public class DocumentAggregateRootTests
     public void All_Users_Can_Respond_And_Refer_To_Others()
     {
         // Arrange
-        var senderId = UserId.CreateNew();
-        var managerId = UserId.CreateNew();
-        var employee1Id = UserId.CreateNew();
-        var employee2Id = UserId.CreateNew();
-        var engineerId = UserId.CreateNew();
-        var finalReviewerId = UserId.CreateNew();
+        var senderId = BonUserId.CreateNew();
+        var managerId = BonUserId.CreateNew();
+        var employee1Id = BonUserId.CreateNew();
+        var employee2Id = BonUserId.CreateNew();
+        var engineerId = BonUserId.CreateNew();
+        var finalReviewerId = BonUserId.CreateNew();
 
         var document = new DocumentAggregateRoot("Complex Document", "Content for complex workflow", senderId, DocumentType.Internal);
         document.Publish(senderId);
@@ -58,9 +56,9 @@ public class DocumentAggregateRootTests
     public void All_Referrals_Are_Pending_If_Not_Responded()
     {
         // Arrange
-        var senderId = UserId.CreateNew();
-        var employeeId1 = UserId.CreateNew();
-        var employeeId2 = UserId.CreateNew();
+        var senderId = BonUserId.CreateNew();
+        var employeeId1 = BonUserId.CreateNew();
+        var employeeId2 = BonUserId.CreateNew();
         
         var document = new DocumentAggregateRoot("Document Workflow", "Workflow with multiple users", senderId, DocumentType.Outgoing);
         document.Publish(senderId);
@@ -80,9 +78,9 @@ public class DocumentAggregateRootTests
     public void Multiple_Responses_And_Referrals()
     {
         // Arrange
-        var senderId = UserId.CreateNew();
-        var managerId = UserId.CreateNew();
-        var employeeId = UserId.CreateNew();
+        var senderId = BonUserId.CreateNew();
+        var managerId = BonUserId.CreateNew();
+        var employeeId = BonUserId.CreateNew();
         
         var document = new DocumentAggregateRoot("Multiple Responses", "Complex multi-response workflow", senderId, DocumentType.Internal);
         document.Publish(senderId);
@@ -105,8 +103,8 @@ public class DocumentAggregateRootTests
     public void Trying_To_Respond_To_Already_Responded_Referral_Should_Throw_Exception()
     {
         // Arrange
-        var senderId = UserId.CreateNew();
-        var managerId = UserId.CreateNew();
+        var senderId = BonUserId.CreateNew();
+        var managerId = BonUserId.CreateNew();
         
         var document = new DocumentAggregateRoot("Single Referral Test", "Test to ensure double response throws exception", senderId, DocumentType.Internal);
         document.Publish(senderId);
@@ -123,7 +121,7 @@ public class DocumentAggregateRootTests
     public void Document_Versions_Are_Created_On_Content_Update()
     {
         // Arrange
-        var senderId = UserId.CreateNew();
+        var senderId = BonUserId.CreateNew();
         var document = new DocumentAggregateRoot("Initial Title", "Initial Content", senderId, DocumentType.Internal);
         document.Publish(senderId);
         
@@ -137,8 +135,8 @@ public class DocumentAggregateRootTests
     public void Document_Activity_Log_Should_Record_All_Actions()
     {
         // Arrange
-        var senderId = UserId.CreateNew();
-        var managerId = UserId.CreateNew();
+        var senderId = BonUserId.CreateNew();
+        var managerId = BonUserId.CreateNew();
         
         var document = new DocumentAggregateRoot("Activity Log Test", "Initial Content", senderId, DocumentType.Internal);
         
@@ -156,7 +154,7 @@ public class DocumentAggregateRootTests
     public void Updating_Title_And_Type_Should_Create_New_Versions()
     {
         // Arrange
-        var senderId = UserId.CreateNew();
+        var senderId = BonUserId.CreateNew();
         var document = new DocumentAggregateRoot("Initial Title", "Initial Content", senderId, DocumentType.Internal);
         
         // Act
@@ -170,7 +168,7 @@ public class DocumentAggregateRootTests
     public void Archiving_Document_Should_Not_Allow_Further_Changes()
     {
         // Arrange
-        var senderId = UserId.CreateNew();
+        var senderId = BonUserId.CreateNew();
         var document = new DocumentAggregateRoot("Archivable Document", "Archivable Content", senderId, DocumentType.Internal);
         document.Publish(senderId);
 

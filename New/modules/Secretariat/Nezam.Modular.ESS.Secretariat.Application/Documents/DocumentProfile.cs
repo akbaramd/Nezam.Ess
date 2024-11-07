@@ -1,19 +1,16 @@
-using System.Reflection;
 using AutoMapper;
-using Bonyan.Layer.Domain.Enumerations;
 using Microsoft.Extensions.Localization;
 using Nezam.Modular.ESS.Secretariat.Application.Documents;
 using Nezam.Modular.ESS.Secretariat.Application.Resources;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents;
-using Nezam.Modular.ESS.Secretariat.Domain.Documents.Enumerations;
 
-namespace Nezam.Modular.ESS.Identity.Application.Employers
+namespace Nezam.Modular.ESS.IdEntity.Application.Employers
 {
     public class DocumentProfile : Profile
     {
         public DocumentProfile()
         {
-            // Map DocumentStatus with localization using the EnumerationTranslationResolver
+            // Map DocumentStatus with localization using the BonEnumerationTranslationResolver
             CreateMap<DocumentAggregateRoot, DocumentDto>();
 
             // Map Description with DocumentDescriptionConverter
@@ -41,5 +38,5 @@ namespace Nezam.Modular.ESS.Identity.Application.Employers
         }
     }
 
-    // Custom resolver to translate Enumeration-based properties using IStringLocalizer
+    // Custom resolver to translate BonEnumeration-based properties using IStringLocalizer
 }

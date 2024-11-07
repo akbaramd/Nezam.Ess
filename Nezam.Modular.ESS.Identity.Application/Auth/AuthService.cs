@@ -1,22 +1,16 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Bonyan.Layer.Application.Services;
+﻿using Bonyan.Layer.Application.Services;
 using Bonyan.Security.Claims;
-using Bonyan.UserManagement.Application.Dtos;
 using Bonyan.UserManagement.Domain.Enumerations;
-using Bonyan.UserManagement.Domain.Repositories;
 using FastEndpoints.Security;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Nezam.Modular.ESS.Identity.Application.Auth.Dto;
-using Nezam.Modular.ESS.Identity.Application.Users.Dto;
-using Nezam.Modular.ESS.Identity.Application.Users.Specs;
-using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.IdEntity.Application.Auth.Dto;
+using Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
+using Nezam.Modular.ESS.IdEntity.Application.Users.Specs;
+using Nezam.Modular.ESS.IdEntity.Domain.User;
 
-namespace Nezam.Modular.ESS.Identity.Application.Auth
+namespace Nezam.Modular.ESS.IdEntity.Application.Auth
 {
-    public class AuthService : ApplicationService, IAuthService
+    public class AuthService : BonApplicationService, IAuthService
     {
         private readonly IConfiguration _configuration;
 
@@ -47,10 +41,10 @@ namespace Nezam.Modular.ESS.Identity.Application.Auth
                     o.SigningKey = "asdsldaosjdisd2364723hy54u23g5835t237854234";
                     o.ExpireAt = DateTime.UtcNow.AddDays(1);
 
-                    o.User.Claims.Add((BonyanClaimTypes.UserName, user.UserName));
-                    o.User.Claims.Add((BonyanClaimTypes.PhoneNumber, user.PhoneNumber?.Number ?? ""));
-                    o.User.Claims.Add((BonyanClaimTypes.UserId, user.Id.Value.ToString() ?? ""));
-                    o.User.Claims.Add((BonyanClaimTypes.Email, user.Email?.Address.ToString() ?? ""));
+                    o.User.Claims.Add((BonClaimTypes.UserName, user.UserName));
+                    o.User.Claims.Add((BonClaimTypes.PhoneNumber, user.PhoneNumber?.Number ?? ""));
+                    o.User.Claims.Add((BonClaimTypes.UserId, user.Id.Value.ToString() ?? ""));
+                    o.User.Claims.Add((BonClaimTypes.Email, user.Email?.Address.ToString() ?? ""));
 
                     foreach (var role in user.Roles)
                     {
@@ -64,13 +58,13 @@ namespace Nezam.Modular.ESS.Identity.Application.Auth
             return new AuthJwtResult
             {
                 AccessToken = jwtToken,
-                UserId = user.Id
+                BonUserId = user.Id
             };
         }
 
         public async Task<UserDtoWithDetail> CurrentUserProfileAsync(CancellationToken cancellationToken = default)
         {
-            var user = await UserRepository.FindOneAsync(new UserByUsernameSpec(CurrentUser.UserName));
+            var user = await UserRepository.FindOneAsync(new UserByUsernameSpec(BonCurrentUser.UserName));
 
             return Mapper.Map<UserEntity, UserDtoWithDetail>(user ?? throw new InvalidOperationException());
         }

@@ -1,10 +1,9 @@
-using System;
 using AutoMapper;
 using Bonyan.Layer.Domain.Model;
-using Nezam.Modular.ESS.Identity.Application.Users.Dto;
-using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
+using Nezam.Modular.ESS.IdEntity.Domain.User;
 
-namespace Nezam.Modular.ESS.Identity.Application.Users;
+namespace Nezam.Modular.ESS.IdEntity.Application.Users;
 
 public class UserProfile : Profile
 {
@@ -13,7 +12,7 @@ public class UserProfile : Profile
         CreateMap<UserEntity,UserDto>();
         CreateMap<UserEntity,UserDtoWithDetail>();
         
-        CreateMap<PaginatedResult<UserEntity>,PaginatedResult<UserDto>>();
-        CreateMap<PaginatedResult<UserEntity>,PaginatedResult<UserDtoWithDetail>>();
+        CreateMap<BonPaginatedResult<UserEntity>,BonPaginatedResult<UserDto>>();
+        CreateMap<BonPaginatedResult<UserEntity>,BonPaginatedResult<UserDtoWithDetail>>();
     }
 }

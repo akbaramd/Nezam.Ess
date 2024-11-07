@@ -4,10 +4,10 @@ using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents;
 
-public class DocumentActivityLogEntity : Entity<DocumentActivityLogId>
+public class DocumentActivityLogEntity : BonEntity<DocumentActivityLogId>
 {
     public DateTime ActivityDate { get; private set; }
-    public UserId UserId { get; private set; }
+    public BonUserId BonUserId { get; private set; }
     public string Key { get; private set; }
     public string Description { get; private set; }
     
@@ -17,13 +17,13 @@ public class DocumentActivityLogEntity : Entity<DocumentActivityLogId>
     {
         
     }
-    public DocumentActivityLogEntity(DocumentId documentId,DateTime activityDate, UserId userId, string key, string activityDescription)
+    public DocumentActivityLogEntity(DocumentId documentId,DateTime activityDate, BonUserId BonUserId, string key, string activityDescription)
         // Example of generating an identifier based on date
     {
         Id = DocumentActivityLogId.CreateNew();
         DocumentId = documentId;
         ActivityDate = activityDate;
-        UserId = userId;
+        BonUserId = BonUserId;
         Description = activityDescription;
         Key = key;
     }

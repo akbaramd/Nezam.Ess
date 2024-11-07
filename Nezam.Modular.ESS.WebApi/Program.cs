@@ -1,19 +1,9 @@
 using System.Globalization;
-using System.Text;
-using Bonyan.User;
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Microsoft.Identity.Web;
-using Microsoft.Identity.Web.Resource;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Nezam.Modular.ESS.Identity.Application.Auth;
-using Nezam.Modular.ESS.Identity.Application.Auth.Dto;
 using Nezam.Modular.ESS.WebApi;
 
 var builder = BonyanApplication.CreateApplicationBuilder<NezamEssModule>(args);

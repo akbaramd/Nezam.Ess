@@ -4,12 +4,12 @@ using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.Repositories;
 
-public interface IDocumentReadOnlyRepository : IReadOnlyRepository<DocumentAggregateRoot,DocumentId>
+public interface IDocumentReadOnlyRepository : IBonReadOnlyRepository<DocumentAggregateRoot,DocumentId>
 {
-    Task<DocumentAggregateRoot?> GetEmptyDraftByUserAsync(UserId userId);
+    Task<DocumentAggregateRoot?> GetEmptyDraftByUserAsync(BonUserId BonUserId);
 }
 
-public interface IDocumentRepository : IRepository<DocumentAggregateRoot,DocumentId> 
+public interface IDocumentRepository : IBonRepository<DocumentAggregateRoot,DocumentId> 
 {
     
 }

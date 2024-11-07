@@ -3,7 +3,7 @@ using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.Events;
 
-public class DocumentContentUpdatedEvent : DomainEventBase
+public class DocumentContentUpdatedEvent : BonDomainEventBase
 {
     public DocumentId DocumentId { get; }
 

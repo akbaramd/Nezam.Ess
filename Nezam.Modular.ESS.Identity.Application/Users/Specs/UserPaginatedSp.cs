@@ -1,9 +1,8 @@
-using System;
 using Bonyan.Layer.Domain.Specifications;
-using Nezam.Modular.ESS.Identity.Application.Users.Dto;
-using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
+using Nezam.Modular.ESS.IdEntity.Domain.User;
 
-namespace Nezam.Modular.ESS.Identity.Application.Users.Specs;
+namespace Nezam.Modular.ESS.IdEntity.Application.Users.Specs;
 
 public class UsersFilterSpec : PaginatedAndSortableSpecification<UserEntity>
 {

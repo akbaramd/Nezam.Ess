@@ -2,7 +2,7 @@
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.Exceptions
 {
-    public class ReferralNotFoundException : DomainException
+    public class ReferralNotFoundException : BonDomainException
     {
         public ReferralNotFoundException(string message = "Referral not found.", string? errorCode = null, object? parameters = null)
             : base(message, errorCode ?? GenerateErrorCode(nameof(ReferralNotFoundException)), parameters) { }

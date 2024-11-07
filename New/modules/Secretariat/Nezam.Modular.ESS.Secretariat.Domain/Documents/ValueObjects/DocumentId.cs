@@ -2,7 +2,7 @@
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
-public class DocumentId : BusinessId<DocumentId>
+public class DocumentId : BonBusinessId<DocumentId>
 {
     
 }

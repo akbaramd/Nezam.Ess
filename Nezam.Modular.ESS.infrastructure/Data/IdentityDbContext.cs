@@ -2,17 +2,16 @@
 using Bonyan.Layer.Domain.Enumerations;
 using Bonyan.UserManagement.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Nezam.Modular.ESS.Identity.Domain.Employer;
-using Nezam.Modular.ESS.Identity.Domain.Engineer;
-using Nezam.Modular.ESS.Identity.Domain.Roles;
-using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.IdEntity.Domain.Employer;
+using Nezam.Modular.ESS.IdEntity.Domain.Engineer;
+using Nezam.Modular.ESS.IdEntity.Domain.Roles;
+using Nezam.Modular.ESS.IdEntity.Domain.User;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents;
-using Nezam.Modular.ESS.Secretariat.Domain.Documents.Enumerations;
-using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents.BonEnumerations;
 
 namespace Nezam.Modular.ESS.Infrastructure.Data;
 
-public class IdentityDbContext : BonyanDbContext<IdentityDbContext>, IBonUserManagementDbContext<UserEntity>
+public class IdEntityDbContext : BonDbContext<IdEntityDbContext>, IBonUserManagementDbContext<UserEntity>
 {
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<UserVerificationTokenEntity> UserVerificationTokens { get; set; }
@@ -24,7 +23,7 @@ public class IdentityDbContext : BonyanDbContext<IdentityDbContext>, IBonUserMan
     public DbSet<DocumentReferralEntity> DocumentReferrals { get; set; }
     public DbSet<DocumentActivityLogEntity> DocumentActivityLogs { get; set; }
 
-    public IdentityDbContext(DbContextOptions<IdentityDbContext> options) : base(options) { }
+    public IdEntityDbContext(DbContextOptions<IdEntityDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -32,12 +31,12 @@ public class IdentityDbContext : BonyanDbContext<IdentityDbContext>, IBonUserMan
         
         ConfigureEntities(modelBuilder);
         ConfigureRelationships(modelBuilder);
-        ConfigureEnumerations(modelBuilder);
+        ConfigureBonEnumerations(modelBuilder);
     }
 
     private static void ConfigureEntities(ModelBuilder modelBuilder)
     {
-        modelBuilder.ConfigureUserManagementByConvention<UserEntity>();
+        modelBuilder.ConfigureBonUserManagementByConvention<UserEntity>();
         
         modelBuilder.Entity<RoleEntity>().ConfigureByConvention();
         modelBuilder.Entity<UserVerificationTokenEntity>().ConfigureByConvention();
@@ -51,17 +50,7 @@ public class IdentityDbContext : BonyanDbContext<IdentityDbContext>, IBonUserMan
 
     private static void ConfigureRelationships(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<EngineerEntity>()
-            .HasOne(e => e.User)
-            .WithOne(c => c.Engineer)
-            .HasForeignKey<EngineerEntity>(e => e.UserId)
-            .OnDelete(DeleteBehavior.Cascade); 
-        
-        modelBuilder.Entity<EmployerEntity>()
-            .HasOne(e => e.User)
-            .WithOne(c => c.Employer)
-            .HasForeignKey<EmployerEntity>(e => e.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+
         
         modelBuilder.Entity<UserEntity>()
             .HasMany(u => u.Roles)
@@ -69,9 +58,22 @@ public class IdentityDbContext : BonyanDbContext<IdentityDbContext>, IBonUserMan
             .UsingEntity("UserRoles");
         
         modelBuilder.Entity<UserEntity>()
+            .HasOne(u => u.Employer)
+            .WithOne(c=>c.BonUser)
+            .HasForeignKey<EmployerEntity>(t => t.BonUserId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<UserEntity>()
+            .HasOne(u => u.Engineer)
+            .WithOne(u=>u.BonUser)
+            .HasForeignKey<EngineerEntity>(t => t.BonUserId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<UserEntity>()
             .HasMany(u => u.VerificationTokens)
             .WithOne(t => t.User)
-            .HasForeignKey(t => t.UserId);
+            .HasForeignKey(t => t.BonUserId);
 
         modelBuilder.Entity<DocumentAggregateRoot>()
             .HasMany(d => d.Attachments)
@@ -92,37 +94,37 @@ public class IdentityDbContext : BonyanDbContext<IdentityDbContext>, IBonUserMan
         modelBuilder.Entity<DocumentAggregateRoot>()
             .HasOne(d => d.OwnerUser)
             .WithMany()
-            .HasForeignKey(a => a.OwnerUserId);
+            .HasForeignKey(a => a.OwnerBonUserId);
     }
 
-    private static void ConfigureEnumerations(ModelBuilder modelBuilder)
+    private static void ConfigureBonEnumerations(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<UserVerificationTokenEntity>()
             .Property(x => x.Type)
             .HasConversion<string>(
                 c => c.Name,
-                v => Enumeration.FromName<UserVerificationTokenType>(v) ?? UserVerificationTokenType.Global
+                v => BonEnumeration.FromName<UserVerificationTokenType>(v) ?? UserVerificationTokenType.Global
             );
 
         modelBuilder.Entity<DocumentAggregateRoot>()
             .Property(d => d.Type)
             .HasConversion<string>(
                 c => c.Name,
-                v => Enumeration.FromName<DocumentType>(v) ?? DocumentType.Internal
+                v => BonEnumeration.FromName<DocumentType>(v) ?? DocumentType.Internal
             );
 
         modelBuilder.Entity<DocumentAggregateRoot>()
             .Property(d => d.Status)
             .HasConversion<string>(
                 c => c.Name,
-                v => Enumeration.FromName<DocumentStatus>(v) ?? DocumentStatus.Draft
+                v => BonEnumeration.FromName<DocumentStatus>(v) ?? DocumentStatus.Draft
             );
 
         modelBuilder.Entity<DocumentReferralEntity>()
             .Property(r => r.Status)
             .HasConversion<string>(
                 c => c.Name,
-                v => Enumeration.FromName<ReferralStatus>(v) ?? ReferralStatus.Pending
+                v => BonEnumeration.FromName<ReferralStatus>(v) ?? ReferralStatus.Pending
             );
 
         modelBuilder.Entity<RoleEntity>().HasIndex(r => r.Name);

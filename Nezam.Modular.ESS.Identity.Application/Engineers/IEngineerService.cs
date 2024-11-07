@@ -1,10 +1,10 @@
 using Bonyan.Layer.Application.Services;
 using Bonyan.Layer.Domain.Model;
-using Nezam.Modular.ESS.Identity.Application.Engineers.Dtos;
+using Nezam.Modular.ESS.IdEntity.Application.Engineers.Dtos;
 
-namespace Nezam.Modular.ESS.Identity.Application.Engineers;
+namespace Nezam.Modular.ESS.IdEntity.Application.Engineers;
 
-public interface IEngineerService : IApplicationService
+public interface IEngineerService : IBonApplicationService
 {
-    Task<PaginatedResult<EngineerDtoWithDetails>> GetPaginatedResult(EngineerFilterDto filterDto);
+    Task<BonPaginatedResult<EngineerDtoWithDetails>> GetBonPaginatedResult(EngineerFilterDto filterDto);
 }

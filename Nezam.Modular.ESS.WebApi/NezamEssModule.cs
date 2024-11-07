@@ -1,5 +1,4 @@
-﻿using Bonyan.AspNetCore.Job;
-using Bonyan.EntityFrameworkCore;
+﻿using Bonyan.EntityFrameworkCore;
 using Bonyan.Job.Hangfire;
 using Bonyan.Modularity;
 using Microsoft.EntityFrameworkCore;
@@ -12,13 +11,13 @@ public class NezamEssModule : WebModule
 {
     public NezamEssModule()
     {
-        DependOn<BonyanJobHangfireModule>();
-        DependOn<NezamEssIdentityInfrastructureModule>();
+        DependOn<BonAspNetCoreWorkersHangfireModule>();
+        DependOn<NezamEssIdEntityInfrastructureModule>();
     }
 
-    public override Task OnConfigureAsync(ServiceConfigurationContext context)
+    public override Task OnConfigureAsync(BonConfigurationContext context)
     {
-        context.Services.Configure<EntityFrameworkDbContextOptions>(c =>
+        context.Services.Configure<BonEntityFrameworkDbContextOptions>(c =>
         {
             c.UseSqlite("Data Source=./NezamEes.db");
         });
@@ -26,8 +25,9 @@ public class NezamEssModule : WebModule
         return base.OnConfigureAsync(context);
     }
 
-
-    public override Task OnApplicationAsync(ApplicationContext context)
+    
+    
+    public override Task OnApplicationAsync(BonContext context)
     {
         context.Application.UseBonyanExceptionHandling();
         return base.OnApplicationAsync(context);

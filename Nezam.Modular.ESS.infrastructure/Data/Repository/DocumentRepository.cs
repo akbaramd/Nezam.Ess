@@ -1,23 +1,22 @@
 ﻿using Bonyan.Layer.Domain;
 using Bonyan.UserManagement.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
-using Nezam.Modular.ESS.Identity.Domain.Employer;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents;
-using Nezam.Modular.ESS.Secretariat.Domain.Documents.Enumerations;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents.BonEnumerations;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents.Repositories;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
 
 namespace Nezam.Modular.ESS.Infrastructure.Data.Repository;
 
-public class DocumentReadOnlyRepository : EfCoreReadonlyRepository<DocumentAggregateRoot,DocumentId, IdentityDbContext>, IDocumentReadOnlyRepository
+public class DocumentReadOnlyRepository : EfCoreReadonlyRepository<DocumentAggregateRoot,DocumentId, IdEntityDbContext>, IDocumentReadOnlyRepository
 {
-    public DocumentReadOnlyRepository(IdentityDbContext userManagementDbContext) : base(userManagementDbContext)
+    public DocumentReadOnlyRepository(IdEntityDbContext userManagementDbContext) : base(userManagementDbContext)
     {
     }
-    public async Task<DocumentAggregateRoot?> GetEmptyDraftByUserAsync(UserId userId)
+    public async Task<DocumentAggregateRoot?> GetEmptyDraftByUserAsync(BonUserId BonUserId)
     {
         return  await PrepareQuery((await GetDbContextAsync()).Set<DocumentAggregateRoot>())
-            .Where(d => d.OwnerUserId == userId 
+            .Where(d => d.OwnerBonUserId == BonUserId 
                         && d.Status == DocumentStatus.Draft
                         && !d.Attachments.Any() 
                         && !d.Referrals.Any())
@@ -35,9 +34,9 @@ public class DocumentReadOnlyRepository : EfCoreReadonlyRepository<DocumentAggre
     }
 }
 
-public class DocumentRepository : EfCoreRepository<DocumentAggregateRoot,DocumentId, IdentityDbContext>, IDocumentRepository
+public class DocumentRepository : EfCoreBonRepository<DocumentAggregateRoot,DocumentId, IdEntityDbContext>, IDocumentRepository
 {
-    public DocumentRepository(IdentityDbContext userManagementDbContext) : base(userManagementDbContext)
+    public DocumentRepository(IdEntityDbContext userManagementDbContext) : base(userManagementDbContext)
     {
     }
 
