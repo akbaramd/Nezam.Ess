@@ -3,12 +3,13 @@ using Bonyan.Security.Claims;
 using Bonyan.UserManagement.Domain.Enumerations;
 using FastEndpoints.Security;
 using Microsoft.Extensions.Configuration;
-using Nezam.Modular.ESS.IdEntity.Application.Auth.Dto;
-using Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
-using Nezam.Modular.ESS.IdEntity.Application.Users.Specs;
-using Nezam.Modular.ESS.IdEntity.Domain.User;
+using Nezam.Modular.ESS.Identity.Application.Auth.Dto;
+using Nezam.Modular.ESS.Identity.Application.Users.Dto;
+using Nezam.Modular.ESS.Identity.Application.Users.Specs;
+using Nezam.Modular.ESS.Identity.Domain.Shared.User;
+using Nezam.Modular.ESS.Identity.Domain.User;
 
-namespace Nezam.Modular.ESS.IdEntity.Application.Auth
+namespace Nezam.Modular.ESS.Identity.Application.Auth
 {
     public class AuthService : BonApplicationService, IAuthService
     {
@@ -48,11 +49,11 @@ namespace Nezam.Modular.ESS.IdEntity.Application.Auth
 
                     foreach (var role in user.Roles)
                     {
-                        o.User.Roles.Add(role.Name);
+                        o.User.Roles.Add(role.RoleId.Name);
                     }
                 });
 
-            
+
             user.ChangeStatus(UserStatus.Active);
             await UserRepository.UpdateAsync(user);
             return new AuthJwtResult

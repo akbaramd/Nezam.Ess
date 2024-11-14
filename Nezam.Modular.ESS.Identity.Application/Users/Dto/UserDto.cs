@@ -1,10 +1,12 @@
 using Bonyan.UserManagement.Application.Dtos;
 using FastEndpoints;
 using Microsoft.AspNetCore.Mvc;
-using Nezam.Modular.ESS.IdEntity.Application.Employers.Dtos;
-using Nezam.Modular.ESS.IdEntity.Application.Roles.Dto;
+using Nezam.Modular.ESS.Identity.Application.Employers.Dtos;
+using Nezam.Modular.ESS.Identity.Application.Roles.Dto;
+using Nezam.Modular.ESS.Identity.Domain.Roles;
+using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
 
-namespace Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
+namespace Nezam.Modular.ESS.Identity.Application.Users.Dto;
 
 public class UserDto : BonUserDto
 {
@@ -44,6 +46,6 @@ public class UserUpdateDto
     public Guid BonUserId { get; set; }
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
-    public string[] Roles { get; set; }
+    public RoleId[] RolesIds { get; set; }
 }
 

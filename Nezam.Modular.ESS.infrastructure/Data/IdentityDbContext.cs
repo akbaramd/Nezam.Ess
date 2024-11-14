@@ -2,16 +2,17 @@
 using Bonyan.Layer.Domain.Enumerations;
 using Bonyan.UserManagement.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Nezam.Modular.ESS.IdEntity.Domain.Employer;
-using Nezam.Modular.ESS.IdEntity.Domain.Engineer;
-using Nezam.Modular.ESS.IdEntity.Domain.Roles;
-using Nezam.Modular.ESS.IdEntity.Domain.User;
+using Nezam.Modular.ESS.Identity.Domain.Employer;
+using Nezam.Modular.ESS.Identity.Domain.Engineer;
+using Nezam.Modular.ESS.Identity.Domain.Roles;
+using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
+using Nezam.Modular.ESS.Identity.Domain.User;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents;
-using Nezam.Modular.ESS.Secretariat.Domain.Documents.BonEnumerations;
+using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.Enumerations;
 
 namespace Nezam.Modular.ESS.Infrastructure.Data;
 
-public class IdEntityDbContext : BonDbContext<IdEntityDbContext>, IBonUserManagementDbContext<UserEntity>
+public class IdentityDbContext : BonDbContext<IdentityDbContext>, IBonUserManagementDbContext<UserEntity>
 {
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<UserVerificationTokenEntity> UserVerificationTokens { get; set; }
@@ -23,7 +24,7 @@ public class IdEntityDbContext : BonDbContext<IdEntityDbContext>, IBonUserManage
     public DbSet<DocumentReferralEntity> DocumentReferrals { get; set; }
     public DbSet<DocumentActivityLogEntity> DocumentActivityLogs { get; set; }
 
-    public IdEntityDbContext(DbContextOptions<IdEntityDbContext> options) : base(options) { }
+    public IdentityDbContext(DbContextOptions<IdentityDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -32,6 +33,12 @@ public class IdEntityDbContext : BonDbContext<IdEntityDbContext>, IBonUserManage
         ConfigureEntities(modelBuilder);
         ConfigureRelationships(modelBuilder);
         ConfigureBonEnumerations(modelBuilder);
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.EnableSensitiveDataLogging();
+        base.OnConfiguring(optionsBuilder);
     }
 
     private static void ConfigureEntities(ModelBuilder modelBuilder)
@@ -50,13 +57,35 @@ public class IdEntityDbContext : BonDbContext<IdEntityDbContext>, IBonUserManage
 
     private static void ConfigureRelationships(ModelBuilder modelBuilder)
     {
+                
+        
+        // پیکربندی RoleEntity
+        modelBuilder.Entity<RoleEntity>()
+            .HasKey(r => r.Id);
 
+        modelBuilder.Entity<RoleEntity>()
+            .Property(r => r.Id)
+            .HasConversion(
+                roleId => roleId.Name, // برای ذخیره در پایگاه داده
+                value => new RoleId(value) // برای بارگذاری از پایگاه داده
+            );
         
-        modelBuilder.Entity<UserEntity>()
-            .HasMany(u => u.Roles)
-            .WithMany(r => r.Users)
-            .UsingEntity("UserRoles");
-        
+            // پیکربندی رابطه چند به چند UserEntity و Roles
+            modelBuilder.Entity<UserEntity>()
+                .HasMany(x => x.Roles).WithOne()
+                .HasForeignKey(x => x.UserId);
+
+            modelBuilder.Entity<UserRoleEntity>()
+                .ToTable("UserRoles")
+                .HasKey(x => new { x.UserId, x.RoleId });
+            
+            modelBuilder.Entity<UserRoleEntity>()
+                .Property(r => r.RoleId)
+                .HasConversion(
+                    roleId => roleId.Name, // برای ذخیره در پایگاه داده
+                    value => new RoleId(value) // برای بارگذاری از پایگاه داده
+                );
+            
         modelBuilder.Entity<UserEntity>()
             .HasOne(u => u.Employer)
             .WithOne(c=>c.BonUser)
@@ -127,7 +156,6 @@ public class IdEntityDbContext : BonDbContext<IdEntityDbContext>, IBonUserManage
                 v => BonEnumeration.FromName<ReferralStatus>(v) ?? ReferralStatus.Pending
             );
 
-        modelBuilder.Entity<RoleEntity>().HasIndex(r => r.Name);
         modelBuilder.Ignore<UserVerificationTokenType>();
     }
 }

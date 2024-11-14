@@ -1,7 +1,7 @@
 using Bonyan.Layer.Domain.Model;
 using FastEndpoints;
-using Nezam.Modular.ESS.IdEntity.Application.Users;
-using Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
+using Nezam.Modular.ESS.Identity.Application.Users;
+using Nezam.Modular.ESS.Identity.Application.Users.Dto;
 
 namespace Nezam.Modular.ESS.WebApi.Endpoints.Users;
 

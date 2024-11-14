@@ -1,8 +1,8 @@
 using Bonyan.Layer.Domain.Specifications;
-using Nezam.Modular.ESS.IdEntity.Application.Employers.Dtos;
-using Nezam.Modular.ESS.IdEntity.Domain.Employer;
+using Nezam.Modular.ESS.Identity.Application.Employers.Dtos;
+using Nezam.Modular.ESS.Identity.Domain.Employer;
 
-namespace Nezam.Modular.ESS.IdEntity.Application.Employers.Specs;
+namespace Nezam.Modular.ESS.Identity.Application.Employers.Specs;
 
 public class EmployerFilterSpec : PaginatedSpecification<EmployerEntity>
 {

@@ -1,11 +1,12 @@
 ﻿using Bonyan.Layer.Domain;
-using Nezam.Modular.ESS.IdEntity.Domain.Engineer;
+using Nezam.Modular.ESS.Identity.Domain.Engineer;
+using Nezam.Modular.ESS.Identity.Domain.Shared.Engineer;
 
 namespace Nezam.Modular.ESS.Infrastructure.Data.Repository;
 
-public class EngineerRepository : EfCoreBonRepository<EngineerEntity,EngineerId, IdEntityDbContext>, IEngineerRepository
+public class EngineerRepository : EfCoreBonRepository<EngineerEntity,EngineerId, IdentityDbContext>, IEngineerRepository
 {
-    public EngineerRepository(IdEntityDbContext userManagementDbContext) : base(userManagementDbContext)
+    public EngineerRepository(IdentityDbContext userManagementDbContext) : base(userManagementDbContext)
     {
     }
 }

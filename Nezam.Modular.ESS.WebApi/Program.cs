@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using Nezam.Modular.ESS.WebApi;
 
-var builder = BonyanApplication.CreateApplicationBuilder<NezamEssModule>(args);
+var builder = BonyanApplication.CreateModularApplication<NezamEssModule>(args);
 
 // Add localization services with default culture set to Persian
 builder.Services.AddLocalization();
@@ -30,18 +30,5 @@ builder.Services.AddFastEndpoints()
 builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 
-var app = await builder.BuildAsync();
+await builder.RunAsync();
 
-app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
-
-// Use the localization settings configured
-var locOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>();
-app.UseRequestLocalization(locOptions.Value);
-
-app
-    .UseFastEndpoints()
-    .UseSwaggerGen();
-
-app.Run();

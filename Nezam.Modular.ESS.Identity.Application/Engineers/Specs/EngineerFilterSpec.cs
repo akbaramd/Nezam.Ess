@@ -1,8 +1,8 @@
 using Bonyan.Layer.Domain.Specifications;
-using Nezam.Modular.ESS.IdEntity.Application.Engineers.Dtos;
-using Nezam.Modular.ESS.IdEntity.Domain.Engineer;
+using Nezam.Modular.ESS.Identity.Application.Engineers.Dtos;
+using Nezam.Modular.ESS.Identity.Domain.Engineer;
 
-namespace Nezam.Modular.ESS.IdEntity.Application.Engineers.Specs;
+namespace Nezam.Modular.ESS.Identity.Application.Engineers.Specs;
 
 public class EngineerFilterSpec : PaginatedSpecification<EngineerEntity>
 {

@@ -4,17 +4,17 @@ using Bonyan.Modularity;
 using Bonyan.Modularity.Abstractions;
 using Bonyan.UserManagement.Application;
 using Microsoft.Extensions.DependencyInjection;
-using Nezam.Modular.ESS.IdEntity.Application.Auth;
-using Nezam.Modular.ESS.IdEntity.Application.Employers;
-using Nezam.Modular.ESS.IdEntity.Application.Employers.Jobs;
-using Nezam.Modular.ESS.IdEntity.Application.Engineers;
+using Nezam.Modular.ESS.Identity.Application.Auth;
+using Nezam.Modular.ESS.Identity.Application.Employers;
+using Nezam.Modular.ESS.Identity.Application.Employers.Jobs;
+using Nezam.Modular.ESS.Identity.Application.Engineers;
 using Nezam.Modular.ESS.Identity.Application.Engineers.Jobs;
-using Nezam.Modular.ESS.IdEntity.Application.Roles;
-using Nezam.Modular.ESS.IdEntity.Application.Users;
-using Nezam.Modular.ESS.IdEntity.Domain;
-using Nezam.Modular.ESS.IdEntity.Domain.User;
+using Nezam.Modular.ESS.Identity.Application.Roles;
+using Nezam.Modular.ESS.Identity.Application.Users;
+using Nezam.Modular.ESS.Identity.Domain;
+using Nezam.Modular.ESS.Identity.Domain.User;
 
-namespace Nezam.Modular.ESS.IdEntity.Application;
+namespace Nezam.Modular.ESS.Identity.Application;
 
 public class NezamEssIdEntityApplicationModule : BonModule
 {
@@ -53,8 +53,8 @@ public class NezamEssIdEntityApplicationModule : BonModule
 
     public override Task OnInitializeAsync(ServiceInitializationContext context)
     {
-        context.AddCronWorkerAsync<EmployerSynchronizerJob>("*/1 * * * *");
-        context.AddCronWorkerAsync<EngineerSynchronizerWorker>("*/1 * * * *");
+        context.AddBackgroundWorkerAsync<EmployerSynchronizerJob>();
+        context.AddBackgroundWorkerAsync<EngineerSynchronizerWorker>();
         return base.OnInitializeAsync(context);
     }
 }

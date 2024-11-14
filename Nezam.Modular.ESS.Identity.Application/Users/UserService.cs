@@ -1,20 +1,20 @@
 using Bonyan.Layer.Application.Services;
 using Bonyan.Layer.Domain.Model;
 using Bonyan.UserManagement.Domain.ValueObjects;
-using Nezam.Modular.ESS.IdEntity.Application.Roles.Dto;
-using Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
-using Nezam.Modular.ESS.IdEntity.Application.Users.Specs;
-using Nezam.Modular.ESS.IdEntity.Domain.DomainServices;
-using Nezam.Modular.ESS.IdEntity.Domain.Roles;
-using Nezam.Modular.ESS.IdEntity.Domain.User;
+using Nezam.Modular.ESS.Identity.Application.Roles.Dto;
+using Nezam.Modular.ESS.Identity.Application.Users.Dto;
+using Nezam.Modular.ESS.Identity.Application.Users.Specs;
+using Nezam.Modular.ESS.Identity.Domain.Roles;
+using Nezam.Modular.ESS.Identity.Domain.Shared.User;
+using Nezam.Modular.ESS.Identity.Domain.User;
 
-namespace Nezam.Modular.ESS.IdEntity.Application.Users;
+namespace Nezam.Modular.ESS.Identity.Application.Users;
 
 public class UserService : BonApplicationService, IUserService
 {
     public IUserRepository UserRepository => LazyServiceProvider.LazyGetRequiredService<IUserRepository>();
     public IRoleRepository RoleRepository => LazyServiceProvider.LazyGetRequiredService<IRoleRepository>();
-    public UserManager UserManager => LazyServiceProvider.LazyGetRequiredService<UserManager>();
+    public UserDomainService UserDomainService => LazyServiceProvider.LazyGetRequiredService<UserDomainService>();
     public RoleManager RoleManager => LazyServiceProvider.LazyGetRequiredService<RoleManager>();
 
     // Retrieves paginated user results based on the provided filter
@@ -42,10 +42,10 @@ public class UserService : BonApplicationService, IUserService
         // Update contact info using encapsulated method
         user.UpdateContactInfo(updateUserDto.Email, updateUserDto.PhoneNumber);
 
-        // Update roles via UserManager to handle encapsulation and business logic
-        if (updateUserDto.Roles != null && updateUserDto.Roles.Length > 0)
+        // Update roles via UserDomainService to handle encapsulation and business logic
+        if (updateUserDto.RolesIds != null && updateUserDto.RolesIds.Length > 0)
         {
-            await UserManager.UpdateRolesAsync(user, updateUserDto.Roles);
+            await UserDomainService.UpdateRolesAsync(user, updateUserDto.RolesIds);
         }
 
         await UserRepository.UpdateAsync(user);
@@ -62,16 +62,8 @@ public class UserService : BonApplicationService, IUserService
         return true;
     }
 
-    // Gets the roles assigned to a specific user
-    public async Task<List<RoleDto>> GetUserRolesAsync(BonUserId BonUserId)
-    {
-        var user = await UserRepository.GetByIdAsync(BonUserId);
-        if (user == null) throw new Exception("User not found");
-
-        return Mapper.Map<IReadOnlyCollection<RoleEntity>, List<RoleDto>>(user.Roles);
-    }
-
-    // Additional Methods Using UserManager and RoleManager
+   
+    // Additional Methods Using UserDomainService and RoleManager
 
 
     // Resets a user's password
@@ -80,6 +72,6 @@ public class UserService : BonApplicationService, IUserService
         var user = await UserRepository.GetByIdAsync(BonUserId);
         if (user == null) throw new Exception("User not found");
 
-        return await UserManager.ResetPasswordAsync(user, newPassword);
+        return await UserDomainService.ResetPasswordAsync(user, newPassword);
     }
 }

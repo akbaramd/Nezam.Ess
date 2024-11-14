@@ -8,13 +8,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Bonyan.Layer.Application" Version="1.1.6-pre2" />
-      <PackageReference Include="Bonyan.UserManagement.Application" Version="1.1.6-pre2" />
-      <PackageReference Include="Bonyan.Worker.Abstraction" Version="1.1.6-pre2" />
+      <PackageReference Include="Bonyan.Layer.Application" Version="1.1.7" />
+      <PackageReference Include="Bonyan.UserManagement.Application" Version="1.1.7" />
+      <PackageReference Include="Bonyan.Worker.Abstraction" Version="1.1.7" />
       <PackageReference Include="Dapper" Version="2.1.35" />
       <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
       <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.2.0" />
-        <PackageReference Include="FastEndpoints.Security" Version="5.31.0.4-beta" />
+        <PackageReference Include="FastEndpoints.Security" Version="5.31.0.7-beta" />
     </ItemGroup>
 
     <ItemGroup>

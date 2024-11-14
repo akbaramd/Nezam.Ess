@@ -1,13 +1,14 @@
 ﻿using System.Linq.Expressions;
 using Bonyan.Layer.Domain;
 using Microsoft.EntityFrameworkCore;
-using Nezam.Modular.ESS.IdEntity.Domain.User;
+using Nezam.Modular.ESS.Identity.Domain.Shared.User;
+using Nezam.Modular.ESS.Identity.Domain.User;
 
 namespace Nezam.Modular.ESS.Infrastructure.Data.Repository;
 
-public class UserVerificationTokenRepository : EfCoreBonRepository<UserVerificationTokenEntity, IdEntityDbContext>, IUserVerificationTokenRepository
+public class UserVerificationTokenRepository : EfCoreBonRepository<UserVerificationTokenEntity, IdentityDbContext>, IUserVerificationTokenRepository
 {
-    public UserVerificationTokenRepository(IdEntityDbContext userManagementDbContext) : base(userManagementDbContext)
+    public UserVerificationTokenRepository(IdentityDbContext userManagementDbContext) : base(userManagementDbContext)
     {
     }
 

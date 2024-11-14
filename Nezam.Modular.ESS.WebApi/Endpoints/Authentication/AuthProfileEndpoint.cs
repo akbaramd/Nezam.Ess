@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
-using Nezam.Modular.ESS.IdEntity.Application.Auth;
-using Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
+using Nezam.Modular.ESS.Identity.Application.Auth;
+using Nezam.Modular.ESS.Identity.Application.Users.Dto;
 
 namespace Nezam.Modular.ESS.WebApi.Endpoints.Authentication;
 

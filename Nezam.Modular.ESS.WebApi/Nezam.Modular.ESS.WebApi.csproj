@@ -8,20 +8,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Bonyan.AspNetCore" Version="1.1.6-pre2" />
-        <PackageReference Include="Bonyan.AspNetCore.Workers.Hangfire" Version="1.1.6-pre2" />
-        <PackageReference Include="FastEndpoints" Version="5.31.0.4-beta" />
-        <PackageReference Include="FastEndpoints.Security" Version="5.31.0.4-beta" />
-        <PackageReference Include="FastEndpoints.Swagger" Version="5.31.0.4-beta" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.10" NoWarn="NU1605" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.10" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+        <PackageReference Include="Bonyan.AspNetCore" Version="1.1.7" />
+        <PackageReference Include="Bonyan.AspNetCore.Workers.Hangfire" Version="1.1.7" />
+        <PackageReference Include="FastEndpoints" Version="5.31.0.7-beta" />
+        <PackageReference Include="FastEndpoints.Security" Version="5.31.0.7-beta" />
+        <PackageReference Include="FastEndpoints.Swagger" Version="5.31.0.7-beta" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.11" NoWarn="NU1605" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.Identity.Web" Version="3.3.1" />
         <PackageReference Include="Microsoft.Identity.Web.DownstreamApi" Version="3.3.1" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="7.0.0" />
     </ItemGroup>
 
     <ItemGroup>

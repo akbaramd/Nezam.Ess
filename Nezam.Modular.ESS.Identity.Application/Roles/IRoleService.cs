@@ -1,8 +1,8 @@
 using Bonyan.Layer.Application.Services;
 using Bonyan.Layer.Domain.Model;
-using Nezam.Modular.ESS.IdEntity.Application.Roles.Dto;
+using Nezam.Modular.ESS.Identity.Application.Roles.Dto;
 
-namespace Nezam.Modular.ESS.IdEntity.Application.Roles;
+namespace Nezam.Modular.ESS.Identity.Application.Roles;
 
 public interface IRoleService : IBonApplicationService
 {

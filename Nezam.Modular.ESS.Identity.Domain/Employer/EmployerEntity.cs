@@ -1,10 +1,9 @@
 ﻿using Bonyan.Layer.Domain.Entities;
-using Bonyan.Layer.Domain.ValueObjects;
 using Bonyan.UserManagement.Domain.ValueObjects;
-using Nezam.Modular.ESS.IdEntity.Domain.User;
-using System;
+using Nezam.Modular.ESS.Identity.Domain.Shared.Employer;
+using Nezam.Modular.ESS.Identity.Domain.User;
 
-namespace Nezam.Modular.ESS.IdEntity.Domain.Employer
+namespace Nezam.Modular.ESS.Identity.Domain.Employer
 {
     public class EmployerEntity : BonEntity<EmployerId>
     {
@@ -41,7 +40,4 @@ namespace Nezam.Modular.ESS.IdEntity.Domain.Employer
     }
 
     // Custom ID class for EmployerEntity
-    public class EmployerId : BonBusinessId<EmployerId>
-    {
-    }
 }

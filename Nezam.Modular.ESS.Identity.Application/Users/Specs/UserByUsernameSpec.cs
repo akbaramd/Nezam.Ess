@@ -1,7 +1,7 @@
 using Bonyan.Layer.Domain.Specifications;
-using Nezam.Modular.ESS.IdEntity.Domain.User;
+using Nezam.Modular.ESS.Identity.Domain.User;
 
-namespace Nezam.Modular.ESS.IdEntity.Application.Users.Specs;
+namespace Nezam.Modular.ESS.Identity.Application.Users.Specs;
 
 public class UserByUsernameSpec : Specification<UserEntity>
 {

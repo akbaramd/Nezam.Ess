@@ -8,8 +8,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Bonyan.Layer.Domain" Version="1.1.6-pre2" />
-      <PackageReference Include="Bonyan.UserManagement.Domain" Version="1.1.6-pre2" />
+      <PackageReference Include="Bonyan.Layer.Domain" Version="1.1.7" />
+      <PackageReference Include="Bonyan.UserManagement.Domain" Version="1.1.7" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\New\modules\Nezam.Modular.ESS.Identity.Domain.Shared\Nezam.Modular.ESS.Identity.Domain.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\New\modules\Nezam.Modular.ESS.Identity.Domain.Shared\Nezam.Modular.ESS.Identity.Domain.Shared.csproj" />
     </ItemGroup>
 
 </Project>

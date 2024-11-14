@@ -3,7 +3,7 @@ using Bonyan.Layer.Domain.Enumerations;
 using Bonyan.Layer.Domain.ValueObjects;
 using Bonyan.UserManagement.Domain.ValueObjects;
 
-namespace Nezam.Modular.ESS.IdEntity.Domain.User;
+namespace Nezam.Modular.ESS.Identity.Domain.User;
 
 public class UserVerificationTokenEntityKey : BonBusinessId<UserVerificationTokenEntityKey>
 {

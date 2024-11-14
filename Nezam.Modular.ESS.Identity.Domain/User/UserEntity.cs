@@ -1,19 +1,18 @@
 ﻿using Bonyan.UserManagement.Domain;
 using Bonyan.UserManagement.Domain.ValueObjects;
-using Nezam.Modular.ESS.IdEntity.Domain.Employer;
-using Nezam.Modular.ESS.IdEntity.Domain.Engineer;
-using Nezam.Modular.ESS.IdEntity.Domain.Roles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Bonyan.Layer.Domain.Events;
-using Nezam.Modular.ESS.IdEntity.Domain.User.Events;
+using Nezam.Modular.ESS.Identity.Domain.Employer;
+using Nezam.Modular.ESS.Identity.Domain.Engineer;
+using Nezam.Modular.ESS.Identity.Domain.Roles;
+using Nezam.Modular.ESS.Identity.Domain.Shared.Employer;
+using Nezam.Modular.ESS.Identity.Domain.Shared.Engineer;
+using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
+using Nezam.Modular.ESS.Identity.Domain.Shared.User.Events;
 
-namespace Nezam.Modular.ESS.IdEntity.Domain.User
+namespace Nezam.Modular.ESS.Identity.Domain.User
 {
     public class UserEntity : BonUser
     {
-        private readonly List<RoleEntity> _roles = new();
+        private readonly List<UserRoleEntity> _roleIds = new();
         private readonly List<UserVerificationTokenEntity> _verificationTokens = new();
 
         // Protected constructor for ORM
@@ -31,7 +30,7 @@ namespace Nezam.Modular.ESS.IdEntity.Domain.User
             return new UserEntity(bonUserId, userName);
         }
 
-        public IReadOnlyCollection<RoleEntity> Roles => _roles.AsReadOnly();
+        public IReadOnlyCollection<UserRoleEntity> Roles  => _roleIds;
         public IReadOnlyCollection<UserVerificationTokenEntity> VerificationTokens => _verificationTokens.AsReadOnly();
 
         public EngineerEntity? Engineer { get; private set; }
@@ -40,26 +39,20 @@ namespace Nezam.Modular.ESS.IdEntity.Domain.User
 
         // Role Management
 
-        public void TryAssignRole(RoleEntity role)
+        public void AssignRole(RoleId roleId)
         {
-            if (role == null) throw new ArgumentNullException(nameof(role));
+            if (_roleIds.Any(c=>c.RoleId == roleId))
+                return;
 
-            if (_roles.All(r => r.Name != role.Name))
-            {
-                _roles.Add(role);
-                AddDomainEvent(new RoleAssignedEvent(this.Id, role.Name));
-            }
+            _roleIds.Add(new UserRoleEntity(Id,roleId));
+            AddDomainEvent(new RoleAssignedEvent(Id, roleId));
         }
 
-        public void TryRemoveRole(RoleEntity role)
+        public void RemoveRole(RoleId roleId)
         {
-            if (role == null) throw new ArgumentNullException(nameof(role));
-
-            var existingRole = _roles.FirstOrDefault(r => r.Name == role.Name);
-            if (existingRole != null)
+            if (_roleIds.Remove(_roleIds.First(x=>x.RoleId == roleId)))
             {
-                _roles.Remove(existingRole);
-                AddDomainEvent(new RoleRemovedEvent(this.Id, role.Name));
+                AddDomainEvent(new RoleRemovedEvent(Id, roleId));
             }
         }
 

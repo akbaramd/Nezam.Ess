@@ -2,7 +2,7 @@
 using Bonyan.UserManagement.Domain.ValueObjects;
 using FastEndpoints;
 using Nezam.Modular.ESS.Secretariat.Application.Documents;
-using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
+using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
 
 namespace Nezam.Modular.ESS.WebApi.Endpoints.Documents;
 

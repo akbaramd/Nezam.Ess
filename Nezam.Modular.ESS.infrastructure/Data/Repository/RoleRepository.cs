@@ -1,11 +1,12 @@
 ﻿using Bonyan.Layer.Domain;
-using Nezam.Modular.ESS.IdEntity.Domain.Roles;
+using Nezam.Modular.ESS.Identity.Domain.Roles;
+using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
 
 namespace Nezam.Modular.ESS.Infrastructure.Data.Repository;
 
-public class RoleRepository : EfCoreBonRepository<RoleEntity, RoleId, IdEntityDbContext>, IRoleRepository
+public class RoleRepository : EfCoreBonRepository<RoleEntity, RoleId, IdentityDbContext>, IRoleRepository
 {
-    public RoleRepository(IdEntityDbContext userManagementDbContext) : base(userManagementDbContext)
+    public RoleRepository(IdentityDbContext userManagementDbContext) : base(userManagementDbContext)
     {
     }
 }

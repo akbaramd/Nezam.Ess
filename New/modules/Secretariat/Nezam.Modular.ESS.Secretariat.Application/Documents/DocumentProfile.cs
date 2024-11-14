@@ -1,10 +1,9 @@
 using AutoMapper;
 using Microsoft.Extensions.Localization;
-using Nezam.Modular.ESS.Secretariat.Application.Documents;
 using Nezam.Modular.ESS.Secretariat.Application.Resources;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents;
 
-namespace Nezam.Modular.ESS.IdEntity.Application.Employers
+namespace Nezam.Modular.ESS.Secretariat.Application.Documents
 {
     public class DocumentProfile : Profile
     {

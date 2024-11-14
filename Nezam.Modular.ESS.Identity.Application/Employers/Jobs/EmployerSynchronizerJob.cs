@@ -1,37 +1,32 @@
 ﻿using Bonyan.AspNetCore.Job;
 using Bonyan.UnitOfWork;
-using Dapper;
-using Microsoft.Extensions.Logging;
-using Nezam.Modular.ESS.IdEntity.Domain.User;
 using Bonyan.UserManagement.Domain.Enumerations;
 using Bonyan.UserManagement.Domain.ValueObjects;
+using Dapper;
 using Microsoft.Data.SqlClient;
-using Nezam.Modular.ESS.IdEntity.Domain.DomainServices;
-using Nezam.Modular.ESS.IdEntity.Domain.Roles;
-using Quartz;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Nezam.Modular.ESS.Identity.Domain.Roles;
+using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
+using Nezam.Modular.ESS.Identity.Domain.User;
 
-namespace Nezam.Modular.ESS.IdEntity.Application.Employers.Jobs
+namespace Nezam.Modular.ESS.Identity.Application.Employers.Jobs
 {
-    public class EmployerSynchronizerJob : IBonWorker, IBonUnitOfWorkEnabled
+    public class EmployerSynchronizerJob : IBonWorker
     {
         private const string ConnectionString = "Data Source=85.185.6.4;Initial Catalog=map;User ID=new_site_user;Password=111qqqAAAn;Trust Server Certificate=True;";
         
-        private readonly UserManager _userManager;
+        private readonly UserDomainService _userDomainService;
         private readonly RoleManager _roleManager;
         private readonly IBonUnitOfWorkManager _workManager;
         private readonly ILogger<EmployerSynchronizerJob> _logger;
 
         public EmployerSynchronizerJob(
-            UserManager userManager,
+            UserDomainService userDomainService,
             RoleManager roleManager,
             IBonUnitOfWorkManager workManager,
             ILogger<EmployerSynchronizerJob> logger)
         {
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _userDomainService = userDomainService ?? throw new ArgumentNullException(nameof(userDomainService));
             _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
             _workManager = workManager ?? throw new ArgumentNullException(nameof(workManager));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -39,11 +34,13 @@ namespace Nezam.Modular.ESS.IdEntity.Application.Employers.Jobs
 
         public async Task ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            if (!await _roleManager.RoleExistsAsync(RoleConstants.EmployerName))
+            if (!await _roleManager.RoleExistsAsync(RoleConst.EmployerRoleId))
             {
-                await _roleManager.CreateAsync(RoleConstants.EmployerName, RoleConstants.EmployerTitle);
+                await _roleManager.CreateAsync(RoleConst.EmployerRoleId, RoleConst.EmployerTitle);
             }
                 
+            using var uow = _workManager.Begin();
+            
             await using var connection = new SqlConnection(ConnectionString);
             var employers = (await connection.QueryAsync<KarbaranDataDto>(
                 @"SELECT 
@@ -66,7 +63,7 @@ namespace Nezam.Modular.ESS.IdEntity.Application.Employers.Jobs
 
                 try
                 {
-                    var existingUser = await _userManager.FindByUserNameAsync(employerDto.UserName);
+                    var existingUser = await _userDomainService.FindByUserNameAsync(employerDto.UserName);
                     UserEntity userEntity;
 
                     if (existingUser == null)
@@ -79,8 +76,8 @@ namespace Nezam.Modular.ESS.IdEntity.Application.Employers.Jobs
                             ? employerDto.Password
                             : employerDto.UserName;
 
-                        await _userManager.CreateAsync(userEntity, password);
-                        await _userManager.AssignRolesAsync(userEntity, RoleConstants.EmployerName);
+                        await _userDomainService.CreateAsync(userEntity, password);
+                        await _userDomainService.AssignRolesAsync(userEntity, RoleConst.EmployerRoleId);
                     }
                     else
                     {
@@ -90,15 +87,15 @@ namespace Nezam.Modular.ESS.IdEntity.Application.Employers.Jobs
                             : employerDto.UserName;
 
                         userEntity.SetPassword(newPassword);
-                        await _userManager.AssignRolesAsync(userEntity, RoleConstants.EmployerName);
-                        await _userManager.UpdateAsync(userEntity);
+                        await _userDomainService.AssignRolesAsync(userEntity, RoleConst.EmployerRoleId);
+                        await _userDomainService.UpdateAsync(userEntity);
                     }
 
                     // Use the UserEntity to handle the Employer profile assignment
                     userEntity.AssignOrUpdateEmployer(employerDto.FullName,string.Empty);
 
-                    // Persist the updated UserEntity and its Employer association through UserManager
-                    await _userManager.UpdateAsync(userEntity);
+                    // Persist the updated UserEntity and its Employer association through UserDomainService
+                    await _userDomainService.UpdateAsync(userEntity);
 
                     processedCount++;
                     _logger.LogInformation("Processed {ProcessedCount}/{TotalEmployers} employers.", processedCount, totalEmployers);
@@ -109,6 +106,8 @@ namespace Nezam.Modular.ESS.IdEntity.Application.Employers.Jobs
                 }
             }
 
+            await uow.CompleteAsync(cancellationToken);
+            
             _logger.LogInformation("Employer synchronization completed. Total processed: {TotalCount}", processedCount);
         }
     }

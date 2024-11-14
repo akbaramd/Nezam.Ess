@@ -1,11 +1,11 @@
 ﻿using System.Text;
 using Bonyan.Layer.Domain.Aggregates;
 using Bonyan.UserManagement.Domain.ValueObjects;
-using Nezam.Modular.ESS.IdEntity.Domain.User;
-using Nezam.Modular.ESS.Secretariat.Domain.Documents.BonEnumerations;
-using Nezam.Modular.ESS.Secretariat.Domain.Documents.Events;
+using Nezam.Modular.ESS.Identity.Domain.User;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents.Exceptions;
-using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
+using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.Enumerations;
+using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.Events;
+using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents;
 

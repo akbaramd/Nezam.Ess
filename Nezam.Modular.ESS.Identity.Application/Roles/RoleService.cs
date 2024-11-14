@@ -1,11 +1,11 @@
 using Bonyan.Layer.Application.Services;
 using Bonyan.Layer.Domain.Abstractions;
 using Bonyan.Layer.Domain.Model;
-using Nezam.Modular.ESS.IdEntity.Application.Roles.Dto;
-using Nezam.Modular.ESS.IdEntity.Application.Roles.Specs;
-using Nezam.Modular.ESS.IdEntity.Domain.Roles;
+using Nezam.Modular.ESS.Identity.Application.Roles.Dto;
+using Nezam.Modular.ESS.Identity.Application.Roles.Specs;
+using Nezam.Modular.ESS.Identity.Domain.Roles;
 
-namespace Nezam.Modular.ESS.IdEntity.Application.Roles;
+namespace Nezam.Modular.ESS.Identity.Application.Roles;
 
 public class RoleService : BonApplicationService, IRoleService
 {

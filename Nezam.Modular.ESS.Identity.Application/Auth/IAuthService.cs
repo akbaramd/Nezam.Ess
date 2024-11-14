@@ -1,8 +1,8 @@
 ﻿using Bonyan.Layer.Application.Services;
-using Nezam.Modular.ESS.IdEntity.Application.Auth.Dto;
-using Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
+using Nezam.Modular.ESS.Identity.Application.Auth.Dto;
+using Nezam.Modular.ESS.Identity.Application.Users.Dto;
 
-namespace Nezam.Modular.ESS.IdEntity.Application.Auth;
+namespace Nezam.Modular.ESS.Identity.Application.Auth;
 
 public interface IAuthService : IBonApplicationService
 {

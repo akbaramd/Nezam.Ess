@@ -1,7 +1,7 @@
 ﻿using Bonyan.UserManagement.Domain.ValueObjects;
-using Nezam.Modular.ESS.IdEntity.Domain.User;
+using Nezam.Modular.ESS.Identity.Domain.User;
 
-namespace Nezam.Modular.ESS.IdEntity.Application.Auth.Dto;
+namespace Nezam.Modular.ESS.Identity.Application.Auth.Dto;
 
 public class AuthLoginDto
 {

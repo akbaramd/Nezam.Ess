@@ -1,7 +1,7 @@
 using Bonyan.UserManagement.Domain.ValueObjects;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents;
-using Nezam.Modular.ESS.Secretariat.Domain.Documents.BonEnumerations;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents.Exceptions;
+using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.Enumerations;
 using Xunit.Abstractions;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Test;

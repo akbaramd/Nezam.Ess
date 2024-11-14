@@ -1,8 +1,9 @@
 using Bonyan.Layer.Application.Dto;
 using FastEndpoints;
-using Nezam.Modular.ESS.IdEntity.Domain.Roles;
+using Nezam.Modular.ESS.Identity.Domain.Roles;
+using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
 
-namespace Nezam.Modular.ESS.IdEntity.Application.Roles.Dto;
+namespace Nezam.Modular.ESS.Identity.Application.Roles.Dto;
 
 public class RoleDto : BonEntityDto<RoleId>
 {

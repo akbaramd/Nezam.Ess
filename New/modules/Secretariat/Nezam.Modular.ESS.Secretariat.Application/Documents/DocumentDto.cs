@@ -1,9 +1,9 @@
 ﻿using Bonyan.Layer.Application.Dto;
 using Bonyan.UserManagement.Domain.ValueObjects;
-using Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
+using Nezam.Modular.ESS.Identity.Application.Users.Dto;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents;
-using Nezam.Modular.ESS.Secretariat.Domain.Documents.BonEnumerations;
-using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
+using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.Enumerations;
+using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
 
 namespace Nezam.Modular.ESS.Secretariat.Application.Documents;
 

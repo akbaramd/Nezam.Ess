@@ -1,8 +1,8 @@
 using Bonyan.Layer.Domain.Specifications;
-using Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
-using Nezam.Modular.ESS.IdEntity.Domain.User;
+using Nezam.Modular.ESS.Identity.Application.Users.Dto;
+using Nezam.Modular.ESS.Identity.Domain.User;
 
-namespace Nezam.Modular.ESS.IdEntity.Application.Users.Specs;
+namespace Nezam.Modular.ESS.Identity.Application.Users.Specs;
 
 public class UsersFilterSpec : PaginatedAndSortableSpecification<UserEntity>
 {
@@ -15,10 +15,10 @@ public class UsersFilterSpec : PaginatedAndSortableSpecification<UserEntity>
 
     public override void Handle(ISpecificationContext<UserEntity> context)
     {
-            context
-                .AddInclude(x=>x.Employer)
-                .AddInclude(x=>x.Engineer)
-                .AddInclude(x => x.Roles);
+        context
+            .AddInclude(x => x.Roles)
+            .AddInclude(x => x.Employer)
+            .AddInclude(x => x.Engineer);
 
             if (!string.IsNullOrWhiteSpace(_dto.Search))
             {

@@ -6,11 +6,13 @@ using Bonyan.UserManagement.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Nezam.Modular.ESS.IdEntity.Application;
-using Nezam.Modular.ESS.IdEntity.Domain.Employer;
-using Nezam.Modular.ESS.IdEntity.Domain.Engineer;
-using Nezam.Modular.ESS.IdEntity.Domain.Roles;
-using Nezam.Modular.ESS.IdEntity.Domain.User;
+using Nezam.Modular.ESS.Identity.Application;
+using Nezam.Modular.ESS.Identity.Domain.Employer;
+using Nezam.Modular.ESS.Identity.Domain.Engineer;
+using Nezam.Modular.ESS.Identity.Domain.Roles;
+using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
+using Nezam.Modular.ESS.Identity.Domain.Shared.User;
+using Nezam.Modular.ESS.Identity.Domain.User;
 using Nezam.Modular.ESS.Infrastructure.Data;
 using Nezam.Modular.ESS.Infrastructure.Data.Repository;
 using Nezam.Modular.ESS.Secretariat.Application;
@@ -18,7 +20,7 @@ using Nezam.Modular.ESS.Secretariat.Domain.Documents.Repositories;
 
 namespace Nezam.Modular.ESS.Infrastructure;
 
-public class NezamEssIdEntityInfrastructureModule : WebModule
+public class NezamEssIdEntityInfrastructureModule : BonWebModule
 {
     public NezamEssIdEntityInfrastructureModule()
     {
@@ -29,7 +31,7 @@ public class NezamEssIdEntityInfrastructureModule : WebModule
 
     public override Task OnConfigureAsync(BonConfigurationContext context)
     {
-        context.AddBonDbContext<IdEntityDbContext>(c => { c.AddDefaultRepositories(true); });
+        context.AddBonDbContext<IdentityDbContext>(c => { c.AddDefaultRepositories(true); });
         context.Services.AddTransient<IRoleRepository, RoleRepository>();
         context.Services.AddTransient<IUserRepository, UserRepository>();
         context.Services.AddTransient<IUserVerificationTokenRepository, UserVerificationTokenRepository>();
@@ -54,8 +56,8 @@ public class NezamEssIdEntityInfrastructureModule : WebModule
 
     public override async Task OnPostApplicationAsync(BonContext context)
     {
-        await SeedRoles(context.RequireService<IRoleRepository>());
-        await SeedUser(context.RequireService<IUserRepository>());
+        //await SeedRoles(context.RequireService<IRoleRepository>());
+        //await SeedUser(context.RequireService<IUserRepository>());
 
         await base.OnPostApplicationAsync(context);
     }
@@ -77,9 +79,9 @@ public class NezamEssIdEntityInfrastructureModule : WebModule
 
     private async Task SeedRoles(IRoleRepository requireService)
     {
-        if (!await requireService.ExistsAsync(x => x.Name.Equals("admin")))
+        if (!await requireService.ExistsAsync(x => x.Id.Name.Equals("admin")))
         {
-            await requireService.AddAsync(new RoleEntity(RoleId.CreateNew(), "admin", "میدریت"));
+            await requireService.AddAsync(new RoleEntity(new RoleId("admin") , "میدریت"));
         }
     }
 }

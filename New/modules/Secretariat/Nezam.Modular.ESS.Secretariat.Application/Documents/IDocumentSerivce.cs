@@ -1,6 +1,6 @@
 ﻿using Bonyan.Layer.Application.Services;
 using Bonyan.UserManagement.Domain.ValueObjects;
-using Nezam.Modular.ESS.Secretariat.Domain.Documents.ValueObjects;
+using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
 
 namespace Nezam.Modular.ESS.Secretariat.Application.Documents;
 

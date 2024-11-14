@@ -1,6 +1,6 @@
 ﻿using Bonyan.UserManagement.Domain.ValueObjects;
 using FastEndpoints;
-using Nezam.Modular.ESS.IdEntity.Application.Users;
+using Nezam.Modular.ESS.Identity.Application.Users;
 
 namespace Nezam.Modular.ESS.WebApi.Endpoints.Users;
 

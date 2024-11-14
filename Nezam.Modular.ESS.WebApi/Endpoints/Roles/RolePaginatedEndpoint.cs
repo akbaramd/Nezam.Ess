@@ -1,7 +1,7 @@
 using Bonyan.Layer.Domain.Model;
 using FastEndpoints;
-using Nezam.Modular.ESS.IdEntity.Application.Roles;
-using Nezam.Modular.ESS.IdEntity.Application.Roles.Dto;
+using Nezam.Modular.ESS.Identity.Application.Roles;
+using Nezam.Modular.ESS.Identity.Application.Roles.Dto;
 
 namespace Nezam.Modular.ESS.WebApi.Endpoints.Roles;
 

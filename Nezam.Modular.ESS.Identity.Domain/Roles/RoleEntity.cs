@@ -1,38 +1,25 @@
-﻿using Bonyan.Layer.Domain.Entities;
-using Bonyan.Layer.Domain.ValueObjects;
-using Nezam.Modular.ESS.IdEntity.Domain.User;
+﻿using Bonyan.Layer.Domain.Aggregates;
+using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
 
-namespace Nezam.Modular.ESS.IdEntity.Domain.Roles
+namespace Nezam.Modular.ESS.Identity.Domain.Roles
 {
-    public class RoleEntity : BonEntity<RoleId>
+    public class RoleEntity : BonAggregateRoot<RoleId>
     {
-        // EF Core requires a parameterless constructor
+        // EF Core نیاز به سازنده بدون پارامتر دارد
         protected RoleEntity() { }
 
-        public RoleEntity(RoleId id, string name, string title)
+        public RoleEntity(RoleId id, string title)
         {
             Id = id;
-            Name = name ?? throw new ArgumentNullException(nameof(name));
             Title = title ?? throw new ArgumentNullException(nameof(title));
         }
 
-        private readonly List<UserEntity> _users = new List<UserEntity>();
+        public string Title { get; private set; }
 
-        // Exposing collection directly without AsReadOnly() for EF Core compatibility
-        public IReadOnlyCollection<UserEntity> Users => _users;
-
-        // Method to update the role title
+        // متد به‌روزرسانی عنوان نقش
         public void UpdateTitle(string title)
         {
             Title = title ?? throw new ArgumentNullException(nameof(title));
         }
-
-        public string Name { get; private set; }
-        public string Title { get; private set; }
-    }
-
-    // Value object for RoleId
-    public class RoleId : BonBusinessId<RoleId>
-    {
     }
 }

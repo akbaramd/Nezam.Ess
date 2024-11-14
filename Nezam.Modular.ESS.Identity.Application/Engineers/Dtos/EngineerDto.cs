@@ -1,10 +1,10 @@
 ﻿using Bonyan.Layer.Application.Dto;
 using Bonyan.UserManagement.Domain.ValueObjects;
 using FastEndpoints;
-using Nezam.Modular.ESS.IdEntity.Application.Users.Dto;
-using Nezam.Modular.ESS.IdEntity.Domain.Engineer;
+using Nezam.Modular.ESS.Identity.Domain.Engineer;
+using Nezam.Modular.ESS.Identity.Domain.Shared.Engineer;
 
-namespace Nezam.Modular.ESS.IdEntity.Application.Engineers.Dtos;
+namespace Nezam.Modular.ESS.Identity.Application.Engineers.Dtos;
 
 public class EngineerDto : BonEntityDto<EngineerId>
 {

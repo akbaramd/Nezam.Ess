@@ -1,7 +1,7 @@
 ﻿using Bonyan.ExceptionHandling;
 using FastEndpoints;
-using Nezam.Modular.ESS.IdEntity.Application.Auth;
-using Nezam.Modular.ESS.IdEntity.Application.Auth.Dto;
+using Nezam.Modular.ESS.Identity.Application.Auth;
+using Nezam.Modular.ESS.Identity.Application.Auth.Dto;
 
 namespace Nezam.Modular.ESS.WebApi.Endpoints.Authentication;
 
