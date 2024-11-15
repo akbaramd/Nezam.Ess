@@ -1,4 +1,4 @@
-﻿using Bonyan.Layer.Domain.Abstractions;
+﻿using Bonyan.Layer.Domain.Repository.Abstractions;
 
 namespace Nezam.Modular.ESS.Identity.Domain.User;
 

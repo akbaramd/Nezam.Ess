@@ -1,10 +1,11 @@
+using Bonyan.Layer.Domain.Specification.Abstractions;
 using Bonyan.Layer.Domain.Specifications;
 using Bonyan.UserManagement.Domain.ValueObjects;
 using Nezam.Modular.ESS.Identity.Domain.User;
 
 namespace Nezam.Modular.ESS.Identity.Application.Users.Specs;
 
-public class UserByIdSpec : Specification<UserEntity>
+public class UserByIdSpec : BonSpecification<UserEntity>
 {
     private readonly BonUserId _BonUserId;
 
@@ -13,7 +14,7 @@ public class UserByIdSpec : Specification<UserEntity>
         _BonUserId = id;
     }
 
-    public override void Handle(ISpecificationContext<UserEntity> context)
+    public override void Handle(IBonSpecificationContext<UserEntity> context)
     {
         context.AddInclude(x => x.Roles);
         context.AddInclude(x => x.Employer);

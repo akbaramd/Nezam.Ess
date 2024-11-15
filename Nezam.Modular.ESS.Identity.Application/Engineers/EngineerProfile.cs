@@ -1,5 +1,5 @@
 using AutoMapper;
-using Bonyan.Layer.Domain.Model;
+using Bonyan.Layer.Domain.Repository.Abstractions;
 using Nezam.Modular.ESS.Identity.Application.Engineers.Dtos;
 using Nezam.Modular.ESS.Identity.Domain.Engineer;
 using EngineerDto = Nezam.Modular.ESS.Identity.Application.Engineers.Jobs.EngineerDto;

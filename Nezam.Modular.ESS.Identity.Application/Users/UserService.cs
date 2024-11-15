@@ -1,11 +1,9 @@
 using Bonyan.Layer.Application.Services;
-using Bonyan.Layer.Domain.Model;
+using Bonyan.Layer.Domain.Repository.Abstractions;
 using Bonyan.UserManagement.Domain.ValueObjects;
-using Nezam.Modular.ESS.Identity.Application.Roles.Dto;
 using Nezam.Modular.ESS.Identity.Application.Users.Dto;
 using Nezam.Modular.ESS.Identity.Application.Users.Specs;
 using Nezam.Modular.ESS.Identity.Domain.Roles;
-using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Identity.Domain.User;
 
 namespace Nezam.Modular.ESS.Identity.Application.Users;

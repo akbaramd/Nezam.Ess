@@ -3,7 +3,6 @@ using FastEndpoints;
 using Microsoft.AspNetCore.Mvc;
 using Nezam.Modular.ESS.Identity.Application.Employers.Dtos;
 using Nezam.Modular.ESS.Identity.Application.Roles.Dto;
-using Nezam.Modular.ESS.Identity.Domain.Roles;
 using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
 
 namespace Nezam.Modular.ESS.Identity.Application.Users.Dto;

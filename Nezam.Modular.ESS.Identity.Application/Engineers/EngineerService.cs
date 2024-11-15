@@ -1,5 +1,5 @@
 using Bonyan.Layer.Application.Services;
-using Bonyan.Layer.Domain.Model;
+using Bonyan.Layer.Domain.Repository.Abstractions;
 using Nezam.Modular.ESS.Identity.Application.Engineers.Dtos;
 using Nezam.Modular.ESS.Identity.Application.Engineers.Specs;
 using Nezam.Modular.ESS.Identity.Domain.Engineer;

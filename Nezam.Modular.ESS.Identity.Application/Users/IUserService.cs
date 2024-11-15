@@ -1,7 +1,6 @@
 using Bonyan.Layer.Application.Services;
-using Bonyan.Layer.Domain.Model;
+using Bonyan.Layer.Domain.Repository.Abstractions;
 using Bonyan.UserManagement.Domain.ValueObjects;
-using Nezam.Modular.ESS.Identity.Application.Roles.Dto;
 using Nezam.Modular.ESS.Identity.Application.Users.Dto;
 
 namespace Nezam.Modular.ESS.Identity.Application.Users;

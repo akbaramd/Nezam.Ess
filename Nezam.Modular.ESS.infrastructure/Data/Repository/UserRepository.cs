@@ -1,7 +1,6 @@
 ﻿using Bonyan.Layer.Domain;
 using Bonyan.UserManagement.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
-using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Identity.Domain.User;
 
 namespace Nezam.Modular.ESS.Infrastructure.Data.Repository;

@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Bonyan.Layer.Domain.Aggregates;
+using Bonyan.Layer.Domain.Aggregate;
 using Bonyan.UserManagement.Domain.ValueObjects;
 using Nezam.Modular.ESS.Identity.Domain.User;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents.Exceptions;
@@ -9,7 +9,7 @@ using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents;
 
-public class DocumentAggregateRoot : BonFullAuditableAggregateRoot<DocumentId>
+public class DocumentAggregateRoot : BonFullAggregateRoot<DocumentId>
 {
     public string Title { get; private set; }
     public string Content { get; private set; }

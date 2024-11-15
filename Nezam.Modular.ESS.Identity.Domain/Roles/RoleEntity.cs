@@ -1,4 +1,4 @@
-﻿using Bonyan.Layer.Domain.Aggregates;
+﻿using Bonyan.Layer.Domain.Aggregate;
 using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
 
 namespace Nezam.Modular.ESS.Identity.Domain.Roles

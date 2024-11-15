@@ -1,13 +1,7 @@
 ﻿using Bonyan.Layer.Domain.Services;
-using Bonyan.Layer.Domain.ValueObjects;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Nezam.Modular.ESS.Identity.Domain.Roles;
-using Nezam.Modular.ESS.Identity.Domain.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
 
 namespace Nezam.Modular.ESS.Identity.Domain.User

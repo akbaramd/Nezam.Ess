@@ -1,7 +1,6 @@
 ﻿using Bonyan.Layer.Application.Services;
 using Bonyan.Layer.Domain.Enumerations;
 using Bonyan.UserManagement.Domain.ValueObjects;
-using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Identity.Domain.User;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents.Repositories;

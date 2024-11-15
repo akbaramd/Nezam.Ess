@@ -1,7 +1,6 @@
-﻿using Bonyan.Layer.Application.Dto;
-using Bonyan.UserManagement.Domain.ValueObjects;
+﻿using Bonyan.UserManagement.Domain.ValueObjects;
+using Dto;
 using FastEndpoints;
-using Nezam.Modular.ESS.Identity.Domain.Employer;
 using Nezam.Modular.ESS.Identity.Domain.Shared.Employer;
 
 namespace Nezam.Modular.ESS.Identity.Application.Employers.Dtos;

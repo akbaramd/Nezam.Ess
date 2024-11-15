@@ -1,4 +1,4 @@
-﻿using Bonyan.Layer.Domain.Abstractions;
+﻿using Bonyan.Layer.Domain.Repository.Abstractions;
 using Bonyan.UserManagement.Domain.ValueObjects;
 using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
 

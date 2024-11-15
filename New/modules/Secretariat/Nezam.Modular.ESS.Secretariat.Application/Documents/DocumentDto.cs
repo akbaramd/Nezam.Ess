@@ -1,5 +1,5 @@
-﻿using Bonyan.Layer.Application.Dto;
-using Bonyan.UserManagement.Domain.ValueObjects;
+﻿using Bonyan.UserManagement.Domain.ValueObjects;
+using Dto;
 using Nezam.Modular.ESS.Identity.Application.Users.Dto;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents;
 using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.Enumerations;

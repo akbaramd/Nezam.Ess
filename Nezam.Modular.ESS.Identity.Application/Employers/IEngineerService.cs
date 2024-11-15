@@ -1,7 +1,6 @@
 using Bonyan.Layer.Application.Services;
-using Bonyan.Layer.Domain.Model;
+using Bonyan.Layer.Domain.Repository.Abstractions;
 using Nezam.Modular.ESS.Identity.Application.Employers.Dtos;
-using Nezam.Modular.ESS.Identity.Domain.Employer;
 using Nezam.Modular.ESS.Identity.Domain.Shared.Employer;
 
 namespace Nezam.Modular.ESS.Identity.Application.Employers;

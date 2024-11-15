@@ -11,7 +11,6 @@ using Nezam.Modular.ESS.Identity.Domain.Employer;
 using Nezam.Modular.ESS.Identity.Domain.Engineer;
 using Nezam.Modular.ESS.Identity.Domain.Roles;
 using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
-using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Identity.Domain.User;
 using Nezam.Modular.ESS.Infrastructure.Data;
 using Nezam.Modular.ESS.Infrastructure.Data.Repository;

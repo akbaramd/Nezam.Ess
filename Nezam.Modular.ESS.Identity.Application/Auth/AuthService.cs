@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Nezam.Modular.ESS.Identity.Application.Auth.Dto;
 using Nezam.Modular.ESS.Identity.Application.Users.Dto;
 using Nezam.Modular.ESS.Identity.Application.Users.Specs;
-using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Identity.Domain.User;
 
 namespace Nezam.Modular.ESS.Identity.Application.Auth

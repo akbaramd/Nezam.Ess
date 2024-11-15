@@ -1,8 +1,8 @@
 ﻿using Bonyan.UserManagement.Domain;
+using Bonyan.UserManagement.Domain.Events;
 using Bonyan.UserManagement.Domain.ValueObjects;
 using Nezam.Modular.ESS.Identity.Domain.Employer;
 using Nezam.Modular.ESS.Identity.Domain.Engineer;
-using Nezam.Modular.ESS.Identity.Domain.Roles;
 using Nezam.Modular.ESS.Identity.Domain.Shared.Employer;
 using Nezam.Modular.ESS.Identity.Domain.Shared.Engineer;
 using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
@@ -16,21 +16,26 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
         private readonly List<UserVerificationTokenEntity> _verificationTokens = new();
 
         // Protected constructor for ORM
-        protected UserEntity() { }
+        protected UserEntity()
+        {
+        }
 
-        private UserEntity(BonUserId bonUserId, string userName) 
-            : base(bonUserId, userName) 
+        private UserEntity(BonUserId bonUserId, string userName)
+            : base(bonUserId, userName)
         {
             IsActive = true; // default to active
+
+            AddDomainEvent(new UserCreatedDomainEvent(this));
         }
 
         public static UserEntity Create(BonUserId bonUserId, string userName)
         {
-            if (string.IsNullOrWhiteSpace(userName)) throw new ArgumentException("Username cannot be empty.", nameof(userName));
+            if (string.IsNullOrWhiteSpace(userName))
+                throw new ArgumentException("Username cannot be empty.", nameof(userName));
             return new UserEntity(bonUserId, userName);
         }
 
-        public IReadOnlyCollection<UserRoleEntity> Roles  => _roleIds;
+        public IReadOnlyCollection<UserRoleEntity> Roles => _roleIds;
         public IReadOnlyCollection<UserVerificationTokenEntity> VerificationTokens => _verificationTokens.AsReadOnly();
 
         public EngineerEntity? Engineer { get; private set; }
@@ -41,16 +46,16 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
 
         public void AssignRole(RoleId roleId)
         {
-            if (_roleIds.Any(c=>c.RoleId == roleId))
+            if (_roleIds.Any(c => c.RoleId == roleId))
                 return;
 
-            _roleIds.Add(new UserRoleEntity(Id,roleId));
+            _roleIds.Add(new UserRoleEntity(Id, roleId));
             AddDomainEvent(new RoleAssignedEvent(Id, roleId));
         }
 
         public void RemoveRole(RoleId roleId)
         {
-            if (_roleIds.Remove(_roleIds.First(x=>x.RoleId == roleId)))
+            if (_roleIds.Remove(_roleIds.First(x => x.RoleId == roleId)))
             {
                 AddDomainEvent(new RoleRemovedEvent(Id, roleId));
             }
@@ -83,7 +88,8 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
 
         public void UpdateContactInfo(string email, string phoneNumber)
         {
-            if (string.IsNullOrWhiteSpace(phoneNumber)) throw new ArgumentException("Phone number cannot be empty.", nameof(phoneNumber));
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+                throw new ArgumentException("Phone number cannot be empty.", nameof(phoneNumber));
             SetEmail(new Email(email));
             SetPhoneNumber(new PhoneNumber(phoneNumber));
             AddDomainEvent(new ContactInfoUpdatedEvent(this.Id, email, phoneNumber));
@@ -93,8 +99,10 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
 
         public void AssignOrUpdateEngineer(string firstName, string? lastName, string membershipCode)
         {
-            if (string.IsNullOrWhiteSpace(firstName)) throw new ArgumentException("First name cannot be empty.", nameof(firstName));
-            if (string.IsNullOrWhiteSpace(membershipCode)) throw new ArgumentException("Membership code is required.", nameof(membershipCode));
+            if (string.IsNullOrWhiteSpace(firstName))
+                throw new ArgumentException("First name cannot be empty.", nameof(firstName));
+            if (string.IsNullOrWhiteSpace(membershipCode))
+                throw new ArgumentException("Membership code is required.", nameof(membershipCode));
 
             if (Engineer == null)
             {
@@ -109,9 +117,11 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
                 AddDomainEvent(new EngineerAssignedOrUpdatedEvent(this.Id, Engineer.Id));
             }
         }
+
         public void AssignOrUpdateEmployer(string firstName, string? lastName)
         {
-            if (string.IsNullOrWhiteSpace(firstName)) throw new ArgumentException("First name cannot be empty.", nameof(firstName));
+            if (string.IsNullOrWhiteSpace(firstName))
+                throw new ArgumentException("First name cannot be empty.", nameof(firstName));
 
             if (Employer == null)
             {
@@ -164,6 +174,5 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
                 AddDomainEvent(new UserDeactivatedEvent(this.Id));
             }
         }
-
     }
 }

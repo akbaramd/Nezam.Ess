@@ -1,10 +1,10 @@
-using Bonyan.Layer.Domain.Specifications;
+using Bonyan.Layer.Domain.Specification.Abstractions;
 using Nezam.Modular.ESS.Identity.Application.Users.Dto;
 using Nezam.Modular.ESS.Identity.Domain.User;
 
 namespace Nezam.Modular.ESS.Identity.Application.Users.Specs;
 
-public class UsersFilterSpec : PaginatedAndSortableSpecification<UserEntity>
+public class UsersFilterSpec :BonPaginatedAndSortableSpecification<UserEntity>
 {
     private readonly UserFilterDto _dto;
 
@@ -13,7 +13,7 @@ public class UsersFilterSpec : PaginatedAndSortableSpecification<UserEntity>
         _dto = dto;
     }
 
-    public override void Handle(ISpecificationContext<UserEntity> context)
+    public override void Handle(IBonSpecificationContext<UserEntity> context)
     {
         context
             .AddInclude(x => x.Roles)

@@ -3,7 +3,6 @@ using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.Extensions.Options;
 using Nezam.Modular.ESS.WebApi;
 
 var builder = BonyanApplication.CreateModularApplication<NezamEssModule>(args);
