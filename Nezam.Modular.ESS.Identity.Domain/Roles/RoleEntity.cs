@@ -1,25 +1,25 @@
-﻿using Bonyan.Layer.Domain.Aggregates;
-using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
+﻿    using Bonyan.Layer.Domain.Entities;
+    using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
 
-namespace Nezam.Modular.ESS.Identity.Domain.Roles
-{
-    public class RoleEntity : BonAggregateRoot<RoleId>
+    namespace Nezam.Modular.ESS.Identity.Domain.Roles
     {
-        // EF Core نیاز به سازنده بدون پارامتر دارد
-        protected RoleEntity() { }
-
-        public RoleEntity(RoleId id, string title)
+        public class RoleEntity : BonEntity
         {
-            Id = id;
-            Title = title ?? throw new ArgumentNullException(nameof(title));
-        }
+            protected RoleEntity() { }
+            public RoleEntity(RoleId roleId, string title)
+            {
+                RoleId = roleId;
+                Title = title;
+            }
 
-        public string Title { get; private set; }
+            public RoleId RoleId { get; set; }
+            public string Title { get; set; }
 
-        // متد به‌روزرسانی عنوان نقش
-        public void UpdateTitle(string title)
-        {
-            Title = title ?? throw new ArgumentNullException(nameof(title));
+            // Method to add permissions (if relevant)
+
+            public override object GetKey()
+            {
+                return RoleId;
+            }
         }
     }
-}

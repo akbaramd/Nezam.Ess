@@ -1,4 +1,4 @@
-using Bonyan.Layer.Domain.Model;
+using Bonyan.Layer.Domain.Repository.Abstractions;
 using FastEndpoints;
 using Nezam.Modular.ESS.Identity.Application.Employers;
 using Nezam.Modular.ESS.Identity.Application.Employers.Dtos;

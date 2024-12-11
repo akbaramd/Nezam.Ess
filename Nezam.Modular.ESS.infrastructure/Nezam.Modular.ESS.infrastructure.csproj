@@ -7,20 +7,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Bonyan.EntityFrameworkCore" Version="1.1.7" />
-      <PackageReference Include="Bonyan.EntityFrameworkCore.Sqlite" Version="1.1.7" />
-      <PackageReference Include="Bonyan.UserManagement.EntityFrameworkCore" Version="1.1.7" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
+        <PackageReference Include="Bonyan.EntityFrameworkCore" Version="1.2.4"/>
+        <PackageReference Include="Bonyan.EntityFrameworkCore.Sqlite" Version="1.2.4"/>
+        <PackageReference Include="Bonyan.IdentityManagement.EntityFrameworkCore" Version="1.2.4"/>
+        <PackageReference Include="Bonyan.UserManagement.EntityFrameworkCore" Version="1.2.4"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\New\modules\Secretariat\Nezam.Modular.ESS.Secretariat.Application\Nezam.Modular.ESS.Secretariat.Application.csproj" />
-      <ProjectReference Include="..\Nezam.Modular.ESS.Identity.Application\Nezam.Modular.ESS.Identity.Application.csproj" />
-      <ProjectReference Include="..\Nezam.Modular.ESS.Identity.Domain\Nezam.Modular.ESS.Identity.Domain.csproj" />
+        <ProjectReference Include="..\New\modules\Secretariat\Nezam.Modular.ESS.Secretariat.Application\Nezam.Modular.ESS.Secretariat.Application.csproj"/>
+        <ProjectReference Include="..\Nezam.Modular.ESS.Identity.Domain\Nezam.Modular.ESS.Identity.Domain.csproj"/>
     </ItemGroup>
 
 </Project>

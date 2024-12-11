@@ -1,5 +1,5 @@
 ﻿using Bonyan.User;
-using Bonyan.UserManagement.Domain.ValueObjects;
+using Bonyan.UserManagement.Domain.Users.ValueObjects;
 using FastEndpoints;
 using Nezam.Modular.ESS.Secretariat.Application.Documents;
 using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
@@ -32,10 +32,10 @@ public class UpdateDocumentEndpoint : Endpoint<DocumentUpdateDto, DocumentDto>
     public override async Task HandleAsync(DocumentUpdateDto req, CancellationToken ct)
     {
         // استخراج DocumentId از پارامترهای مسیر
-        var documentId = DocumentId.FromGuid(Route<Guid>("DocumentId"));
+        var documentId = DocumentId.NewId(Route<Guid>("DocumentId"));
         
         // فراخوانی متد به‌روزرسانی در سرویس
-        var updatedDocument = await _documentService.UpdateAsync(documentId, req,BonUserId.FromGuid(_currentUser.Id!.Value!));
+        var updatedDocument = await _documentService.UpdateAsync(documentId, req,BonUserId.NewId(_currentUser.Id!.Value!));
 
         if (updatedDocument == null)
         {

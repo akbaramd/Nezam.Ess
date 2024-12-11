@@ -1,65 +1,23 @@
-﻿using Bonyan.Layer.Domain.Entities;
-using Bonyan.UserManagement.Domain.ValueObjects;
+﻿using System.ComponentModel.DataAnnotations;
+using Bonyan.Layer.Domain.Entities;
+using Bonyan.UserManagement.Domain.Users.ValueObjects;
+using Nezam.Modular.ESS.Identity.Domain.Shared.Employer;
 using Nezam.Modular.ESS.Identity.Domain.Shared.Engineer;
+using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Identity.Domain.User;
 
 namespace Nezam.Modular.ESS.Identity.Domain.Engineer
 {
-    public class EngineerEntity : BonEntity<EngineerId>
+    public class EngineerEntity : UserEntity
     {
-        // Constructors
         protected EngineerEntity() { }
-
-        public EngineerEntity(EngineerId engineerId, BonUserId userId, string? firstName, string? lastName, string registrationNumber)
+        public EngineerEntity( UserId userId,string registrationNumber, UserNameValue userName, UserPasswordValue password, UserProfileValue profile, UserEmailValue? email = null) : base(userId, userName, password, profile, email)
         {
-            Id = engineerId ?? throw new ArgumentNullException(nameof(engineerId));
-            BonUserId = userId;
-            FirstName = firstName;
-            LastName = lastName;
-            RegistrationNumber = registrationNumber ?? throw new ArgumentNullException(nameof(registrationNumber));
-        }
-
-        // Properties
-        public BonUserId BonUserId { get; private set; }
-        public UserEntity BonUser { get; set; }
-        public string? FirstName { get; private set; }
-        public string? LastName { get; private set; }
-        public string RegistrationNumber { get; private set; }
-
-        // Update Methods
-
-        /// <summary>
-        /// Updates the engineer's personal information.
-        /// </summary>
-        public void UpdateDetails(string? firstName, string? lastName, string registrationNumber)
-        {
-            if (string.IsNullOrWhiteSpace(registrationNumber)) throw new ArgumentException("Registration number is required.", nameof(registrationNumber));
-
-            FirstName = firstName;
-            LastName = lastName;
             RegistrationNumber = registrationNumber;
-            // Trigger domain event: EngineerDetailsUpdated (if needed)
         }
-
-        // Example Behaviors (Status Management)
-
-        /// <summary>
-        /// Checks if the engineer has a valid registration number.
-        /// </summary>
-        public bool HasValidRegistration() => !string.IsNullOrWhiteSpace(RegistrationNumber);
-
-        /// <summary>
-        /// Resets the engineer's registration number, for example, in case of a revocation.
-        /// </summary>
-        public void ResetRegistration()
-        {
-            RegistrationNumber = string.Empty;
-            // Trigger domain event: EngineerRegistrationReset (if needed)
-        }
-
-        // Optional Domain Events
-        // Define and trigger domain events such as EngineerDetailsUpdated or EngineerRegistrationReset
-        // if other parts of the system need to react to these changes.
+        public EmployerId EngineerId { get; set; }
+        public string RegistrationNumber { get; private set; }
+    
     }
 
     // Custom ID class for EngineerEntity

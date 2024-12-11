@@ -1,4 +1,4 @@
-﻿using Bonyan.UserManagement.Domain.ValueObjects;
+﻿using Bonyan.UserManagement.Domain.Users.ValueObjects;
 using FastEndpoints;
 using Nezam.Modular.ESS.Identity.Application.Users;
 
@@ -27,7 +27,7 @@ public class DeleteUserEndpoint : Endpoint<DeleteUserRequest>
 
     public override async Task HandleAsync(DeleteUserRequest req, CancellationToken ct)
     {
-        var result = await userService.DeleteUserAsync(BonUserId.FromGuid(req.BonUserId));
+        var result = await userService.DeleteUserAsync(BonUserId.NewId(req.BonUserId));
         if (!result)
         {
             await SendNotFoundAsync(ct);

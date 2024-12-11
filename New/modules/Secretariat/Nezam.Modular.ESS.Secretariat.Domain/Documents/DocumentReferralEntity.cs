@@ -1,5 +1,6 @@
 ﻿using Bonyan.Layer.Domain.Entities;
-using Bonyan.UserManagement.Domain.ValueObjects;
+using Bonyan.UserManagement.Domain.Users.ValueObjects;
+using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.Enumerations;
 using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
 
@@ -8,8 +9,8 @@ namespace Nezam.Modular.ESS.Secretariat.Domain.Documents
     public class DocumentReferralEntity : BonEntity<DocumentReferralId>
     {
         public DocumentId DocumentId { get; private set; }
-        public BonUserId ReferrerBonUserId { get; private set; }
-        public BonUserId ReceiverBonUserId { get; private set; }
+        public UserId ReferrerUserId { get; private set; }
+        public UserId ReceiverUserId { get; private set; }
         public ReferralStatus Status { get; private set; }
         public DateTime ReferralDate { get; private set; }
         public DateTime? ViewedDate { get; private set; }
@@ -18,12 +19,12 @@ namespace Nezam.Modular.ESS.Secretariat.Domain.Documents
         public DocumentReferralId? ParentReferralId { get; private set; } // Parent referral for hierarchy management
 
         // Updated constructor with validation
-        public DocumentReferralEntity(DocumentId documentId, BonUserId referrerBonUserId, BonUserId receiverBonUserId, DocumentReferralId? parentReferralId = null)
+        public DocumentReferralEntity(DocumentId documentId, UserId referrerUserId, UserId receiverUserId, DocumentReferralId? parentReferralId = null)
         {
-            Id = DocumentReferralId.CreateNew();
+            Id = DocumentReferralId.NewId();
             DocumentId = documentId ?? throw new ArgumentNullException(nameof(documentId));
-            ReferrerBonUserId = referrerBonUserId ?? throw new ArgumentNullException(nameof(referrerBonUserId));
-            ReceiverBonUserId = receiverBonUserId ?? throw new ArgumentNullException(nameof(receiverBonUserId));
+            ReferrerUserId = referrerUserId ?? throw new ArgumentNullException(nameof(referrerUserId));
+            ReceiverUserId = receiverUserId ?? throw new ArgumentNullException(nameof(receiverUserId));
             Status = ReferralStatus.Pending;
             ReferralDate = DateTime.UtcNow;
             ParentReferralId = parentReferralId;

@@ -1,7 +1,8 @@
 ﻿using Bonyan.Layer.Domain.Entities;
 using Bonyan.Layer.Domain.Enumerations;
 using Bonyan.Layer.Domain.ValueObjects;
-using Bonyan.UserManagement.Domain.ValueObjects;
+using Bonyan.UserManagement.Domain.Users.ValueObjects;
+using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 
 namespace Nezam.Modular.ESS.Identity.Domain.User;
 
@@ -15,7 +16,7 @@ public class UserVerificationTokenEntity : BonEntity<UserVerificationTokenEntity
     public string Token { get;  set; }
 
     public UserEntity User { get; set; }
-    public BonUserId BonUserId { get; set; }
+    public UserId UserId { get; set; }
 
     protected UserVerificationTokenEntity()
     {
@@ -23,7 +24,7 @@ public class UserVerificationTokenEntity : BonEntity<UserVerificationTokenEntity
 
     public UserVerificationTokenEntity(UserVerificationTokenType type)
     {
-        Id = UserVerificationTokenEntityKey.CreateNew();
+        Id = UserVerificationTokenEntityKey.NewId();
         Type = type;
         Token = Guid.NewGuid().ToString();
     }

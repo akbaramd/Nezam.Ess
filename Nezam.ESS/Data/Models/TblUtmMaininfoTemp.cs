@@ -36,7 +36,7 @@ public class TblUtmMaininfoTemp
 
     public TblUtmMantageh? Mantageh { get; set; }
 
-    public int RegBonUserId { get; set; }
+    public int RegUserId { get; set; }
     public int State { get; set; }
     public long? TrackingNumber { get; set; }
 

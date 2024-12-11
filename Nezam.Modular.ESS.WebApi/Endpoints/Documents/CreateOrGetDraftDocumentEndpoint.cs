@@ -1,5 +1,5 @@
 ﻿using Bonyan.User;
-using Bonyan.UserManagement.Domain.ValueObjects;
+using Bonyan.UserManagement.Domain.Users.ValueObjects;
 using FastEndpoints;
 using Nezam.Modular.ESS.Secretariat.Application.Documents;
 
@@ -29,7 +29,7 @@ public class CreateOrGetDraftDocumentEndpoint : EndpointWithoutRequest<DocumentD
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var bonUserId = BonUserId.FromGuid(_currentUser.Id!.Value); // Assuming `GetBonUserId` fetches BonUserId from claims
+        var bonUserId = BonUserId.NewId(_currentUser.Id!.Value); // Assuming `GetBonUserId` fetches BonUserId from claims
         var documentDraft = await _documentService.CreateOrGetEmptyDraftAsync(bonUserId);
 
         await SendOkAsync(documentDraft, ct);

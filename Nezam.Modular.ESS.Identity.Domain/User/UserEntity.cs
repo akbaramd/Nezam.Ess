@@ -1,169 +1,107 @@
-﻿using Bonyan.UserManagement.Domain;
-using Bonyan.UserManagement.Domain.ValueObjects;
-using Nezam.Modular.ESS.Identity.Domain.Employer;
-using Nezam.Modular.ESS.Identity.Domain.Engineer;
-using Nezam.Modular.ESS.Identity.Domain.Roles;
-using Nezam.Modular.ESS.Identity.Domain.Shared.Employer;
-using Nezam.Modular.ESS.Identity.Domain.Shared.Engineer;
+﻿using System;
+using System.Collections.Generic;
 using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
-using Nezam.Modular.ESS.Identity.Domain.Shared.User.Events;
+using Bonyan.Layer.Domain.Entities;
+using Nezam.Modular.ESS.Identity.Domain.Roles;
+using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 
 namespace Nezam.Modular.ESS.Identity.Domain.User
 {
-    public class UserEntity : BonUser
+    public class UserEntity : BonEntity
     {
-        private readonly List<UserRoleEntity> _roleIds = new();
-        private readonly List<UserVerificationTokenEntity> _verificationTokens = new();
+        public UserId UserId { get; set; }
+        public UserNameValue UserName { get; private set; }
+        public UserPasswordValue Password { get; private set; }
+        public UserEmailValue? Email { get; private set; }
+        public UserProfileValue Profile { get; private set; }
+        public ICollection<UserVerificationTokenEntity> VerificationTokens { get; private set; }
+        
+        // Collection to hold assigned roles
+        public ICollection<RoleEntity> Roles { get; private set; }
 
-        // Protected constructor for ORM
         protected UserEntity() { }
 
-        private UserEntity(BonUserId bonUserId, string userName) 
-            : base(bonUserId, userName) 
+        // Constructor for creating a new user with profile and tokens
+        public UserEntity(UserId userId, UserNameValue userName, UserPasswordValue password, UserProfileValue profile, UserEmailValue? email = null)
         {
-            IsActive = true; // default to active
+            UserId = userId;
+            SetUserName(userName);
+            SetPassword(password);
+            SetProfile(profile);
+            Email = email;
+            VerificationTokens = new List<UserVerificationTokenEntity>(); // Initialize the token collection
+            Roles = new List<RoleEntity>(); // Initialize the roles collection
         }
 
-        public static UserEntity Create(BonUserId bonUserId, string userName)
+        // Method for changing the username
+        public void SetUserName(UserNameValue newUserName)
         {
-            if (string.IsNullOrWhiteSpace(userName)) throw new ArgumentException("Username cannot be empty.", nameof(userName));
-            return new UserEntity(bonUserId, userName);
+            if (newUserName == null || string.IsNullOrWhiteSpace(newUserName.Value))
+                throw new ArgumentException("Username cannot be empty or null.");
+
+            UserName = newUserName;
         }
 
-        public IReadOnlyCollection<UserRoleEntity> Roles  => _roleIds;
-        public IReadOnlyCollection<UserVerificationTokenEntity> VerificationTokens => _verificationTokens.AsReadOnly();
-
-        public EngineerEntity? Engineer { get; private set; }
-        public EmployerEntity? Employer { get; private set; }
-        public bool IsActive { get; private set; }
-
-        // Role Management
-
-        public void AssignRole(RoleId roleId)
+        // Method for changing the password
+        public void SetPassword(UserPasswordValue newPassword)
         {
-            if (_roleIds.Any(c=>c.RoleId == roleId))
-                return;
-
-            _roleIds.Add(new UserRoleEntity(Id,roleId));
-            AddDomainEvent(new RoleAssignedEvent(Id, roleId));
+            Password = newPassword;
         }
 
-        public void RemoveRole(RoleId roleId)
+        // Method for updating email
+        public void SetEmail(UserEmailValue? newEmail)
         {
-            if (_roleIds.Remove(_roleIds.First(x=>x.RoleId == roleId)))
+            Email = newEmail;
+        }
+
+        // Method for updating profile
+        public void SetProfile(UserProfileValue newProfile)
+        {
+            if (newProfile == null)
+                throw new ArgumentException("Profile cannot be null.");
+
+            Profile = newProfile;
+        }
+
+        // Method to add a new role to the user
+        public void AddRole(RoleEntity role)
+        {
+            if (role == null)
+                throw new ArgumentException("Role cannot be null.");
+            
+            if (!Roles.Contains(role))
             {
-                AddDomainEvent(new RoleRemovedEvent(Id, roleId));
+                Roles.Add(role); // Add the role to the user's collection
             }
         }
 
-        // Verification Token Management
-
-        public UserVerificationTokenEntity GenerateVerificationToken(UserVerificationTokenType type)
+        // Method to remove a role from the user
+        public void RemoveRole(RoleEntity role)
         {
-            var token = new UserVerificationTokenEntity(type)
+            if (role == null)
+                throw new ArgumentException("Role cannot be null.");
+
+            if (Roles.Contains(role))
             {
-                User = this,
-                BonUserId = this.Id
-            };
-
-            _verificationTokens.Add(token);
-            return token;
-        }
-
-        public bool RemoveVerificationToken(UserVerificationTokenEntity token)
-        {
-            if (token == null) throw new ArgumentNullException(nameof(token));
-            return _verificationTokens.Remove(token);
-        }
-
-        public UserVerificationTokenEntity GetVerificationToken(UserVerificationTokenType type) =>
-            _verificationTokens.FirstOrDefault(t => t.Type == type);
-
-        // Contact Information Management
-
-        public void UpdateContactInfo(string email, string phoneNumber)
-        {
-            if (string.IsNullOrWhiteSpace(phoneNumber)) throw new ArgumentException("Phone number cannot be empty.", nameof(phoneNumber));
-            SetEmail(new Email(email));
-            SetPhoneNumber(new PhoneNumber(phoneNumber));
-            AddDomainEvent(new ContactInfoUpdatedEvent(this.Id, email, phoneNumber));
-        }
-
-        // Engineer and Employer Management
-
-        public void AssignOrUpdateEngineer(string firstName, string? lastName, string membershipCode)
-        {
-            if (string.IsNullOrWhiteSpace(firstName)) throw new ArgumentException("First name cannot be empty.", nameof(firstName));
-            if (string.IsNullOrWhiteSpace(membershipCode)) throw new ArgumentException("Membership code is required.", nameof(membershipCode));
-
-            if (Engineer == null)
-            {
-                // Create a new EngineerEntity if one doesn't already exist
-                Engineer = new EngineerEntity(EngineerId.CreateNew(), this.Id, firstName, lastName, membershipCode);
-                AddDomainEvent(new EngineerAssignedOrUpdatedEvent(this.Id, Engineer.Id));
-            }
-            else
-            {
-                // Update existing EngineerEntity details
-                Engineer.UpdateDetails(firstName, lastName, membershipCode);
-                AddDomainEvent(new EngineerAssignedOrUpdatedEvent(this.Id, Engineer.Id));
-            }
-        }
-        public void AssignOrUpdateEmployer(string firstName, string? lastName)
-        {
-            if (string.IsNullOrWhiteSpace(firstName)) throw new ArgumentException("First name cannot be empty.", nameof(firstName));
-
-            if (Employer == null)
-            {
-                Employer = new EmployerEntity(EmployerId.CreateNew(), Id, firstName, lastName);
-                AddDomainEvent(new EmployerAssignedOrUpdatedEvent(this.Id, Employer.Id));
-            }
-            else
-            {
-                Employer.UpdateDetails(firstName, lastName);
-                AddDomainEvent(new EmployerAssignedOrUpdatedEvent(this.Id, Employer.Id));
+                Roles.Remove(role); // Remove the role from the user's collection
             }
         }
 
-        public void RemoveEngineer()
+        // Method to check if the user has a specific role
+        public bool HasRole(RoleEntity role)
         {
-            if (Engineer != null)
-            {
-                var engineerId = Engineer.Id;
-                Engineer = null;
-                AddDomainEvent(new EngineerRemovedEvent(this.Id, engineerId));
-            }
+            return Roles.Contains(role); // Check if the user already has the specified role
         }
 
-        public void RemoveEmployer()
+        // Validate if the user is allowed to change password
+        public bool ValidatePassword(string password)
         {
-            if (Employer != null)
-            {
-                var employerId = Employer.Id;
-                Employer = null;
-                AddDomainEvent(new EmployerRemovedEvent(this.Id, employerId));
-            }
+            return Password.Validate(password);
         }
 
-        // Activation Management
-
-        public void Activate()
+        public override object GetKey()
         {
-            if (!IsActive)
-            {
-                IsActive = true;
-                AddDomainEvent(new UserActivatedEvent(this.Id));
-            }
+            return new { UserId };
         }
-
-        public void Deactivate()
-        {
-            if (IsActive)
-            {
-                IsActive = false;
-                AddDomainEvent(new UserDeactivatedEvent(this.Id));
-            }
-        }
-
     }
 }

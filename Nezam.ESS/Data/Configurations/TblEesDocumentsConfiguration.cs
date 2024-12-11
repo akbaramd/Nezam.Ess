@@ -11,7 +11,7 @@ public class TblEesDocumentsConfiguration : IEntityTypeConfiguration<TblEesDocum
         Entity.ToTable("tbl_ees_documents");
         Entity.HasKey(x => x.Id);
         Entity.Property(e => e.Id).HasColumnName("id");
-        Entity.Property(e => e.BonUserId).HasColumnName("ozviyat_no");
+        Entity.Property(e => e.UserId).HasColumnName("ozviyat_no");
         Entity.Property(e => e.Type).HasColumnName("type");
         Entity.Property(e => e.State).HasColumnName("state");
     }

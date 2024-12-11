@@ -1,22 +1,24 @@
 ﻿using Bonyan.EntityFrameworkCore;
+using Bonyan.IdentityManagement.Domain.Permissions;
+using Bonyan.IdentityManagement.Domain.Roles;
+using Bonyan.IdentityManagement.Domain.Users;
+using Bonyan.IdentityManagement.EntityFrameworkCore;
 using Bonyan.Layer.Domain.Enumerations;
 using Bonyan.UserManagement.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Nezam.Modular.ESS.Identity.Domain.Employer;
 using Nezam.Modular.ESS.Identity.Domain.Engineer;
 using Nezam.Modular.ESS.Identity.Domain.Roles;
-using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
 using Nezam.Modular.ESS.Identity.Domain.User;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents;
 using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.Enumerations;
 
 namespace Nezam.Modular.ESS.Infrastructure.Data;
 
-public class IdentityDbContext : BonDbContext<IdentityDbContext>, IBonUserManagementDbContext<UserEntity>
+public class IdentityDbContext : BonDbContext<IdentityDbContext>
 {
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<UserVerificationTokenEntity> UserVerificationTokens { get; set; }
-    public DbSet<RoleEntity> Roles { get; set; }
     public DbSet<EngineerEntity> Engineers { get; set; }
     public DbSet<EmployerEntity> Employers { get; set; }
     public DbSet<DocumentAggregateRoot> Documents { get; set; }
@@ -32,7 +34,7 @@ public class IdentityDbContext : BonDbContext<IdentityDbContext>, IBonUserManage
         
         ConfigureEntities(modelBuilder);
         ConfigureRelationships(modelBuilder);
-        ConfigureBonEnumerations(modelBuilder);
+
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -43,66 +45,66 @@ public class IdentityDbContext : BonDbContext<IdentityDbContext>, IBonUserManage
 
     private static void ConfigureEntities(ModelBuilder modelBuilder)
     {
-        modelBuilder.ConfigureBonUserManagementByConvention<UserEntity>();
-        
-        modelBuilder.Entity<RoleEntity>().ConfigureByConvention();
+
+        modelBuilder.Entity<UserEntity>().ConfigureByConvention();
         modelBuilder.Entity<UserVerificationTokenEntity>().ConfigureByConvention();
         modelBuilder.Entity<EngineerEntity>().ConfigureByConvention();
         modelBuilder.Entity<EmployerEntity>().ConfigureByConvention();
         modelBuilder.Entity<DocumentAggregateRoot>().ConfigureByConvention();
-        modelBuilder.Entity<DocumentAttachmentEntity>().ConfigureByConvention();
-        modelBuilder.Entity<DocumentReferralEntity>().ConfigureByConvention();
-        modelBuilder.Entity<DocumentActivityLogEntity>().ConfigureByConvention();
+        modelBuilder.Entity<UserVerificationTokenEntity>().ConfigureByConvention();
     }
 
     private static void ConfigureRelationships(ModelBuilder modelBuilder)
     {
-                
-        
-        // پیکربندی RoleEntity
-        modelBuilder.Entity<RoleEntity>()
-            .HasKey(r => r.Id);
 
-        modelBuilder.Entity<RoleEntity>()
-            .Property(r => r.Id)
-            .HasConversion(
-                roleId => roleId.Name, // برای ذخیره در پایگاه داده
-                value => new RoleId(value) // برای بارگذاری از پایگاه داده
-            );
-        
-            // پیکربندی رابطه چند به چند UserEntity و Roles
-            modelBuilder.Entity<UserEntity>()
-                .HasMany(x => x.Roles).WithOne()
-                .HasForeignKey(x => x.UserId);
-
-            modelBuilder.Entity<UserRoleEntity>()
-                .ToTable("UserRoles")
-                .HasKey(x => new { x.UserId, x.RoleId });
-            
-            modelBuilder.Entity<UserRoleEntity>()
-                .Property(r => r.RoleId)
-                .HasConversion(
-                    roleId => roleId.Name, // برای ذخیره در پایگاه داده
-                    value => new RoleId(value) // برای بارگذاری از پایگاه داده
-                );
-            
         modelBuilder.Entity<UserEntity>()
-            .HasOne(u => u.Employer)
-            .WithOne(c=>c.BonUser)
-            .HasForeignKey<EmployerEntity>(t => t.BonUserId)
-            .IsRequired(false)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OwnsOne(x => x.UserName, v =>
+            {
+                v.Property(x=>x.Value).HasColumnName("UserName");
+            });
         
         modelBuilder.Entity<UserEntity>()
-            .HasOne(u => u.Engineer)
-            .WithOne(u=>u.BonUser)
-            .HasForeignKey<EngineerEntity>(t => t.BonUserId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OwnsOne(x => x.Email, v =>
+            {
+                v.Property(x=>x.Value).HasColumnName("Email");
+            });
         
+        modelBuilder.Entity<UserEntity>()
+            .OwnsOne(x => x.Password, v =>
+            {
+                v.Property(x=>x.Value).HasColumnName("Password");
+            });
+        modelBuilder.Entity<UserEntity>()
+            .OwnsOne(x => x.Profile, v =>
+            {
+                v.Property(x=>x.Avatar).HasColumnName("Avatar");
+                v.Property(x=>x.FirstName).HasColumnName("FirstName");
+                v.Property(x=>x.LastName).HasColumnName("LastName");
+            });
+
+        modelBuilder.Entity<UserEntity>().HasKey(x => x.UserId);
+        modelBuilder.Entity<RoleEntity>().HasKey(x => x.RoleId);
+        modelBuilder.Entity<EngineerEntity>()
+            .HasBaseType<UserEntity>()
+            .ToTable("Engineers");  // Set a custom table for EngineerEntity
+    
+        modelBuilder.Entity<EmployerEntity>()
+            .HasBaseType<UserEntity>()
+            .ToTable("Employers");  // Set a custom table for EmployerEntity
+
+        // If EngineerEntity has a separate key, configure it here:
+        // If EngineerEntity has a separate key, configure it here:
+        modelBuilder.Entity<EngineerEntity>()
+            .Property(e => e.EngineerId)
+            .HasColumnName("EngineerId");
+
+        modelBuilder.Entity<EmployerEntity>()
+            .Property(e => e.EmployerId)
+            .HasColumnName("EmployerId");
         modelBuilder.Entity<UserEntity>()
             .HasMany(u => u.VerificationTokens)
             .WithOne(t => t.User)
-            .HasForeignKey(t => t.BonUserId);
+            .HasForeignKey(t => t.UserId);
 
         modelBuilder.Entity<DocumentAggregateRoot>()
             .HasMany(d => d.Attachments)
@@ -123,39 +125,11 @@ public class IdentityDbContext : BonDbContext<IdentityDbContext>, IBonUserManage
         modelBuilder.Entity<DocumentAggregateRoot>()
             .HasOne(d => d.OwnerUser)
             .WithMany()
-            .HasForeignKey(a => a.OwnerBonUserId);
+            .HasForeignKey(a => a.OwnerUserId);
     }
 
-    private static void ConfigureBonEnumerations(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<UserVerificationTokenEntity>()
-            .Property(x => x.Type)
-            .HasConversion<string>(
-                c => c.Name,
-                v => BonEnumeration.FromName<UserVerificationTokenType>(v) ?? UserVerificationTokenType.Global
-            );
 
-        modelBuilder.Entity<DocumentAggregateRoot>()
-            .Property(d => d.Type)
-            .HasConversion<string>(
-                c => c.Name,
-                v => BonEnumeration.FromName<DocumentType>(v) ?? DocumentType.Internal
-            );
-
-        modelBuilder.Entity<DocumentAggregateRoot>()
-            .Property(d => d.Status)
-            .HasConversion<string>(
-                c => c.Name,
-                v => BonEnumeration.FromName<DocumentStatus>(v) ?? DocumentStatus.Draft
-            );
-
-        modelBuilder.Entity<DocumentReferralEntity>()
-            .Property(r => r.Status)
-            .HasConversion<string>(
-                c => c.Name,
-                v => BonEnumeration.FromName<ReferralStatus>(v) ?? ReferralStatus.Pending
-            );
-
-        modelBuilder.Ignore<UserVerificationTokenType>();
-    }
+    public DbSet<BonIdentityUserToken> UserTokens { get; set; }
+    public DbSet<BonIdentityRole> Roles { get; set; }
+    public DbSet<BonIdentityPermission> Permissions { get; set; }
 }

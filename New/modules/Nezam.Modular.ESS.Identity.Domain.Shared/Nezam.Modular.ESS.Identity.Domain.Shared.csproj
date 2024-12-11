@@ -8,8 +8,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Bonyan.Layer.Domain" Version="1.1.7" />
-        <PackageReference Include="Bonyan.UserManagement.Domain" Version="1.1.7" />
+        <PackageReference Include="Bonyan.IdentityManagement.Domain" Version="1.2.4"/>
+        <PackageReference Include="Bonyan.Layer.Domain" Version="1.2.4"/>
+        <PackageReference Include="Bonyan.UserManagement.Domain" Version="1.2.4"/>
     </ItemGroup>
 
 </Project>

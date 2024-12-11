@@ -1,223 +1,158 @@
-﻿using Bonyan.Layer.Domain.Services;
-using Bonyan.Layer.Domain.ValueObjects;
-using Microsoft.Extensions.Logging;
+using Bonyan.Layer.Domain.DomainService;
 using Nezam.Modular.ESS.Identity.Domain.Roles;
-using Nezam.Modular.ESS.Identity.Domain.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
+using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 
 namespace Nezam.Modular.ESS.Identity.Domain.User
 {
-    public class UserDomainService : BonDomainService
+    public class UserDomainService : IUserDomainService
     {
-        public IRoleRepository RoleRepository => LazyServiceProvider.LazyGetRequiredService<IRoleRepository>();
-        public IUserRepository UserRepository => LazyServiceProvider.LazyGetRequiredService<IUserRepository>();
+        private readonly IUserRepository _userRepository; // Dependency for fetching and saving users
+        private readonly IRoleRepository _roleRepository; // Dependency for fetching roles
 
-        // Create a new user and set the initial password
-        public async Task<bool> CreateAsync(UserEntity entity, string password)
+        public UserDomainService(IUserRepository userRepository, IRoleRepository roleRepository)
         {
-            try
-            {
-                if (await UserRepository.ExistsAsync(x => x.UserName.Equals(entity.UserName)))
-                {
-                    Logger.LogWarning($"User with username {entity.UserName} already exists.");
-                    return false;
-                }
-
-                entity.SetPassword(password);
-                await UserRepository.AddAsync(entity, true);
-                return true;
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error creating user.");
-                return false;
-            }
+            _userRepository = userRepository;
+            _roleRepository = roleRepository;
         }
 
-        // Update user information
-        public async Task<bool> UpdateAsync(UserEntity entity)
+        // Assign role(s) to the user
+        public async Task<BonDomainResult> AssignRoleAsync(UserEntity user, params RoleId[] roles)
         {
-            try
+            if (user == null || roles == null || roles.Length == 0)
+                return BonDomainResult.Failure("User or roles cannot be null or empty.");
+
+            bool isUpdated = false;  // Flag to track if there were any changes
+
+            foreach (var roleId in roles)
             {
-                await UserRepository.UpdateAsync(entity, true);
-                return true;
+                var role = await _roleRepository.GetRoleByIdAsync(roleId);
+                if (role == null)
+                    return BonDomainResult.Failure($"Role with ID {roleId} not found.");
+
+                if (user.Roles.Any(r => r.RoleId == roleId))
+                    continue; // Skip if user already has the role
+
+                user.AddRole(role); // Add the role to the user
+                isUpdated = true; // Mark as updated
             }
-            catch (Exception e)
+
+            // Only update the user if roles have been added
+            if (isUpdated)
             {
-                Logger.LogError(e, "Error updating user.");
-                return false;
+                await _userRepository.UpdateAsync(user, true); // Save the updated user (with auto-save flag)
             }
+
+            return BonDomainResult.Success();
         }
 
-        // Find a user by username
-        public async Task<UserEntity?> FindByUserNameAsync(string userName)
+
+        // Unassign role from the user
+        public async Task<BonDomainResult> UnassignRole(UserEntity user, RoleId role)
         {
-            try
-            {
-                return await UserRepository.FindOneAsync(x => x.UserName.Equals(userName));
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error finding user by username.");
-                return null;
-            }
+            if (user == null || role == null)
+                return BonDomainResult.Failure("User or role cannot be null.");
+
+            var roleEntity = await _roleRepository.GetRoleByIdAsync(role);
+            if (roleEntity == null)
+                return BonDomainResult.Failure("Role not found.");
+
+            if (!user.Roles.Any(r => r.RoleId == role))
+                return BonDomainResult.Failure("User does not have this role.");
+
+            user.RemoveRole(roleEntity); // Remove the role from the user
+            await _userRepository.UpdateAsync(user, true); // Save the updated user (with auto-save flag)
+            return BonDomainResult.Success();
         }
 
-        // Change user's password
-        public async Task<bool> ChangePasswordAsync(UserEntity entity, string currentPassword, string newPassword)
+        // Update user roles
+        public async Task<BonDomainResult> UpdateRoles(UserEntity user, params RoleId[] roles)
         {
-            if (!entity.VerifyPassword(currentPassword))
+            if (user == null || roles == null || roles.Length == 0)
+                return BonDomainResult.Failure("User or roles cannot be null or empty.");
+
+            bool isUpdated = false;  // Flag to track if there were any changes
+
+            // Clear existing roles and add the new ones
+            var currentRoleIds = user.Roles.Select(r => r.RoleId).ToHashSet();
+            var newRoleIds = roles.ToHashSet();
+
+            // If the roles haven't changed, skip the update
+            if (currentRoleIds.SetEquals(newRoleIds))
             {
-                Logger.LogWarning("Current password does not match.");
-                return false;
+                return BonDomainResult.Success();
             }
 
-            entity.SetPassword(newPassword);
-            return await UpdateAsync(entity);
+            user.Roles.Clear(); // Clear existing roles
+
+            foreach (var roleId in roles)
+            {
+                var role = await _roleRepository.GetRoleByIdAsync(roleId);
+                if (role == null)
+                    return BonDomainResult.Failure($"Role with ID {roleId} not found.");
+
+                user.AddRole(role);
+                isUpdated = true; // Mark as updated
+            }
+
+            // Only update the user if there were changes
+            if (isUpdated)
+            {
+                await _userRepository.UpdateAsync(user, true); // Save the updated user (with auto-save flag)
+            }
+
+            return BonDomainResult.Success();
         }
 
-        // Reset user's password (for admin use cases)
-        public async Task<bool> ResetPasswordAsync(UserEntity entity, string newPassword)
+
+        // Create a new user
+        public async Task<BonDomainResult<UserEntity>> Create(UserEntity user)
         {
-            entity.SetPassword(newPassword);
-            return await UpdateAsync(entity);
+            if (user == null)
+                return BonDomainResult<UserEntity>.Failure("User cannot be null.");
+
+            await _userRepository.AddAsync(user, true); // Save the new user (with auto-save flag)
+            return BonDomainResult<UserEntity>.Success(user);
         }
 
-        // Assign multiple roles to a user using role names
-        public async Task<bool> AssignRolesAsync(UserEntity entity, params RoleId[] roleNames)
+        // Update an existing user
+        public async Task<BonDomainResult> UpdateAsync(UserEntity user)
         {
-            try
-            {
-                // Fetch existing role names from the repository
-                var existingRoleNames = await RoleRepository.Queryable
-                    .Where(r => roleNames.Contains(r.Id))
-                    .Select(r => r.Id)
-                    .ToListAsync();
+            if (user == null)
+                return BonDomainResult.Failure("User cannot be null.");
 
-                // Assign roles that exist
-                foreach (var roleName in existingRoleNames)
-                {
-                  
-                    entity.AssignRole(roleName);
-                }
-
-                // Log warnings for roles that do not exist
-                var nonExistingRoleNames = roleNames.Except(existingRoleNames);
-                foreach (var roleName in nonExistingRoleNames)
-                {
-                    Logger.LogWarning($"Role with name {roleName} does not exist.");
-                }
-
-                await UserRepository.UpdateAsync(entity, true);
-                return true;
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error assigning roles to user.");
-                return false;
-            }
+            await _userRepository.UpdateAsync(user, true); // Save the updated user (with auto-save flag)
+            return BonDomainResult.Success();
         }
 
-        // Remove multiple roles from a user using role names
-        public async Task<bool> RemoveRolesAsync(UserEntity entity, params RoleId[] roleNames)
+        // Delete a user
+        public async Task<BonDomainResult> DeleteAsync(UserEntity user)
         {
-            try
-            {
-                // Fetch existing role names from the repository
-                var existingRoleNames = await RoleRepository.Queryable
-                    .Where(r => roleNames.Contains(r.Id))
-                    .Select(r => r.Id)
-                    .ToListAsync();
+            if (user == null)
+                return BonDomainResult.Failure("User cannot be null.");
 
-                // Remove roles that exist
-                foreach (var roleId in existingRoleNames)
-                {
-                
-                    entity.RemoveRole(roleId);
-                }
-
-                // Log warnings for roles that do not exist
-                var nonExistingRoleNames = roleNames.Except(existingRoleNames);
-                foreach (var roleName in nonExistingRoleNames)
-                {
-                    Logger.LogWarning($"Role with name {roleName} does not exist.");
-                }
-
-                await UserRepository.UpdateAsync(entity, true);
-                return true;
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error removing roles from user.");
-                return false;
-            }
+            await _userRepository.DeleteAsync(user, true); // Delete the user (with auto-save flag)
+            return BonDomainResult.Success();
         }
 
-        // Synchronize user's roles using a list of role names
-        public async Task UpdateRolesAsync(UserEntity user, RoleId[] roleNames)
+        // Get a user by ID
+        public async Task<BonDomainResult<UserEntity>> GetUserByIdAsync(UserId userId)
         {
-            try
-            {
-                // Fetch all existing role names
-                var existingRoleNames = await RoleRepository.Queryable
-                    .Select(r => r.Id)
-                    .ToListAsync();
+            var user = await _userRepository.GetByUserIdAsync(userId);
+            if (user == null)
+                return BonDomainResult<UserEntity>.Failure("User not found.");
 
-                // Filter valid role names
-                var validRoleNames = roleNames.Intersect(existingRoleNames).ToList();
-
-                // Log warnings for roles that do not exist
-                var nonExistingRoleNames = roleNames.Except(validRoleNames);
-                foreach (var roleName in nonExistingRoleNames)
-                {
-                    Logger.LogWarning($"Role with name {roleName} does not exist.");
-                }
-
-                // Current roles assigned to the user
-                var currentRoleNames = user.Roles.Select(rid => rid.RoleId).ToHashSet();
-
-                // Determine roles to add and remove
-                var rolesToAdd = validRoleNames.Except(currentRoleNames);
-                var rolesToRemove = currentRoleNames.Except(validRoleNames);
-
-                // Add new roles
-                foreach (var roleName in rolesToAdd)
-                {
-                    user.AssignRole(roleName);
-                }
-
-                // Remove roles no longer assigned
-                foreach (var roleName in rolesToRemove)
-                {
-                    user.RemoveRole( roleName);
-                }
-
-                await UserRepository.UpdateAsync(user, true);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error updating roles for user.");
-                throw new Exception("An error occurred while updating roles.", e);
-            }
+            return BonDomainResult<UserEntity>.Success(user);
         }
 
-        // Check if the user has a specific role by name
-        public async Task<bool> HasRoleAsync(UserEntity user, RoleId roleName)
+        // Get a user by username
+        public async Task<BonDomainResult<UserEntity>> GetUserByUsernameAsync(UserNameValue username)
         {
-            // Since RoleId is based on role name, we can directly check
-            var roleExists = await RoleRepository.ExistsAsync(r => r.Id.Equals(roleName));
-            if (!roleExists)
-            {
-                Logger.LogWarning($"Role with name {roleName} does not exist.");
-                return false;
-            }
+            var user = await _userRepository.GetByUserNameAsync(username);
+            if (user == null)
+                return BonDomainResult<UserEntity>.Failure("User not found.");
 
-            return user.Roles.Any(rid => rid.RoleId == roleName);
+            return BonDomainResult<UserEntity>.Success(user);
         }
     }
 }

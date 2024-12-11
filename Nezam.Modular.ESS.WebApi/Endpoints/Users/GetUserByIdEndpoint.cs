@@ -1,4 +1,4 @@
-﻿using Bonyan.UserManagement.Domain.ValueObjects;
+﻿using Bonyan.UserManagement.Domain.Users.ValueObjects;
 using FastEndpoints;
 using Nezam.Modular.ESS.Identity.Application.Users;
 using Nezam.Modular.ESS.Identity.Application.Users.Dto;
@@ -28,7 +28,7 @@ public class GetUserByIdEndpoint : Endpoint<GetUserByIdRequest, UserDtoWithDetai
 
     public override async Task HandleAsync(GetUserByIdRequest req, CancellationToken ct)
     {
-        var user = await userService.GetUserByIdAsync(BonUserId.FromGuid(req.BonUserId));
+        var user = await userService.GetUserByIdAsync(BonUserId.NewId(req.BonUserId));
         if (user == null)
         {
             await SendNotFoundAsync(ct);

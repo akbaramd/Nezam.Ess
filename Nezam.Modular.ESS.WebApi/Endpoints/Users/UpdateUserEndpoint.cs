@@ -1,5 +1,5 @@
-﻿using Bonyan.UserManagement.Domain.ValueObjects;
-        using FastEndpoints;
+﻿using Bonyan.UserManagement.Domain.Users.ValueObjects;
+using FastEndpoints;
         using Nezam.Modular.ESS.Identity.Application.Users;
         using Nezam.Modular.ESS.Identity.Application.Users.Dto;
 
@@ -28,7 +28,7 @@
 
             public override async Task HandleAsync(UserUpdateDto req, CancellationToken ct)
             {
-                var updatedUser = await userService.UpdateUserAsync(BonUserId.FromGuid(req.BonUserId), req);
+                var updatedUser = await userService.UpdateUserAsync(BonUserId.NewId(req.BonUserId), req);
                 if (updatedUser == null)
                 {
                     await SendNotFoundAsync(ct);

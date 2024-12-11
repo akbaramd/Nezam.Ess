@@ -36,7 +36,7 @@ public class TblUtmMaininfoTempConfiguration : IEntityTypeConfiguration<TblUtmMa
         Entity.Property(e => e.PelakSabti)
             .HasMaxLength(255)
             .HasColumnName("pelak_sabti");
-        Entity.Property(e => e.RegBonUserId).HasColumnName("reg_BonUserId");
+        Entity.Property(e => e.RegUserId).HasColumnName("reg_UserId");
         Entity.Property(e => e.State).HasColumnName("state");
         Entity.Property(e => e.SabtDat)
             .HasDefaultValueSql("(getdate())")

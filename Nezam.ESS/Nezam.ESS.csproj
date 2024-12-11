@@ -8,26 +8,26 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FastEndpoints" Version="5.31.0.7-beta" />
-        <PackageReference Include="FastEndpoints.Security" Version="5.31.0.7-beta" />
-        <PackageReference Include="FastEndpoints.Swagger" Version="5.31.0.7-beta" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11" />
-        <PackageReference Include="PersianDateTime" Version="1.1.5082.36395" />
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
+        <PackageReference Include="FastEndpoints" Version="5.32.0.4-beta"/>
+        <PackageReference Include="FastEndpoints.Security" Version="5.32.0.4-beta"/>
+        <PackageReference Include="FastEndpoints.Swagger" Version="5.32.0.4-beta"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11"/>
+        <PackageReference Include="PersianDateTime" Version="1.1.5082.36395"/>
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.6"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Dapper" Version="2.1.35" />
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.0-preview2.24304.8" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+        <PackageReference Include="Dapper" Version="2.1.35"/>
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.0-preview3.24332.3"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0"/>
     </ItemGroup>
     <ItemGroup>
-        <Folder Include="Data\" />
-        <Folder Include="wwwroot\uploads\documents\" />
+        <Folder Include="Data\"/>
+        <Folder Include="wwwroot\uploads\documents\"/>
     </ItemGroup>
 
 </Project>

@@ -1,41 +1,19 @@
-﻿using Bonyan.Layer.Domain.Entities;
-using Bonyan.UserManagement.Domain.ValueObjects;
+﻿using System.ComponentModel.DataAnnotations;
+using Bonyan.Layer.Domain.Entities;
+using Bonyan.UserManagement.Domain.Users.ValueObjects;
 using Nezam.Modular.ESS.Identity.Domain.Shared.Employer;
+using Nezam.Modular.ESS.Identity.Domain.Shared.Engineer;
+using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Identity.Domain.User;
 
 namespace Nezam.Modular.ESS.Identity.Domain.Employer
 {
-    public class EmployerEntity : BonEntity<EmployerId>
+    public class EmployerEntity : UserEntity
     {
-        // Constructors
+        public EmployerId EmployerId { get; set; }
         protected EmployerEntity() { }
-
-        public EmployerEntity(EmployerId employerId, BonUserId bonUserId, string firstName, string? lastName)
+        public EmployerEntity(UserId userId, UserNameValue userName, UserPasswordValue password, UserProfileValue profile, UserEmailValue? email = null) : base(userId, userName, password, profile, email)
         {
-            Id = employerId ?? throw new ArgumentNullException(nameof(employerId));
-            BonUserId = bonUserId ?? throw new ArgumentNullException(nameof(bonUserId));
-            FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
-            LastName = lastName;
-        }
-
-        // Properties
-        public BonUserId BonUserId { get; private set; }
-        public UserEntity BonUser { get; set; }
-        public string FirstName { get; private set; }
-        public string? LastName { get; private set; }
-
-        // Update Methods
-
-        /// <summary>
-        /// Updates the employer's personal details.
-        /// </summary>
-        public void UpdateDetails(string firstName, string? lastName)
-        {
-            if (string.IsNullOrWhiteSpace(firstName)) throw new ArgumentException("First name is required.", nameof(firstName));
-
-            FirstName = firstName;
-            LastName = lastName;
-            // Trigger domain event: EmployerDetailsUpdated (if needed)
         }
     }
 

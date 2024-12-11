@@ -32,8 +32,8 @@ public class GetDocumentListEndpoint : EndpointWithoutRequest<List<GetDocumentLi
 
     public override async Task HandleAsync( CancellationToken ct)
     {
-        var BonUserId = int.Parse(User.Claims.First(x => x.Type == "Id").Value);
-        var data = _dbContext.TblEesDocuments.Where(x => x.BonUserId == BonUserId && x.State == 1).ToList().Select(x => new GetDocumentListEndpointResponse
+        var UserId = int.Parse(User.Claims.First(x => x.Type == "Id").Value);
+        var data = _dbContext.TblEesDocuments.Where(x => x.UserId == UserId && x.State == 1).ToList().Select(x => new GetDocumentListEndpointResponse
         {
             File = x.FilePath,
             TrackingCode = x.TrackingCode,

@@ -1,6 +1,6 @@
 ﻿using Bonyan.Layer.Application.Dto;
-using Bonyan.UserManagement.Domain.ValueObjects;
-using Nezam.Modular.ESS.Identity.Application.Users.Dto;
+using Bonyan.UserManagement.Domain.Users.ValueObjects;
+using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents;
 using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.Enumerations;
 using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
@@ -12,8 +12,8 @@ public class DocumentDto : BonFullAuditableAggregateRootDto<DocumentId>
     public string Title { get; set; }
     public string Content { get; set; }
     
-    public BonUserId OwnerBonUserId { get; private set; }
-    public UserDto OwnerUser { get; private set; }
+    public UserId OwnerUserId { get; private set; }
+    // public UserDto OwnerUser { get; private set; }
     
     public DocumentType Type { get; private set; }
     public DocumentStatus Status { get; private set; }
@@ -31,7 +31,7 @@ public class DocumentDto : BonFullAuditableAggregateRootDto<DocumentId>
 public class DocumentActivityLogDto : BonEntityDto<DocumentActivityLogId>
 {
     public DateTime ActivityDate { get; private set; }
-    public BonUserId BonUserId { get; private set; }
+    public UserId UserId { get; private set; }
     public string Key { get; private set; }
     public string Description { get; private set; }
     

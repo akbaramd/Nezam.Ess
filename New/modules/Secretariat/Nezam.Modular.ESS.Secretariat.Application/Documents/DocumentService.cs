@@ -1,6 +1,6 @@
 ﻿using Bonyan.Layer.Application.Services;
 using Bonyan.Layer.Domain.Enumerations;
-using Bonyan.UserManagement.Domain.ValueObjects;
+using Bonyan.UserManagement.Domain.Users.ValueObjects;
 using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Identity.Domain.User;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents;
@@ -20,10 +20,10 @@ public class DocumentApplicationService : BonApplicationService, IDocumentApplic
     private IUserRepository UserRepository => LazyServiceProvider.LazyGetRequiredService<IUserRepository>();
 
     // 1. ایجاد یا برگرداندن نامه پیشنویس خالی
-    public async Task<DocumentDto> CreateOrGetEmptyDraftAsync(BonUserId BonUserId)
+    public async Task<DocumentDto> CreateOrGetEmptyDraftAsync(UserId UserId)
     {
         // تلاش برای یافتن یک نامه پیشنویس خالی بدون گیرنده و پیوست
-        var existingDraft = await DocumentReadOnlyRepository.GetEmptyDraftByUserAsync(BonUserId);
+        var existingDraft = await DocumentReadOnlyRepository.GetEmptyDraftByUserAsync(UserId);
         if (existingDraft != null && existingDraft.Status == DocumentStatus.Draft && !existingDraft.Attachments.Any() &&
             !existingDraft.Referrals.Any())
         {
@@ -34,7 +34,7 @@ public class DocumentApplicationService : BonApplicationService, IDocumentApplic
         var newDraft = new DocumentAggregateRoot(
             title: string.Empty,
             content: string.Empty,
-            senderBonUserId: BonUserId,
+            senderUserId: UserId,
             type: DocumentType.Internal
         );
 
@@ -42,19 +42,19 @@ public class DocumentApplicationService : BonApplicationService, IDocumentApplic
         return Mapper.Map<DocumentDto>(newDraft);
     }
 
-    public async Task<DocumentDto> UpdateAsync(DocumentId documentId, DocumentUpdateDto dto, BonUserId BonUserId)
+    public async Task<DocumentDto> UpdateAsync(DocumentId documentId, DocumentUpdateDto dto, UserId UserId)
     {
         var document = await DocumentReadOnlyRepository.GetByIdAsync(documentId);
         if (document == null)
             throw new Exception("documentId");
 
-        document.UpdateContent(dto.Content, BonUserId);
-        document.UpdateTitle(dto.Title, BonUserId);
+        document.UpdateContent(dto.Content, UserId);
+        document.UpdateTitle(dto.Title, UserId);
         var type = BonEnumeration.FromId<DocumentType>(dto.Type);
 
         if (type != null)
         {
-            document.ChangeType(type, BonUserId);
+            document.ChangeType(type, UserId);
         }
 
         await DocumentRepository.UpdateAsync(document);
@@ -63,7 +63,7 @@ public class DocumentApplicationService : BonApplicationService, IDocumentApplic
     }
 
     // 2. اضافه کردن گیرنده اصلی
-    public async Task AddPrimaryRecipientAsync(DocumentId documentId, BonUserId receiverBonUserId, BonUserId currentBonUserId)
+    public async Task AddPrimaryRecipientAsync(DocumentId documentId, UserId receiverUserId, UserId currentUserId)
     {
         var document = await DocumentReadOnlyRepository.GetByIdAsync(documentId);
         if (document == null)
@@ -71,33 +71,33 @@ public class DocumentApplicationService : BonApplicationService, IDocumentApplic
 
         // بررسی ارجاعات موجود برای این گیرنده خاص
         var existingReferral = document.Referrals
-            .FirstOrDefault(r => r.ReceiverBonUserId == receiverBonUserId &&
+            .FirstOrDefault(r => r.ReceiverUserId == receiverUserId &&
                                  r.Status == ReferralStatus.Pending);
         // اضافه کردن گیرنده به عنوان ارجاع اصلی
-        document.AddInitialReferral(receiverBonUserId, currentBonUserId);
+        document.AddInitialReferral(receiverUserId, currentUserId);
         await DocumentRepository.UpdateAsync(document);
     }
 
     // 3. اضافه کردن پیوست
     public async Task AddAttachmentAsync(DocumentId documentId, string fileName, string fileType, long fileSize,
-        string filePath, BonUserId BonUserId)
+        string filePath, UserId UserId)
     {
         var document = await DocumentReadOnlyRepository.GetByIdAsync(documentId);
         if (document == null)
             throw new Exception("documentId");
 
-        document.AddAttachment(fileName, fileType, fileSize, filePath, BonUserId);
+        document.AddAttachment(fileName, fileType, fileSize, filePath, UserId);
         await DocumentRepository.UpdateAsync(document);
     }
 
     // 4. حذف پیوست
-    public async Task RemoveAttachmentAsync(DocumentId documentId, DocumentAttachmentId attachmentId, BonUserId BonUserId)
+    public async Task RemoveAttachmentAsync(DocumentId documentId, DocumentAttachmentId attachmentId, UserId UserId)
     {
         var document = await DocumentReadOnlyRepository.GetByIdAsync(documentId);
         if (document == null)
             throw new Exception("documentId");
 
-        document.RemoveAttachment(attachmentId, BonUserId);
+        document.RemoveAttachment(attachmentId, UserId);
         await DocumentRepository.UpdateAsync(document);
     }
 
@@ -112,7 +112,7 @@ public class DocumentApplicationService : BonApplicationService, IDocumentApplic
     }
 
     // 6. ارسال نامه
-    public async Task SendDocumentAsync(DocumentId documentId, BonUserId senderId)
+    public async Task SendDocumentAsync(DocumentId documentId, UserId senderId)
     {
         var document = await DocumentReadOnlyRepository.GetByIdAsync(documentId);
         if (document == null)

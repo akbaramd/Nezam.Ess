@@ -50,7 +50,7 @@ public class DocumentUploadEndpoint : Endpoint<DocumentUploadEndpointRequest, Do
     {
         if (req.Upload.Length <= 0) return;
 
-       var BonUserId = int.Parse(User.Claims.First(x => x.Type == "Id").Value);
+       var UserId = int.Parse(User.Claims.First(x => x.Type == "Id").Value);
             
         var createdAt = DateTime.Now;
         var trackingCode = createdAt.ToString("yyMMddHHmmss");
@@ -64,7 +64,7 @@ public class DocumentUploadEndpoint : Endpoint<DocumentUploadEndpointRequest, Do
         }
 
         var yearFolder = new PersianDateTime(createdAt).ToString("yyyy");
-        var filePath = Path.Combine("uploads", "documents", yearFolder, $"{BonUserId}-{trackingCode}{extension}");
+        var filePath = Path.Combine("uploads", "documents", yearFolder, $"{UserId}-{trackingCode}{extension}");
         var fullPath = Path.Combine(basePath, filePath);
 
         Directory.CreateDirectory(Path.GetDirectoryName(fullPath) ?? throw new InvalidOperationException("Directory path is invalid"));
@@ -80,7 +80,7 @@ public class DocumentUploadEndpoint : Endpoint<DocumentUploadEndpointRequest, Do
 
         var document = new TblEesDocuments
         {
-            BonUserId = BonUserId,
+            UserId = UserId,
             TrackingCode = trackingCode,
             Title = req.Title,
             FilePath = filePath,
