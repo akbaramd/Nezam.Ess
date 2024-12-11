@@ -1,7 +1,4 @@
 using System.Globalization;
-using FastEndpoints;
-using FastEndpoints.Security;
-using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Localization;
 using Nezam.Modular.ESS.WebApi;
 
@@ -19,14 +16,16 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 });
 
 // Configure FastEndpoints, Swagger, and JWT Authentication
-builder.Services.AddFastEndpoints()
-    .SwaggerDocument();
+// builder.Services.AddFastEndpoints()
+    // .SwaggerDocument();
 
 
 builder.Services.AddEndpointsApiExplorer();
 
 var app=await builder.BuildAsync();
-
+// app
+// .UseFastEndpoints()
+// .UseSwaggerGen();
 await app.RunAsync();
 
 

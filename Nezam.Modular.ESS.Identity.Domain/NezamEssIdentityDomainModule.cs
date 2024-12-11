@@ -1,7 +1,6 @@
-﻿using Bonyan.IdentityManagement.Domain;
+﻿using Bonyan.Layer.Domain;
 using Bonyan.Modularity;
 using Bonyan.Modularity.Abstractions;
-using Bonyan.UserManagement.Domain;
 using Microsoft.Extensions.DependencyInjection;
 using Nezam.Modular.ESS.Identity.Domain.User;
 
@@ -11,7 +10,7 @@ public class NezamEssIdEntityDomainModule : BonModule
 {
     public NezamEssIdEntityDomainModule()
     {
-   
+        DependOn<BonLayerDomainModule>();
     }
     public override Task OnConfigureAsync(BonConfigurationContext context)
     {

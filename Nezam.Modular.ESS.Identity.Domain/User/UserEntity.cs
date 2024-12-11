@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
-using Bonyan.Layer.Domain.Entities;
+﻿using Bonyan.Layer.Domain.Aggregate;
 using Nezam.Modular.ESS.Identity.Domain.Roles;
 using Nezam.Modular.ESS.Identity.Domain.Shared.User;
+using Nezam.Modular.ESS.Identity.Domain.User.Events;
 
 namespace Nezam.Modular.ESS.Identity.Domain.User
 {
-    public class UserEntity : BonEntity
+    public class UserEntity : BonAggregateRoot
     {
         public UserId UserId { get; set; }
-        public UserNameValue UserName { get; private set; }
+        public UserNameValue UserName { get;  set; }
         public UserPasswordValue Password { get; private set; }
         public UserEmailValue? Email { get; private set; }
         public UserProfileValue Profile { get; private set; }
@@ -18,7 +16,6 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
         
         // Collection to hold assigned roles
         public ICollection<RoleEntity> Roles { get; private set; }
-
         protected UserEntity() { }
 
         // Constructor for creating a new user with profile and tokens
@@ -27,10 +24,12 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
             UserId = userId;
             SetUserName(userName);
             SetPassword(password);
-            SetProfile(profile);
+            UpdateProfile(profile);
             Email = email;
             VerificationTokens = new List<UserVerificationTokenEntity>(); // Initialize the token collection
             Roles = new List<RoleEntity>(); // Initialize the roles collection
+            
+            AddDomainEvent(new UserCreatedEvent(userId, userName.Value, email?.Value, profile));
         }
 
         // Method for changing the username
@@ -40,42 +39,45 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
                 throw new ArgumentException("Username cannot be empty or null.");
 
             UserName = newUserName;
+            AddDomainEvent(new UserNameUpdatedEvent(UserId, newUserName.Value));
         }
 
-        // Method for changing the password
         public void SetPassword(UserPasswordValue newPassword)
         {
+            if (newPassword == null)
+                throw new ArgumentNullException(nameof(newPassword));
+
             Password = newPassword;
+            AddDomainEvent(new UserPasswordUpdatedEvent(UserId));
         }
 
-        // Method for updating email
         public void SetEmail(UserEmailValue? newEmail)
         {
             Email = newEmail;
+            AddDomainEvent(new UserEmailUpdatedEvent(UserId, newEmail?.Value));
         }
 
-        // Method for updating profile
-        public void SetProfile(UserProfileValue newProfile)
+        public void UpdateProfile(UserProfileValue newProfile)
         {
             if (newProfile == null)
                 throw new ArgumentException("Profile cannot be null.");
 
             Profile = newProfile;
+            AddDomainEvent(new UserProfileUpdatedEvent(UserId, newProfile));
         }
 
-        // Method to add a new role to the user
         public void AddRole(RoleEntity role)
         {
             if (role == null)
                 throw new ArgumentException("Role cannot be null.");
-            
+
             if (!Roles.Contains(role))
             {
-                Roles.Add(role); // Add the role to the user's collection
+                Roles.Add(role);
+                AddDomainEvent(new UserRoleAddedEvent(UserId, role.RoleId, role.Title));
             }
         }
 
-        // Method to remove a role from the user
         public void RemoveRole(RoleEntity role)
         {
             if (role == null)
@@ -83,9 +85,12 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
 
             if (Roles.Contains(role))
             {
-                Roles.Remove(role); // Remove the role from the user's collection
+                Roles.Remove(role);
+                AddDomainEvent(new UserRoleRemovedEvent(UserId, role.RoleId, role.Title));
             }
         }
+
+
 
         // Method to check if the user has a specific role
         public bool HasRole(RoleEntity role)
@@ -101,7 +106,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
 
         public override object GetKey()
         {
-            return new { UserId };
+            return new { UserId = UserId };
         }
     }
 }

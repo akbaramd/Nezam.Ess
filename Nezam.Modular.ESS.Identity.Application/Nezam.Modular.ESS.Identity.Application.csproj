@@ -8,25 +8,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Bonyan.IdentityManagement.Applciation" Version="1.2.4"/>
-        <PackageReference Include="Bonyan.Layer.Application" Version="1.2.4"/>
-        <PackageReference Include="Bonyan.UserManagement.Application" Version="1.2.4"/>
-        <PackageReference Include="Dapper" Version="2.1.35"/>
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2"/>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.0"/>
-        <PackageReference Include="FastEndpoints.Security" Version="5.32.0.4-beta"/>
+        <PackageReference Include="Bonyan.Layer.Application" Version="1.2.7" />
+        <PackageReference Include="Dapper" Version="2.1.35" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.0" />
+        <PackageReference Include="FastEndpoints.Security" Version="5.32.0.5-beta" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Nezam.Modular.ESS.Identity.Domain\Nezam.Modular.ESS.Identity.Domain.csproj"/>
+        <ProjectReference Include="..\Nezam.Modular.ESS.Identity.Domain\Nezam.Modular.ESS.Identity.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Nezam.Modular.ESS.Identity.Domain\Nezam.Modular.ESS.Identity.Domain.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Users\Jobs\"/>
+        <ProjectReference Include="..\Nezam.Modular.ESS.Identity.Domain\Nezam.Modular.ESS.Identity.Domain.csproj" />
     </ItemGroup>
 
 </Project>

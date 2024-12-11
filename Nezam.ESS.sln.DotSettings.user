@@ -23,6 +23,6 @@
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=New_002FModules_002FSecretariat_002FNezam_002EModular_002EESS_002ESecretariat_002EApplciation_002FResources_002FDocumentTranslates/@EntryIndexRemoved">True</s:Boolean>
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=New_002FModules_002FSecretariat_002FNezam_002EModular_002EESS_002ESecretariat_002EApplication_002FResources_002FDocumentTranslates/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/Initialized/@EntryValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=de8e3328_002Db212_002D4978_002Dba91_002D078f70949064_0023Nezam_002EModular_002EESS_002EWebApi/@EntryIndexedValue">True</s:Boolean>
+	
 	
 	</wpf:ResourceDictionary>

@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using Bonyan.Layer.Domain.Aggregate;
-using Bonyan.UserManagement.Domain.Users.ValueObjects;
 using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Identity.Domain.User;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents.Exceptions;

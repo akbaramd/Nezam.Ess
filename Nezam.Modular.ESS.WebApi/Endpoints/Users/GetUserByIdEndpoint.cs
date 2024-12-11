@@ -1,18 +1,18 @@
 ﻿using Bonyan.UserManagement.Domain.Users.ValueObjects;
 using FastEndpoints;
-using Nezam.Modular.ESS.Identity.Application.Users;
-using Nezam.Modular.ESS.Identity.Application.Users.Dto;
+using Nezam.Modular.ESS.Identity.Domain.User;
 
 namespace Nezam.Modular.ESS.WebApi.Endpoints.Users;
 
 public class GetUserByIdEndpoint : Endpoint<GetUserByIdRequest, UserDtoWithDetail>
 {
-    private readonly IUserService userService;
+    private readonly IUserDomainService _domainService;
 
-    public GetUserByIdEndpoint(IUserService userService)
+    public GetUserByIdEndpoint(IUserDomainService domainService)
     {
-        this.userService = userService;
+        _domainService = domainService;
     }
+
 
     public override void Configure()
     {

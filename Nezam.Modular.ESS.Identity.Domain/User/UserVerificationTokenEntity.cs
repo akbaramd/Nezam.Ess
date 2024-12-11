@@ -1,7 +1,6 @@
 ﻿using Bonyan.Layer.Domain.Entities;
 using Bonyan.Layer.Domain.Enumerations;
 using Bonyan.Layer.Domain.ValueObjects;
-using Bonyan.UserManagement.Domain.Users.ValueObjects;
 using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 
 namespace Nezam.Modular.ESS.Identity.Domain.User;

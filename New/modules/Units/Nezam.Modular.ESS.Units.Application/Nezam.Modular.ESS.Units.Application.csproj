@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Bonyan.Layer.Application" Version="1.2.7" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Nezam.Modular.ESS.Units.Domain.Shared\Nezam.Modular.ESS.Units.Domain.Shared.csproj" />
+      <ProjectReference Include="..\Nezam.Modular.ESS.Units.Domain\Nezam.Modular.ESS.Units.Domain.csproj" />
+    </ItemGroup>
+
+
+</Project>
