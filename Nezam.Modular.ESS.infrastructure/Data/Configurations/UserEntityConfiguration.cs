@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nezam.Modular.ESS.Identity.Domain.User;
+using Payeh.SharedKernel.EntityFrameworkCore.Domain;
 
 namespace Nezam.Modular.ESS.Infrastructure.Data.Configurations;
 
@@ -10,7 +11,9 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
     {
         // Configure UserId as the primary key
         builder.HasKey(x => x.UserId);  // Explicitly telling EF that UserId is the primary key
-
+     
+        
+        
         // Configuring value objects as owned types
         builder.OwnsOne(x => x.UserName, userName =>
         {

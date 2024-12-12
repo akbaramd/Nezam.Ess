@@ -11,6 +11,7 @@ using Nezam.Modular.ESS.Infrastructure.Data.Repository;
 using Nezam.Modular.ESS.Infrastructure.Data.Seeds;
 using Nezam.Modular.ESS.Units.Domain.Member;
 using Nezam.Modular.ESS.Units.Domain.Units;
+using Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork;
 
 namespace Nezam.Modular.ESS.Infrastructure;
 
@@ -19,7 +20,11 @@ public static class Extensions
    public static  IServiceCollection AddInfrastructure(this IServiceCollection services)
    {
      services.AddHostedService<IdentitySeedService>();
-        
+     services.AddUnitOfWork<AppDbContext>();
+     services.AddMediatR(c =>
+     {
+        c.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+     });
      services.AddDbContext<AppDbContext>(c =>
       {
          c.UseSqlite("Data Source=NezamEes.db;Mode=ReadWrite;");

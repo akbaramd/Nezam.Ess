@@ -24,6 +24,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Payeh\Payeh.SharedKernel\Payeh.SharedKernel.csproj" />
+        <ProjectReference Include="..\Nezam.Modular.ESS.Identity.Application\Nezam.Modular.ESS.Identity.Application.csproj" />
         <ProjectReference Include="..\Nezam.Modular.ESS.Infrastructure\Nezam.Modular.ESS.Infrastructure.csproj" />
     </ItemGroup>
 
