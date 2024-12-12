@@ -1,11 +1,13 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
-using Nezam.Modular.ESS.WebApi;
+using Nezam.Modular.ESS.Infrastructure;
 
-var builder = BonyanApplication.CreateModularBuilder<NezamEssModule>("web-api");
+var builder = WebApplication.CreateBuilder(args);
 
 // Add localization services with default culture set to Persian
 builder.Services.AddLocalization();
+
+builder.Services.AddInfrastructure();
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
@@ -22,7 +24,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 
-var app=await builder.BuildAsync();
+var app= builder.Build();
 // app
 // .UseFastEndpoints()
 // .UseSwaggerGen();

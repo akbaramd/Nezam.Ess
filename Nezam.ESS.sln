@@ -38,6 +38,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nezam.Modular.ESS.Units.Dom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nezam.Modular.ESS.Units.Application", "New\modules\Units\Nezam.Modular.ESS.Units.Application\Nezam.Modular.ESS.Units.Application.csproj", "{01D4AC8D-7250-49CE-A258-A34F720F6958}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payeh.SharedKernel", "..\Payeh\Payeh.SharedKernel\Payeh.SharedKernel.csproj", "{D0FB9649-37A5-4480-BAF1-BFB4F6278081}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,6 +102,10 @@ Global
 		{01D4AC8D-7250-49CE-A258-A34F720F6958}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01D4AC8D-7250-49CE-A258-A34F720F6958}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01D4AC8D-7250-49CE-A258-A34F720F6958}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0FB9649-37A5-4480-BAF1-BFB4F6278081}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0FB9649-37A5-4480-BAF1-BFB4F6278081}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0FB9649-37A5-4480-BAF1-BFB4F6278081}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0FB9649-37A5-4480-BAF1-BFB4F6278081}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{DE8E3328-B212-4978-BA91-078F70949064} = {6AA013F1-77B7-4EE1-9DE9-30D36AC84E7D}
@@ -119,5 +125,6 @@ Global
 		{6E66BAF3-EFA7-442D-A42D-A7D2D852D724} = {B61A8903-DD6E-4617-BE0E-0D0855DC9C0C}
 		{CFED0853-FBA9-4542-B788-0CBFB9C91388} = {B61A8903-DD6E-4617-BE0E-0D0855DC9C0C}
 		{01D4AC8D-7250-49CE-A258-A34F720F6958} = {B61A8903-DD6E-4617-BE0E-0D0855DC9C0C}
+		{D0FB9649-37A5-4480-BAF1-BFB4F6278081} = {6AA013F1-77B7-4EE1-9DE9-30D36AC84E7D}
 	EndGlobalSection
 EndGlobal

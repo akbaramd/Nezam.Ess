@@ -1,11 +1,11 @@
-﻿using Bonyan.Layer.Domain.Aggregate;
-using Nezam.Modular.ESS.Identity.Domain.Roles;
+﻿using Nezam.Modular.ESS.Identity.Domain.Roles;
 using Nezam.Modular.ESS.Identity.Domain.Shared.User;
-using Nezam.Modular.ESS.Identity.Domain.User.Events;
+using Nezam.Modular.ESS.Identity.Domain.Shared.User.DomainEvents;
+using Payeh.SharedKernel.Domain;
 
 namespace Nezam.Modular.ESS.Identity.Domain.User
 {
-    public class UserEntity : BonAggregateRoot
+    public class UserEntity : AggregateRoot
     {
         public UserId UserId { get; set; }
         public UserNameValue UserName { get;  set; }

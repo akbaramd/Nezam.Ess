@@ -1,8 +1,8 @@
-﻿using Bonyan.Layer.Domain.Enumerations;
+﻿using Payeh.SharedKernel.Domain.Enumerations;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.Enumerations;
 
-public class ReferralStatus : BonEnumeration
+public class ReferralStatus : Enumeration
 {
     public static readonly ReferralStatus Pending = new ReferralStatus(0, nameof(Pending));
     public static readonly ReferralStatus Viewed = new ReferralStatus(1, nameof(Viewed));

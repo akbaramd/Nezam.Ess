@@ -1,10 +1,10 @@
-﻿using Bonyan.Layer.Domain.Entities;
-using Nezam.Modular.ESS.Units.Domain.Shared.Members;
+﻿using Nezam.Modular.ESS.Units.Domain.Shared.Members;
 using Nezam.Modular.ESS.Units.Domain.Shared.Units;
+using Payeh.SharedKernel.Domain;
 
 namespace Nezam.Modular.ESS.Units.Domain.Units
 {
-    public class UnitMemberEntity : BonEntity
+    public class UnitMemberEntity : Entity
     {
         public UnitMemberId UnitMemberId { get; private set; }
         public UnitId UnitId { get; private set; }

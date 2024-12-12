@@ -1,10 +1,9 @@
-﻿using Bonyan.Layer.Domain.Events;
-using Nezam.Modular.ESS.Identity.Domain.Shared.User;
-using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
+﻿using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
+using Payeh.SharedKernel.Domain.DomainEvents;
 
-namespace Nezam.Modular.ESS.Identity.Domain.User.Events
+namespace Nezam.Modular.ESS.Identity.Domain.Shared.User.DomainEvents
 {
-    public class UserCreatedEvent : BonDomainEventBase
+    public class UserCreatedEvent : DomainEvent
     {
         public UserId UserId { get; }
         public string UserName { get; }
@@ -20,7 +19,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.User.Events
         }
     }
 
-    public class UserNameUpdatedEvent : BonDomainEventBase
+    public class UserNameUpdatedEvent : DomainEvent
     {
         public UserId UserId { get; }
         public string NewUserName { get; }
@@ -32,7 +31,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.User.Events
         }
     }
 
-    public class UserPasswordUpdatedEvent : BonDomainEventBase
+    public class UserPasswordUpdatedEvent : DomainEvent
     {
         public UserId UserId { get; }
 
@@ -42,7 +41,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.User.Events
         }
     }
 
-    public class UserEmailUpdatedEvent : BonDomainEventBase
+    public class UserEmailUpdatedEvent : DomainEvent
     {
         public UserId UserId { get; }
         public string? NewEmail { get; }
@@ -54,7 +53,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.User.Events
         }
     }
 
-    public class UserProfileUpdatedEvent : BonDomainEventBase
+    public class UserProfileUpdatedEvent : DomainEvent
     {
         public UserId UserId { get; }
         public UserProfileValue NewProfile { get; }
@@ -66,7 +65,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.User.Events
         }
     }
 
-    public class UserRoleAddedEvent : BonDomainEventBase
+    public class UserRoleAddedEvent : DomainEvent
     {
         public UserId UserId { get; }
         public RoleId RoleId { get; }
@@ -80,7 +79,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.User.Events
         }
     }
 
-    public class UserRoleRemovedEvent : BonDomainEventBase
+    public class UserRoleRemovedEvent : DomainEvent
     {
         public UserId UserId { get; }
         public RoleId RoleId { get; }

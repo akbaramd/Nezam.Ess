@@ -3,15 +3,15 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Nezam.Modular.ESS.Infrastructure.Data;
 
-public class AppDbContextFactory : IDesignTimeDbContextFactory<IdentityDbContext>
+public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
 {
-    public IdentityDbContext CreateDbContext(string[] args)
+    public AppDbContext CreateDbContext(string[] args)
     {
-        var optionsBuilder = new DbContextOptionsBuilder<IdentityDbContext>();
+        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
         optionsBuilder.UseSqlite($"Data Source=../Nezam.Modular.ESS.WebApi/NezamEes.db");
 
-        var xtx =  new IdentityDbContext(optionsBuilder.Options);
+        var xtx =  new AppDbContext(optionsBuilder.Options);
         return xtx;
     }
 }

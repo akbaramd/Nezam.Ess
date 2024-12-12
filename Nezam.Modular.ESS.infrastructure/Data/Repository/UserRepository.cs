@@ -1,17 +1,13 @@
-﻿using Bonyan.Layer.Domain;
-using Microsoft.EntityFrameworkCore;
-using Nezam.Modular.ESS.Identity.Domain.Shared.User;
+﻿using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Identity.Domain.User;
+using Payeh.SharedKernel.EntityFrameworkCore.Domain;
 
 namespace Nezam.Modular.ESS.Infrastructure.Data.Repository;
 
-public class UserRepository : EfCoreBonRepository<UserEntity,IdentityDbContext>, IUserRepository
+public class UserRepository : EntityFrameworkRepository<UserEntity,AppDbContext>, IUserRepository
 {
-
-    protected override IQueryable<UserEntity> PrepareQuery(DbSet<UserEntity> dbSet)
+    public UserRepository(AppDbContext context) : base(context)
     {
-        return dbSet
-            .Include(x => x.VerificationTokens);
     }
 
     public Task<UserEntity?> GetByUserNameAsync(UserNameValue userName)

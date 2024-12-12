@@ -1,8 +1,11 @@
 ﻿// EmployerEntityConfiguration.cs
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nezam.Modular.ESS.Identity.Domain.Employer;
 using Nezam.Modular.ESS.Identity.Domain.User;
+
+namespace Nezam.Modular.ESS.Infrastructure.Data.Configurations;
 
 public class EmployerEntityConfiguration : IEntityTypeConfiguration<EmployerEntity>
 {

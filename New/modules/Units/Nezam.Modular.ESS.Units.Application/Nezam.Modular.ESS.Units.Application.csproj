@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Bonyan.Layer.Application" Version="1.2.7" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Nezam.Modular.ESS.Units.Domain.Shared\Nezam.Modular.ESS.Units.Domain.Shared.csproj" />
       <ProjectReference Include="..\Nezam.Modular.ESS.Units.Domain\Nezam.Modular.ESS.Units.Domain.csproj" />
     </ItemGroup>

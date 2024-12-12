@@ -1,8 +1,8 @@
-using Bonyan.Layer.Domain.ValueObjects;
+using Payeh.SharedKernel.Domain.ValueObjects;
 
 namespace Nezam.Modular.ESS.Identity.Domain.Shared.User
 {
-    public class UserProfileValue : BonValueObject
+    public class UserProfileValue : ValueObject
     {
         protected UserProfileValue() { }
         public string Avatar { get; private set; }

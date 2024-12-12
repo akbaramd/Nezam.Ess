@@ -1,10 +1,10 @@
-﻿    using Bonyan.Layer.Domain.Entities;
-    using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
+﻿    using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
     using Nezam.Modular.ESS.Identity.Domain.User;
+    using Payeh.SharedKernel.Domain;
 
     namespace Nezam.Modular.ESS.Identity.Domain.Roles
     {
-        public class RoleEntity : BonEntity
+        public class RoleEntity : Entity
         {
             protected RoleEntity() { }
             public RoleEntity(RoleId roleId, string title)

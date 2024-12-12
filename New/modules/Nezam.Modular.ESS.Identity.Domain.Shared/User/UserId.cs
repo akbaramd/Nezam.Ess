@@ -1,8 +1,8 @@
-using Bonyan.Layer.Domain.ValueObjects;
+using Payeh.SharedKernel.Domain.ValueObjects;
 
 namespace Nezam.Modular.ESS.Identity.Domain.Shared.User;
 
-public class UserId : BonBusinessId<UserId>
+public class UserId : BusinessId<UserId>
 {
     
 }

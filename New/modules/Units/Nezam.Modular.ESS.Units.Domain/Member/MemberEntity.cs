@@ -1,10 +1,10 @@
-﻿using Bonyan.Layer.Domain.Aggregate;
-using Nezam.Modular.ESS.Identity.Domain.Shared.User;
+﻿using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Units.Domain.Shared.Members;
+using Payeh.SharedKernel.Domain;
 
 namespace Nezam.Modular.ESS.Units.Domain.Member
 {
-    public class MemberEntity : BonFullAggregateRoot
+    public class MemberEntity : AggregateRoot
     {
         public MemberId MemberId { get; private set; }
         public UserId UserId { get; private set; }

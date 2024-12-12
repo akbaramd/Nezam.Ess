@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Bonyan.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents;
 using Nezam.Modular.ESS.Units.Domain.Member;
@@ -8,11 +7,14 @@ using Nezam.Modular.ESS.Identity.Domain.Engineer;
 using Nezam.Modular.ESS.Identity.Domain.Employer;
 using Nezam.Modular.ESS.Identity.Domain.Roles;
 using Nezam.Modular.ESS.Identity.Domain.User;
+using Payeh.SharedKernel.EntityFrameworkCore.Domain;
 
 namespace Nezam.Modular.ESS.Infrastructure.Data;
 
-public class IdentityDbContext : BonDbContext<IdentityDbContext>
+public class AppDbContext : DbContext
 {
+
+    
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<RoleEntity> Roles { get; set; }
     public DbSet<UserVerificationTokenEntity> UserVerificationTokens { get; set; }
@@ -23,13 +25,13 @@ public class IdentityDbContext : BonDbContext<IdentityDbContext>
     public DbSet<UnitEntity> Units { get; set; }
     public DbSet<UnitMemberEntity> UnitMembers { get; set; }
 
-    public IdentityDbContext(DbContextOptions<IdentityDbContext> options) : base(options) { }
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    {
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<UserEntity>().ConfigureByConvention();
-        modelBuilder.Entity<EmployerEntity>().ConfigureByConvention();
-        modelBuilder.Entity<EngineerEntity>().ConfigureByConvention();
+        modelBuilder.ConfigureDomain();
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);
     }

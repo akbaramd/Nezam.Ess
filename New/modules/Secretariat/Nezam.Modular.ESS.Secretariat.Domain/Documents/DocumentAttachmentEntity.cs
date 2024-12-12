@@ -1,5 +1,4 @@
-﻿using Bonyan.Layer.Domain.Entities;
-using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
+﻿using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents
 {

@@ -8,10 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Bonyan.Layer.Domain" Version="1.2.7" />
-    </ItemGroup>
-
-    <ItemGroup>
+        <ProjectReference Include="..\..\Payeh\Payeh.SharedKernel\Payeh.SharedKernel.csproj" />
         <ProjectReference Include="..\New\modules\Nezam.Modular.ESS.Identity.Domain.Shared\Nezam.Modular.ESS.Identity.Domain.Shared.csproj" />
     </ItemGroup>
 

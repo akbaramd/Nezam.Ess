@@ -1,8 +1,8 @@
-﻿using Bonyan.Layer.Domain.ValueObjects;
+﻿using Payeh.SharedKernel.Domain.ValueObjects;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
 
-public class DocumentId : BonBusinessId<DocumentId>
+public class DocumentId : BusinessId<DocumentId>
 {
     
 }

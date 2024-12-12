@@ -1,7 +1,7 @@
-using Bonyan.Layer.Domain.DomainService;
 using Nezam.Modular.ESS.Identity.Domain.Roles;
 using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
 using Nezam.Modular.ESS.Identity.Domain.Shared.User;
+using Payeh.SharedKernel.Results;
 
 namespace Nezam.Modular.ESS.Identity.Domain.User
 {
@@ -17,10 +17,10 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
         }
 
         // Assign role(s) to the user
-        public async Task<BonDomainResult> AssignRoleAsync(UserEntity user, params RoleId[] roles)
+        public async Task<PayehResult> AssignRoleAsync(UserEntity user, params RoleId[] roles)
         {
             if (user == null || roles == null || roles.Length == 0)
-                return BonDomainResult.Failure("User or roles cannot be null or empty.");
+                return PayehResult.Failure("User or roles cannot be null or empty.");
 
             bool isUpdated = false;  // Flag to track if there were any changes
 
@@ -28,7 +28,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
             {
                 var role = await _roleRepository.GetRoleByIdAsync(roleId);
                 if (role == null)
-                    return BonDomainResult.Failure($"Role with ID {roleId} not found.");
+                    return PayehResult.Failure($"Role with ID {roleId} not found.");
 
                 if (user.Roles.Any(r => r.RoleId == roleId))
                     continue; // Skip if user already has the role
@@ -43,33 +43,33 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
                 await _userRepository.UpdateAsync(user, true); // Save the updated user (with auto-save flag)
             }
 
-            return BonDomainResult.Success();
+            return PayehResult.Success();
         }
 
 
         // Unassign role from the user
-        public async Task<BonDomainResult> UnassignRole(UserEntity user, RoleId role)
+        public async Task<PayehResult> UnassignRole(UserEntity user, RoleId role)
         {
             if (user == null || role == null)
-                return BonDomainResult.Failure("User or role cannot be null.");
+                return PayehResult.Failure("User or role cannot be null.");
 
             var roleEntity = await _roleRepository.GetRoleByIdAsync(role);
             if (roleEntity == null)
-                return BonDomainResult.Failure("Role not found.");
+                return PayehResult.Failure("Role not found.");
 
             if (!user.Roles.Any(r => r.RoleId == role))
-                return BonDomainResult.Failure("User does not have this role.");
+                return PayehResult.Failure("User does not have this role.");
 
             user.RemoveRole(roleEntity); // Remove the role from the user
             await _userRepository.UpdateAsync(user, true); // Save the updated user (with auto-save flag)
-            return BonDomainResult.Success();
+            return PayehResult.Success();
         }
 
         // Update user roles
-        public async Task<BonDomainResult> UpdateRoles(UserEntity user, params RoleId[] roles)
+        public async Task<PayehResult> UpdateRoles(UserEntity user, params RoleId[] roles)
         {
             if (user == null || roles == null || roles.Length == 0)
-                return BonDomainResult.Failure("User or roles cannot be null or empty.");
+                return PayehResult.Failure("User or roles cannot be null or empty.");
 
             bool isUpdated = false;  // Flag to track if there were any changes
 
@@ -80,7 +80,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
             // If the roles haven't changed, skip the update
             if (currentRoleIds.SetEquals(newRoleIds))
             {
-                return BonDomainResult.Success();
+                return PayehResult.Success();
             }
 
             user.Roles.Clear(); // Clear existing roles
@@ -89,7 +89,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
             {
                 var role = await _roleRepository.GetRoleByIdAsync(roleId);
                 if (role == null)
-                    return BonDomainResult.Failure($"Role with ID {roleId} not found.");
+                    return PayehResult.Failure($"Role with ID {roleId} not found.");
 
                 user.AddRole(role);
                 isUpdated = true; // Mark as updated
@@ -101,58 +101,58 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
                 await _userRepository.UpdateAsync(user, true); // Save the updated user (with auto-save flag)
             }
 
-            return BonDomainResult.Success();
+            return PayehResult.Success();
         }
 
 
         // Create a new user
-        public async Task<BonDomainResult<UserEntity>> Create(UserEntity user)
+        public async Task<PayehResult<UserEntity>> Create(UserEntity user)
         {
             if (user == null)
-                return BonDomainResult<UserEntity>.Failure("User cannot be null.");
+                return PayehResult<UserEntity>.Failure("User cannot be null.");
 
             await _userRepository.AddAsync(user, true); // Save the new user (with auto-save flag)
-            return BonDomainResult<UserEntity>.Success(user);
+            return PayehResult<UserEntity>.Success(user);
         }
 
         // Update an existing user
-        public async Task<BonDomainResult> UpdateAsync(UserEntity user)
+        public async Task<PayehResult> UpdateAsync(UserEntity user)
         {
             if (user == null)
-                return BonDomainResult.Failure("User cannot be null.");
+                return PayehResult.Failure("User cannot be null.");
 
             await _userRepository.UpdateAsync(user, true); // Save the updated user (with auto-save flag)
-            return BonDomainResult.Success();
+            return PayehResult.Success();
         }
 
         // Delete a user
-        public async Task<BonDomainResult> DeleteAsync(UserEntity user)
+        public async Task<PayehResult> DeleteAsync(UserEntity user)
         {
             if (user == null)
-                return BonDomainResult.Failure("User cannot be null.");
+                return PayehResult.Failure("User cannot be null.");
 
             await _userRepository.DeleteAsync(user, true); // Delete the user (with auto-save flag)
-            return BonDomainResult.Success();
+            return PayehResult.Success();
         }
 
         // Get a user by ID
-        public async Task<BonDomainResult<UserEntity>> GetUserByIdAsync(UserId userId)
+        public async Task<PayehResult<UserEntity>> GetUserByIdAsync(UserId userId)
         {
             var user = await _userRepository.GetByUserIdAsync(userId);
             if (user == null)
-                return BonDomainResult<UserEntity>.Failure("User not found.");
+                return PayehResult<UserEntity>.Failure("User not found.");
 
-            return BonDomainResult<UserEntity>.Success(user);
+            return PayehResult<UserEntity>.Success(user);
         }
 
         // Get a user by username
-        public async Task<BonDomainResult<UserEntity>> GetUserByUsernameAsync(UserNameValue username)
+        public async Task<PayehResult<UserEntity>> GetUserByUsernameAsync(UserNameValue username)
         {
             var user = await _userRepository.GetByUserNameAsync(username);
             if (user == null)
-                return BonDomainResult<UserEntity>.Failure("User not found.");
+                return PayehResult<UserEntity>.Failure("User not found.");
 
-            return BonDomainResult<UserEntity>.Success(user);
+            return PayehResult<UserEntity>.Success(user);
         }
     }
 }

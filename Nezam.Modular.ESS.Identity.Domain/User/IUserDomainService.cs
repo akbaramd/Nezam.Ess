@@ -1,17 +1,17 @@
-using Bonyan.Layer.Domain.DomainService;
 using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
 using Nezam.Modular.ESS.Identity.Domain.Shared.User;
+using Payeh.SharedKernel.Results;
 
 namespace Nezam.Modular.ESS.Identity.Domain.User;
 
 public interface IUserDomainService
 {
-    Task<BonDomainResult> AssignRoleAsync(UserEntity user, params RoleId[] roles);
-    Task<BonDomainResult> UnassignRole(UserEntity user, RoleId role);
-    Task<BonDomainResult> UpdateRoles(UserEntity user, params RoleId[] roles);
-    Task<BonDomainResult<UserEntity>> Create(UserEntity user);
-    Task<BonDomainResult> UpdateAsync(UserEntity user);
-    Task<BonDomainResult> DeleteAsync(UserEntity user);
-    Task<BonDomainResult<UserEntity>> GetUserByIdAsync(UserId userId);
-    Task<BonDomainResult<UserEntity>> GetUserByUsernameAsync(UserNameValue username);
+    Task<PayehResult> AssignRoleAsync(UserEntity user, params RoleId[] roles);
+    Task<PayehResult> UnassignRole(UserEntity user, RoleId role);
+    Task<PayehResult> UpdateRoles(UserEntity user, params RoleId[] roles);
+    Task<PayehResult<UserEntity>> Create(UserEntity user);
+    Task<PayehResult> UpdateAsync(UserEntity user);
+    Task<PayehResult> DeleteAsync(UserEntity user);
+    Task<PayehResult<UserEntity>> GetUserByIdAsync(UserId userId);
+    Task<PayehResult<UserEntity>> GetUserByUsernameAsync(UserNameValue username);
 }

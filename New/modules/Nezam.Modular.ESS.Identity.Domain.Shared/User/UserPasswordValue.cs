@@ -1,9 +1,9 @@
 using System.Text.RegularExpressions;
-using Bonyan.Layer.Domain.ValueObjects;
+using Payeh.SharedKernel.Domain.ValueObjects;
 
 namespace Nezam.Modular.ESS.Identity.Domain.Shared.User
 {
-    public class UserPasswordValue : BonValueObject
+    public class UserPasswordValue : ValueObject
     {
         public string Value { get; private set; }
         protected UserPasswordValue() { }

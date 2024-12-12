@@ -1,9 +1,9 @@
-﻿using Bonyan.Layer.Domain.Events;
-using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
+﻿using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
+using Payeh.SharedKernel.Domain.DomainEvents;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.Events;
 
-public class DocumentRevertedToDraftEvent : BonDomainEventBase
+public class DocumentRevertedToDraftEvent : DomainEvent
 {
     public DocumentId DocumentId { get; }
 

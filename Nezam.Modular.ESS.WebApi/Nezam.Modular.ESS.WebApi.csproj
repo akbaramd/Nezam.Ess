@@ -8,7 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Bonyan.AspNetCore" Version="1.2.7" />
         <PackageReference Include="FastEndpoints" Version="5.32.0.5-beta" />
         <PackageReference Include="FastEndpoints.Security" Version="5.32.0.5-beta" />
         <PackageReference Include="FastEndpoints.Swagger" Version="5.32.0.5-beta" />
@@ -24,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Payeh\Payeh.SharedKernel\Payeh.SharedKernel.csproj" />
         <ProjectReference Include="..\Nezam.Modular.ESS.Infrastructure\Nezam.Modular.ESS.Infrastructure.csproj" />
     </ItemGroup>
 

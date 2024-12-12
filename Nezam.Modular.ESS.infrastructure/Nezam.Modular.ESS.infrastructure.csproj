@@ -7,8 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Bonyan.AspNetCore" Version="1.2.7" />
-        <PackageReference Include="Bonyan.EntityFrameworkCore" Version="1.2.7" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
@@ -22,6 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Payeh\Payeh.SharedKernel\Payeh.SharedKernel.csproj" />
         <ProjectReference Include="..\New\modules\Secretariat\Nezam.Modular.ESS.Secretariat.Application\Nezam.Modular.ESS.Secretariat.Application.csproj" />
         <ProjectReference Include="..\New\modules\Units\Nezam.Modular.ESS.Units.Application\Nezam.Modular.ESS.Units.Application.csproj" />
         <ProjectReference Include="..\Nezam.Modular.ESS.Identity.Domain\Nezam.Modular.ESS.Identity.Domain.csproj" />

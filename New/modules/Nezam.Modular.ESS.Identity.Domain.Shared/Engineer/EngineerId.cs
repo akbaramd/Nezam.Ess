@@ -1,7 +1,7 @@
-using Bonyan.Layer.Domain.ValueObjects;
+using Payeh.SharedKernel.Domain.ValueObjects;
 
 namespace Nezam.Modular.ESS.Identity.Domain.Shared.Engineer;
 
-public class EngineerId : BonBusinessId<EngineerId>
+public class EngineerId : BusinessId<EngineerId>
 {
 }

@@ -1,8 +1,8 @@
-﻿using Bonyan.Layer.Domain.ValueObjects;
+﻿using Payeh.SharedKernel.Domain.ValueObjects;
 
 namespace Nezam.Modular.ESS.Units.Domain.Shared.Units;
 
-public class UnitMemberId : BonBusinessId<UnitMemberId>
+public class UnitMemberId : BusinessId<UnitMemberId>
 {
     
 }

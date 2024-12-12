@@ -1,10 +1,11 @@
-﻿using Bonyan.Layer.Domain;
-using Nezam.Modular.ESS.Identity.Domain.Employer;
-using Nezam.Modular.ESS.Identity.Domain.Shared.Employer;
+﻿using Nezam.Modular.ESS.Identity.Domain.Employer;
+using Payeh.SharedKernel.EntityFrameworkCore.Domain;
 
 namespace Nezam.Modular.ESS.Infrastructure.Data.Repository;
 
-public class EmployerRepository : EfCoreBonRepository<EmployerEntity, IdentityDbContext>, IEmployerRepository
+public class EmployerRepository : EntityFrameworkRepository<EmployerEntity, AppDbContext>, IEmployerRepository
 {
- 
+    public EmployerRepository(AppDbContext context) : base(context)
+    {
+    }
 }

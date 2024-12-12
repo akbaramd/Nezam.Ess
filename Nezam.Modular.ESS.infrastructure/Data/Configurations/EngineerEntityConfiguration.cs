@@ -1,8 +1,11 @@
 ﻿// EngineerEntityConfiguration.cs
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nezam.Modular.ESS.Identity.Domain.Engineer;
 using Nezam.Modular.ESS.Identity.Domain.User;
+
+namespace Nezam.Modular.ESS.Infrastructure.Data.Configurations;
 
 public class EngineerEntityConfiguration : IEntityTypeConfiguration<EngineerEntity>
 {

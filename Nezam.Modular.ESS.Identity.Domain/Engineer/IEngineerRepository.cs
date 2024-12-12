@@ -1,8 +1,8 @@
-﻿using Bonyan.Layer.Domain.Repository.Abstractions;
+﻿using Payeh.SharedKernel.Domain.Repositories;
 
 namespace Nezam.Modular.ESS.Identity.Domain.Engineer;
 
-public interface IEngineerRepository : IBonRepository<EngineerEntity>
+public interface IEngineerRepository : IRepository<EngineerEntity>
 {
     
 }

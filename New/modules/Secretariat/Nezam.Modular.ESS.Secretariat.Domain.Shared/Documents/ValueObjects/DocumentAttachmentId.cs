@@ -1,5 +1,5 @@
-﻿using Bonyan.Layer.Domain.ValueObjects;
+﻿using Payeh.SharedKernel.Domain.ValueObjects;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
 
-public class DocumentAttachmentId : BonBusinessId<DocumentAttachmentId> {}
+public class DocumentAttachmentId : BusinessId<DocumentAttachmentId> {}

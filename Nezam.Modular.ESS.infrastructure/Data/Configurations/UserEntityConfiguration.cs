@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nezam.Modular.ESS.Identity.Domain.User;
 
+namespace Nezam.Modular.ESS.Infrastructure.Data.Configurations;
+
 public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
 {
     public void Configure(EntityTypeBuilder<UserEntity> builder)

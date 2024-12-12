@@ -1,16 +1,17 @@
 ﻿using System.Text;
-using Bonyan.Layer.Domain.Aggregate;
 using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Identity.Domain.User;
 using Nezam.Modular.ESS.Secretariat.Domain.Documents.Exceptions;
 using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.Enumerations;
 using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.Events;
 using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
+using Payeh.SharedKernel.Domain;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents;
 
-public class DocumentAggregateRoot : BonFullAggregateRoot<DocumentId>
+public class DocumentAggregateRoot : AggregateRoot
 {
+    public DocumentId Id { get; set; }
     public string Title { get; private set; }
     public string Content { get; private set; }
     public UserId OwnerUserId { get; private set; }
@@ -190,6 +191,11 @@ public class DocumentAggregateRoot : BonFullAggregateRoot<DocumentId>
     {
         var log = new DocumentActivityLogEntity(Id, DateTime.UtcNow, UserId, key, description);
         _activityLogs.Add(log);
+    }
+
+    public override object GetKey()
+    {
+        return Id;
     }
 
     public override string ToString()

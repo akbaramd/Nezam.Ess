@@ -1,16 +1,16 @@
-﻿using Bonyan.UnitOfWork;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Identity.Domain.User;
+using Payeh.SharedKernel.UnitOfWork;
 
 namespace Nezam.Modular.ESS.Infrastructure.Data.Seeds;
 
 public class IdentitySeedService : BackgroundService
 {
     private readonly IUserDomainService _domainService;
-    private readonly IBonUnitOfWorkManager _unitOfWorkManager;
+    private readonly IUnitOfWork _unitOfWorkManager;
 
-    public IdentitySeedService(IUserDomainService domainService, IBonUnitOfWorkManager unitOfWorkManager)
+    public IdentitySeedService(IUserDomainService domainService, IUnitOfWork unitOfWorkManager)
     {
         _domainService = domainService;
         _unitOfWorkManager = unitOfWorkManager;
@@ -18,12 +18,12 @@ public class IdentitySeedService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var uow = _unitOfWorkManager.Begin();
+        
         var find = await _domainService.GetUserByUsernameAsync(new UserNameValue("admin"));
 
         if (find.IsSuccess)
         {
-            var user = find.Value;
+            var user = find.Data;
             user.UpdateProfile(new UserProfileValue("/default","admin","administrator"));
             await _domainService.UpdateAsync(user);
         }
@@ -35,7 +35,7 @@ public class IdentitySeedService : BackgroundService
             await _domainService.Create(user);
         }
 
-        await uow.CompleteAsync(stoppingToken);
+        await _unitOfWorkManager.CommitAsync();
 
     }
 }

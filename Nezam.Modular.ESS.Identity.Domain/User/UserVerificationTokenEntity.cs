@@ -1,16 +1,17 @@
-﻿using Bonyan.Layer.Domain.Entities;
-using Bonyan.Layer.Domain.Enumerations;
-using Bonyan.Layer.Domain.ValueObjects;
-using Nezam.Modular.ESS.Identity.Domain.Shared.User;
+﻿using Nezam.Modular.ESS.Identity.Domain.Shared.User;
+using Payeh.SharedKernel.Domain;
+using Payeh.SharedKernel.Domain.Enumerations;
+using Payeh.SharedKernel.Domain.ValueObjects;
 
 namespace Nezam.Modular.ESS.Identity.Domain.User;
 
-public class UserVerificationTokenEntityKey : BonBusinessId<UserVerificationTokenEntityKey>
+public class UserVerificationTokenEntityKey : BusinessId<UserVerificationTokenEntityKey>
 {
     
 }
-public class UserVerificationTokenEntity : BonEntity<UserVerificationTokenEntityKey>
+public class UserVerificationTokenEntity : Entity
 {
+    public UserVerificationTokenEntityKey Id { get; set; }
     public UserVerificationTokenType Type { get;   set; }
     public string Token { get;  set; }
 
@@ -28,10 +29,14 @@ public class UserVerificationTokenEntity : BonEntity<UserVerificationTokenEntity
         Token = Guid.NewGuid().ToString();
     }
 
-   
+
+    public override object GetKey()
+    {
+        return Id;
+    }
 }
 
-public class UserVerificationTokenType : BonEnumeration
+public class UserVerificationTokenType : Enumeration
 {
     public static readonly UserVerificationTokenType Global = new UserVerificationTokenType(0, nameof(Global));
     public static readonly UserVerificationTokenType ForgetPassword = new UserVerificationTokenType(1, nameof(ForgetPassword));

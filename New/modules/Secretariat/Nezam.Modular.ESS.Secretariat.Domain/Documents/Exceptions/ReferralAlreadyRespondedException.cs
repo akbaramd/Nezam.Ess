@@ -1,6 +1,4 @@
-﻿using Bonyan.Layer.Domain.Exceptions;
-
-namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.Exceptions;
+﻿namespace Nezam.Modular.ESS.Secretariat.Domain.Documents.Exceptions;
 
 public class ReferralAlreadyRespondedException : BonDomainException
 {
