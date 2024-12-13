@@ -19,8 +19,12 @@ builder.Services.AddUnitsApplication();
 builder.Services.AddInfrastructure();
 
 // Add DbContext and configure it for SQLite
-builder.Services.AddPayehDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
+builder.Services.AddPayehDbContext<AppDbContext>(
+    options =>
+    {
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"),c=>c.MigrationsAssembly("Nezam.Modular.ESS.WebApi"));
+        
+    }
 );
 
 // Configure request localization for Persian language
@@ -54,6 +58,7 @@ using (var scope = app.Services.CreateScope())
     {
         dbContext.Database.Migrate();
     }
+    dbContext.Database.EnsureCreated();
 }
 
 app.UseAuthentication()
