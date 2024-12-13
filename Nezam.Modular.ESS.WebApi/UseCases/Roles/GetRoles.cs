@@ -1,12 +1,12 @@
-﻿using FastEndpoints;
+using FastEndpoints;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Nezam.Modular.ESS.Identity.Application.Users;
+using Nezam.Modular.ESS.Identity.Application.Roles;
 using Nezam.Modular.ESS.Infrastructure.Data;
 
-namespace Nezam.Modular.ESS.WebApi.UseCases.Users;
+namespace Nezam.Modular.ESS.WebApi.UseCases.Roles;
 
-public class GetUsersRequest
+public class GetRolesRequest
 {
     [FromQuery]
     public int Take { get; set; } = 10; // Default page size
@@ -18,19 +18,18 @@ public class GetUsersRequest
     public string? Search { get; set; } // Optional search term
 }
 
-public class GetUsersResponse
+public class GetRolesResponse
 {
-    public List<UserDto> Users { get; set; } = new(); // DTO for security
+    public List<RoleDto> Roles { get; set; } = new(); // DTO for security
     public int TotalCount { get; set; }
 }
 
 
-
-public class GetUsersEndpoint : Endpoint<GetUsersRequest, GetUsersResponse>
+public class GetRolesEndpoint : Endpoint<GetRolesRequest, GetRolesResponse>
 {
     private readonly AppDbContext _dbContext;
 
-    public GetUsersEndpoint(AppDbContext dbContext)
+    public GetRolesEndpoint(AppDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -38,40 +37,38 @@ public class GetUsersEndpoint : Endpoint<GetUsersRequest, GetUsersResponse>
     public override void Configure()
     {
         Verbs(Http.GET);
-        Routes("/api/users");
+        Routes("/api/roles");
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(GetUsersRequest req, CancellationToken ct)
+    public override async Task HandleAsync(GetRolesRequest req, CancellationToken ct)
     {
         // Step 1: Prepare the query
-        var query = _dbContext.Users.AsNoTracking();
+        var query = _dbContext.Roles.AsNoTracking();
 
         // Step 2: Apply search filter if provided
         if (!string.IsNullOrWhiteSpace(req.Search))
         {
             string searchTerm = req.Search.Trim();
-            query = query.Where(u =>
-                u.Email != null &&
-                (u.UserName.Value.Contains(searchTerm) || u.Email.Value.Contains(searchTerm)));
+            query = query.Where(r => r.Title.Contains(searchTerm));
         }
 
         // Step 3: Get total count for pagination
         int totalCount = await query.CountAsync(ct);
 
         // Step 4: Fetch the data with pagination and map to DTO
-        var users = await query
+        var roles = await query
             .Skip(req.Skip)
             .Take(req.Take)
             .ToListAsync(ct);
 
         // Map entities to DTOs using the FromEntity method
-        var userDtos = users.Select(UserDto.FromEntity).ToList();
+        var roleDtos = roles.Select(RoleDto.FromEntity).ToList();
 
         // Step 5: Return the response
-        await SendAsync(new GetUsersResponse
+        await SendAsync(new GetRolesResponse
         {
-            Users = userDtos,
+            Roles = roleDtos,
             TotalCount = totalCount
         }, cancellation: ct);
     }

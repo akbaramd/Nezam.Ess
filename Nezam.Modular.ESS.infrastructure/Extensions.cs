@@ -9,6 +9,7 @@ using Nezam.Modular.ESS.Infrastructure.Data.Repository;
 using Nezam.Modular.ESS.Infrastructure.Data.Seeds;
 using Nezam.Modular.ESS.Units.Domain.Member;
 using Nezam.Modular.ESS.Units.Domain.Units;
+using Payeh.SharedKernel.EntityFrameworkCore;
 using Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork;
 
 namespace Nezam.Modular.ESS.Infrastructure;
@@ -19,7 +20,7 @@ public static class Extensions
     {
         services.AddHostedService<IdentitySeedService>();
         services.AddMediatR(c => { c.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()); });
-        services.AddPayehDbContext<AppDbContext>(c => { c.UseSqlite("Data Source=NezamEes.db;Mode=ReadWrite;"); });
+
         services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<IRoleRepository, RoleRepository>();
         services.AddTransient<IEmployerRepository, EmployerRepository>();

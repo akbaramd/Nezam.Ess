@@ -14,7 +14,7 @@ public class UserNameValue : ValueObject
             throw new ArgumentException("Username must be between 3 and 20 characters.");
 
         if (!Regex.IsMatch(value, @"^[a-zA-Z0-9_-]+$"))
-            throw new ArgumentException("Username can only contain alphanumeric characters, underscores, and hyphens.");
+            throw new ArgumentException($"{value} | Username can only contain alphanumeric characters, underscores, and hyphens.");
 
         Value = value;
     }

@@ -11,7 +11,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
         public UserNameValue UserName { get; private set; }
         public UserPasswordValue Password { get; private set; }
         public UserEmailValue? Email { get; private set; }
-        public UserProfileValue Profile { get; private set; }
+        public UserProfileValue? Profile { get; private set; }
         public ICollection<UserVerificationTokenEntity> VerificationTokens { get; private set; }
         
         // Collection to hold assigned roles
@@ -19,7 +19,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
         protected UserEntity() { }
 
         // Constructor for creating a new user with profile and tokens
-        public UserEntity(UserId userId, UserNameValue userName, UserPasswordValue password, UserProfileValue profile, UserEmailValue? email = null)
+        public UserEntity(UserId userId, UserNameValue userName, UserPasswordValue password, UserProfileValue? profile=null, UserEmailValue? email = null)
         {
             UserId = userId;
             SetUserName(userName);
@@ -57,11 +57,8 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
             AddDomainEvent(new UserEmailUpdatedEvent(UserId, newEmail?.Value));
         }
 
-        public void UpdateProfile(UserProfileValue newProfile)
+        public void UpdateProfile(UserProfileValue? newProfile)
         {
-            if (newProfile == null)
-                throw new ArgumentException("Profile cannot be null.");
-
             Profile = newProfile;
             AddDomainEvent(new UserProfileUpdatedEvent(UserId, newProfile));
         }

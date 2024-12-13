@@ -5,12 +5,11 @@ namespace Nezam.Modular.ESS.Identity.Domain.Shared.User
     public class UserProfileValue : ValueObject
     {
         protected UserProfileValue() { }
-        public string Avatar { get; private set; }
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
 
         // Constructor to create a user profile value object
-        public UserProfileValue(string avatar, string firstName, string lastName)
+        public UserProfileValue( string firstName, string lastName)
         {
             if (string.IsNullOrWhiteSpace(firstName))
                 throw new ArgumentException("First name cannot be null or empty.");
@@ -18,18 +17,13 @@ namespace Nezam.Modular.ESS.Identity.Domain.Shared.User
             if (string.IsNullOrWhiteSpace(lastName))
                 throw new ArgumentException("Last name cannot be null or empty.");
 
-            // Optionally, validate Avatar (it can be a URL or path to an image)
-            if (string.IsNullOrWhiteSpace(avatar))
-                throw new ArgumentException("Avatar cannot be null or empty.");
 
-            Avatar = avatar;
             FirstName = firstName;
             LastName = lastName;
         }
 
         protected override IEnumerable<object?> GetEqualityComponents()
         {
-            yield return Avatar;
             yield return FirstName;
             yield return LastName;
         }
@@ -44,7 +38,6 @@ namespace Nezam.Modular.ESS.Identity.Domain.Shared.User
             if (string.IsNullOrWhiteSpace(newAvatar))
                 throw new ArgumentException("Avatar cannot be null or empty.");
 
-            Avatar = newAvatar;
             FirstName = newFirstName;
             LastName = newLastName;
         }

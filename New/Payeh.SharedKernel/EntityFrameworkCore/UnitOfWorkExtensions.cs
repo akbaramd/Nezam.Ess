@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork;
 
-namespace Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork;
+namespace Payeh.SharedKernel.EntityFrameworkCore;
 
 /// <summary>
 /// Provides extension methods to register Unit of Work and repositories in the service container.

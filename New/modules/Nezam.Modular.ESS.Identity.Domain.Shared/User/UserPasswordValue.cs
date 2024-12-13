@@ -30,21 +30,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.Shared.User
         public static bool IsValidPassword(string password)
         {
             // Password must be at least 8 characters long
-            if (password.Length < 8)
-                return false;
-
-            // Must contain at least one number
-            if (!Regex.IsMatch(password, @"\d"))
-                return false;
-
-            
-
-            // Must contain at least one uppercase letter
-            if (!Regex.IsMatch(password, @"[A-Z]"))
-                return false;
-
-            // Must contain at least one lowercase letter
-            if (!Regex.IsMatch(password, @"[a-z]"))
+            if (password.Length < 3)
                 return false;
 
             // If all conditions are met, return true

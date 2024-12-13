@@ -50,7 +50,7 @@ public class UserProfileUpdatedExternalEventHandler : INotificationHandler<UserP
             else
             {
                 _logger.LogInformation("No member found for UserId: {UserId}, creating new member.", @event.UserId);
-                member = new MemberEntity(MemberId.NewId(), @event.UserId, @event.NewProfile.FirstName, @event.NewProfile.LastName);
+                member = new MemberEntity(MemberId.NewId(), @event.UserId, @event.NewProfile?.FirstName, @event.NewProfile?.LastName);
                 await MemberRepository.AddAsync(member, true);
             }
 

@@ -56,9 +56,9 @@ namespace Nezam.Modular.ESS.Identity.Domain.Shared.User.DomainEvents
     public class UserProfileUpdatedEvent : DomainEvent
     {
         public UserId UserId { get; }
-        public UserProfileValue NewProfile { get; }
+        public UserProfileValue? NewProfile { get; }
 
-        public UserProfileUpdatedEvent(UserId userId, UserProfileValue newProfile)
+        public UserProfileUpdatedEvent(UserId userId, UserProfileValue? newProfile)
         {
             UserId = userId;
             NewProfile = newProfile;

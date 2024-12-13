@@ -28,12 +28,12 @@ public class IdentitySeedService : BackgroundService
             if (find.IsSuccess)
             {
                 var user = find.Data;
-                user.UpdateProfile(new UserProfileValue("/default", "admin", "administrator"));
+                user.UpdateProfile(new UserProfileValue( "admin", "administrator"));
                 await domainService.UpdateAsync(user);
             }
             else
             {
-                var profile = new UserProfileValue("/default", "admin", "administrator");
+                var profile = new UserProfileValue( "admin", "administrator");
                 var user = new UserEntity(UserId.NewId(), new UserNameValue("admin"),
                     new UserPasswordValue("Admin@123456"), profile, new UserEmailValue("admin@admin.com"));
                 await domainService.Create(user);

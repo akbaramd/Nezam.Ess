@@ -13,7 +13,7 @@ public class EngineerEntityConfiguration : IEntityTypeConfiguration<EngineerEnti
     {
         builder.HasBaseType<UserEntity>()
             .ToTable("Engineers");
-
+        builder.HasIndex(x=>x.RegistrationNumber).IsUnique();
         builder.Property(e => e.EngineerId)
             .HasColumnName("EngineerId");
     }

@@ -11,13 +11,12 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
     {
         // Configure UserId as the primary key
         builder.HasKey(x => x.UserId);  // Explicitly telling EF that UserId is the primary key
-     
-        
         
         // Configuring value objects as owned types
         builder.OwnsOne(x => x.UserName, userName =>
         {
             userName.Property(x => x.Value).HasColumnName("UserName");
+            userName.HasIndex(x=>x.Value).IsUnique();
         });
 
         builder.OwnsOne(x => x.Email, v =>
@@ -32,7 +31,6 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
 
         builder.OwnsOne(x => x.Profile, v =>
         {
-            v.Property(x => x.Avatar).HasColumnName("Avatar");
             v.Property(x => x.FirstName).HasColumnName("FirstName");
             v.Property(x => x.LastName).HasColumnName("LastName");
         });
