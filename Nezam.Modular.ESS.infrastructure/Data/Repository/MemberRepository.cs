@@ -1,12 +1,13 @@
 ﻿using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Units.Domain.Member;
 using Payeh.SharedKernel.EntityFrameworkCore.Domain;
+using Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork;
 
 namespace Nezam.Modular.ESS.Infrastructure.Data.Repository;
 
 public class MemberRepository : EntityFrameworkRepository<MemberEntity,AppDbContext> ,IMemberRepository
 {
-    public MemberRepository(AppDbContext context) : base(context)
+    public MemberRepository(IUnitOfWorkManager work) : base(work)
     {
     }
 

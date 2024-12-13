@@ -1,11 +1,11 @@
 ﻿using System.Text;
 using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Identity.Domain.User;
-using Nezam.Modular.ESS.Secretariat.Domain.Documents.Exceptions;
 using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.Enumerations;
 using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.Events;
 using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
 using Payeh.SharedKernel.Domain;
+using Payeh.SharedKernel.Exceptions;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents;
 
@@ -46,7 +46,7 @@ public class DocumentAggregateRoot : AggregateRoot
     private void EnsureNotArchived()
     {
         if (Status == DocumentStatus.Archive)
-            throw new InvalidOperationException("Operation cannot be performed on an archived document.");
+            throw new PayehException("Operation cannot be performed on an archived document.");
     }
 
     public void UpdateContent(string newContent, UserId editorId)
@@ -61,7 +61,7 @@ public class DocumentAggregateRoot : AggregateRoot
     {
         EnsureNotArchived();
         if (Status == DocumentStatus.Published)
-            throw new InvalidOperationException("Document is already published.");
+            throw new PayehException("Document is already published.");
 
         Status = DocumentStatus.Published;
         LogActivity(UserId, DocumentActivityConst.DocumentPublished, "Document published");
@@ -71,7 +71,7 @@ public class DocumentAggregateRoot : AggregateRoot
     public DocumentReferralEntity AddInitialReferral(UserId initialReceiverUserId, UserId createdBy)
     {
         if (Status != DocumentStatus.Published)
-            throw new InvalidOperationException("Cannot add referral to an unpublished document.");
+            throw new PayehException("Cannot add referral to an unpublished document.");
 
         var initialReferral = new DocumentReferralEntity(this.Id, OwnerUserId, initialReceiverUserId, null);
         _referrals.Add(initialReferral);
@@ -106,7 +106,7 @@ public class DocumentAggregateRoot : AggregateRoot
     public void RevertToDraft(UserId UserId)
     {
         if (Status != DocumentStatus.Published && Status != DocumentStatus.Draft)
-            throw new InvalidOperationException("Only published or draft documents can be reverted to draft.");
+            throw new PayehException("Only published or draft documents can be reverted to draft.");
 
         Status = DocumentStatus.Draft;
         LogActivity(UserId, DocumentActivityConst.DocumentRevertedToDraft, "Document reverted to draft");
@@ -116,9 +116,9 @@ public class DocumentAggregateRoot : AggregateRoot
     public void AddAttachment(string fileName, string fileType, long fileSize, string filePath, UserId UserId)
     {
         EnsureNotArchived();
-        if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentException("File name cannot be empty.");
-        if (string.IsNullOrWhiteSpace(fileType)) throw new ArgumentException("File type cannot be empty.");
-        if (fileSize <= 0) throw new ArgumentException("File size must be greater than zero.");
+        if (string.IsNullOrWhiteSpace(fileName)) throw new PayehException("File name cannot be empty.");
+        if (string.IsNullOrWhiteSpace(fileType)) throw new PayehException("File type cannot be empty.");
+        if (fileSize <= 0) throw new PayehException("File size must be greater than zero.");
 
         var attachment = new DocumentAttachmentEntity(Id, fileName, fileType, fileSize, filePath);
         _attachments.Add(attachment);
@@ -131,7 +131,7 @@ public class DocumentAggregateRoot : AggregateRoot
         EnsureNotArchived();
         var attachment = _attachments.FirstOrDefault(a => a.Id == attachmentId);
         if (attachment == null)
-            throw new InvalidOperationException("Attachment not found.");
+            throw new PayehException("Attachment not found.");
 
         _attachments.Remove(attachment);
         LogActivity(UserId, DocumentActivityConst.AttachmentRemoved, "Attachment removed");
@@ -144,7 +144,7 @@ public class DocumentAggregateRoot : AggregateRoot
         EnsureNotArchived();
         var attachment = _attachments.FirstOrDefault(a => a.Id == attachmentId);
         if (attachment == null)
-            throw new InvalidOperationException("Attachment not found.");
+            throw new PayehException("Attachment not found.");
 
         attachment.UpdateFileInfo(newFileName, newFileType, newFileSize, newFilePath);
         LogActivity(UserId, DocumentActivityConst.AttachmentUpdated, "Attachment updated");
@@ -154,10 +154,10 @@ public class DocumentAggregateRoot : AggregateRoot
     public DocumentReferralEntity AddReferral(DocumentReferralId parentReferralId, UserId receiverUserId, UserId createdBy)
     {
         if (Status != DocumentStatus.Published)
-            throw new InvalidOperationException("Referrals can only be added to published documents.");
+            throw new PayehException("Referrals can only be added to published documents.");
 
         var parentReferral = _referrals.FirstOrDefault(r => r.Id == parentReferralId)
-                             ?? throw new InvalidOperationException("Parent referral not found or invalid.");
+                             ?? throw new PayehException("Parent referral not found or invalid.");
 
         var referral = new DocumentReferralEntity(this.Id, parentReferral.ReceiverUserId, receiverUserId, parentReferralId);
         _referrals.Add(referral);
@@ -169,13 +169,13 @@ public class DocumentAggregateRoot : AggregateRoot
     public void RespondToReferral(DocumentReferralId referralId, string responseContent, UserId responderId)
     {
         var referral = _referrals.FirstOrDefault(r => r.Id == referralId)
-                       ?? throw new ReferralNotFoundException(parameters: new { referralId });
+                       ?? throw new PayehException("Referral not found.");
 
         if (referral.Status == ReferralStatus.Canceled)
-            throw new ReferralCanceledException(parameters: new { referralId });
+            throw new PayehException("Referral is canceled.");
 
         if (referral.Status == ReferralStatus.Responded)
-            throw new ReferralAlreadyRespondedException(parameters: new { referralId });
+            throw new PayehException("Referral already responded.");
 
         referral.Respond(responseContent);
         LogActivity(responderId, DocumentActivityConst.ReferralResponded, "Referral responded");

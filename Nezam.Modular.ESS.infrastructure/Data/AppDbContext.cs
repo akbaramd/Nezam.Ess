@@ -6,6 +6,7 @@ using Nezam.Modular.ESS.Identity.Domain.Engineer;
 using Nezam.Modular.ESS.Identity.Domain.Employer;
 using Nezam.Modular.ESS.Identity.Domain.Roles;
 using Nezam.Modular.ESS.Identity.Domain.User;
+using Nezam.Modular.ESS.Secretariat.Domain.Documents;
 using Payeh.SharedKernel.Domain;
 using Payeh.SharedKernel.EntityFrameworkCore.Domain;
 
@@ -18,10 +19,13 @@ public class AppDbContext : DbContext
     public DbSet<UserVerificationTokenEntity> UserVerificationTokens { get; set; }
     public DbSet<EngineerEntity> Engineers { get; set; }
     public DbSet<EmployerEntity> Employers { get; set; }
-    // public DbSet<DocumentAggregateRoot> Documents { get; set; }
     public DbSet<MemberEntity> Members { get; set; }
     public DbSet<UnitEntity> Units { get; set; }
     public DbSet<UnitMemberEntity> UnitMembers { get; set; }
+    public DbSet<DocumentAggregateRoot> Documents { get; set; }
+    public DbSet<DocumentAttachmentEntity> DocumentAttachments { get; set; }
+    public DbSet<DocumentReferralEntity> DocumentReferrals { get; set; }
+    public DbSet<DocumentActivityLogEntity> DocumentActivityLogs { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -44,7 +48,6 @@ public class AppDbContext : DbContext
 
         base.OnModelCreating(modelBuilder);
     }
-
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

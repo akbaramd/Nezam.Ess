@@ -5,13 +5,8 @@ namespace Nezam.Modular.ESS.Identity.Domain.Shared.User;
 
 public class UserNameValue : ValueObject
 {
-    private string _value;
 
-    public string Value
-    {
-        get => _value;
-        private set => _value = value;
-    }
+  public string Value { get; private set; }
 
     public UserNameValue( string value)
     {

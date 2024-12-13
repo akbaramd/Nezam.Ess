@@ -20,7 +20,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Payeh\Payeh.SharedKernel\Payeh.SharedKernel.csproj" />
+        <ProjectReference Include="..\New\modules\Secretariat\Nezam.Modular.ESS.Secretariat.Domain\Nezam.Modular.ESS.Secretariat.Domain.csproj" />
+        <ProjectReference Include="..\New\Payeh.SharedKernel\Payeh.SharedKernel.csproj" />
         <ProjectReference Include="..\New\modules\Units\Nezam.Modular.ESS.Units.Application\Nezam.Modular.ESS.Units.Application.csproj" />
         <ProjectReference Include="..\Nezam.Modular.ESS.Identity.Domain\Nezam.Modular.ESS.Identity.Domain.csproj" />
     </ItemGroup>

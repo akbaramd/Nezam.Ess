@@ -8,7 +8,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
     public class UserEntity : AggregateRoot
     {
         public UserId UserId { get; set; }
-        public UserNameValue UserName { get;  set; }
+        public UserNameValue UserName { get; private set; }
         public UserPasswordValue Password { get; private set; }
         public UserEmailValue? Email { get; private set; }
         public UserProfileValue Profile { get; private set; }

@@ -3,30 +3,32 @@ using Microsoft.Extensions.Logging;
 using Nezam.Modular.ESS.Identity.Domain.Shared.User.DomainEvents;
 using Nezam.Modular.ESS.Units.Domain.Member;
 using Nezam.Modular.ESS.Units.Domain.Shared.Members;
-using Payeh.SharedKernel.UnitOfWork;
+using Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork;
 
 namespace Nezam.Modular.ESS.Units.Application.ExternalEvents.Identity.UserCreated;
 
 public class UserProfileUpdatedExternalEventHandler : INotificationHandler<UserProfileUpdatedEvent>
 {
-  
-    private readonly IUnitOfWork _unitOfWorkManager;
-    private readonly ILogger<UserCreatedExternalEventHandler> _logger;
+    public IMemberRepository MemberRepository { get; }
+
+    private readonly IUnitOfWorkManager _unitOfWorkManager;
+    private readonly ILogger<UserProfileUpdatedExternalEventHandler> _logger;
 
     public UserProfileUpdatedExternalEventHandler(
    
-        IUnitOfWork unitOfWorkManager,
-        ILogger<UserCreatedExternalEventHandler> logger)
+        IUnitOfWorkManager unitOfWorkManager,
+        IMemberRepository memberRepository,
+        ILogger<UserProfileUpdatedExternalEventHandler> logger)
     {
-     
+        MemberRepository = memberRepository;
+
         _unitOfWorkManager = unitOfWorkManager ?? throw new ArgumentNullException(nameof(unitOfWorkManager));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task Handle(UserProfileUpdatedEvent @event, CancellationToken cancellationToken)
     {
-        var repository = _unitOfWorkManager.Repository<MemberEntity>();
-        
+        using var uow = _unitOfWorkManager.Begin();
         if (@event == null)
         {
             _logger.LogError("UserCreatedEvent is null.");
@@ -38,21 +40,21 @@ public class UserProfileUpdatedExternalEventHandler : INotificationHandler<UserP
             _logger.LogInformation("Handling UserCreatedEvent for UserId: {UserId}", @event.UserId);
 
         
-            var member = await repository.FindOneAsync(x=>x.UserId == @event.UserId);
+            var member = await MemberRepository.FindOneAsync(x=>x.UserId == @event.UserId);
             if (member != null)
             {
                 _logger.LogInformation("Member found for UserId: {UserId}, updating member.", @event.UserId);
                 member.SetName(@event.NewProfile.FirstName, @event.NewProfile.LastName);
-                await repository.UpdateAsync(member, true);
+                await MemberRepository.UpdateAsync(member, true);
             }
             else
             {
                 _logger.LogInformation("No member found for UserId: {UserId}, creating new member.", @event.UserId);
                 member = new MemberEntity(MemberId.NewId(), @event.UserId, @event.NewProfile.FirstName, @event.NewProfile.LastName);
-                await repository.AddAsync(member, true);
+                await MemberRepository.AddAsync(member, true);
             }
 
-            await _unitOfWorkManager.CommitAsync();
+            await uow.CommitAsync();
             _logger.LogInformation("UserCreatedEvent successfully handled for UserId: {UserId}", @event.UserId);
         }
         catch (Exception ex)

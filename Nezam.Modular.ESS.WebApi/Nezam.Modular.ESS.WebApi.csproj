@@ -11,6 +11,9 @@
         <PackageReference Include="FastEndpoints" Version="5.32.0.5-beta" />
         <PackageReference Include="FastEndpoints.Security" Version="5.32.0.5-beta" />
         <PackageReference Include="FastEndpoints.Swagger" Version="5.32.0.5-beta" />
+        <PackageReference Include="HotChocolate.AspNetCore" Version="14.2.0" />
+        <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="14.2.0" />
+        <PackageReference Include="HotChocolate.Data.EntityFramework" Version="14.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.11" NoWarn="NU1605" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
@@ -23,41 +26,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Payeh\Payeh.SharedKernel\Payeh.SharedKernel.csproj" />
+        <ProjectReference Include="..\New\Payeh.SharedKernel\Payeh.SharedKernel.csproj" />
         <ProjectReference Include="..\Nezam.Modular.ESS.Identity.Application\Nezam.Modular.ESS.Identity.Application.csproj" />
         <ProjectReference Include="..\Nezam.Modular.ESS.Infrastructure\Nezam.Modular.ESS.Infrastructure.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Compile Remove="Endpoints\Documents\**" />
-      <Compile Remove="Endpoints\Engineer\**" />
-      <Compile Remove="Endpoints\Employers\**" />
-      <Compile Remove="Endpoints\Users\**" />
-    </ItemGroup>
 
-    <ItemGroup>
-      <EmbeddedResource Remove="Endpoints\Documents\**" />
-      <EmbeddedResource Remove="Endpoints\Engineer\**" />
-      <EmbeddedResource Remove="Endpoints\Employers\**" />
-      <EmbeddedResource Remove="Endpoints\Users\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Remove="Endpoints\Documents\**" />
-      <Content Remove="Endpoints\Engineer\**" />
-      <Content Remove="Endpoints\Employers\**" />
-      <Content Remove="Endpoints\Users\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="Endpoints\Documents\**" />
-      <None Remove="Endpoints\Engineer\**" />
-      <None Remove="Endpoints\Employers\**" />
-      <None Remove="Endpoints\Users\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Endpoints\" />
-    </ItemGroup>
 
 </Project>

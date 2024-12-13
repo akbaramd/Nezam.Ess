@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Identity.Domain.User;
-using Payeh.SharedKernel.UnitOfWork;
+using Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork;
 
 namespace Nezam.Modular.ESS.Infrastructure.Data.Seeds;
 
@@ -20,8 +20,9 @@ public class IdentitySeedService : BackgroundService
         using (var scope = _serviceProvider.CreateScope())
         {
             var domainService = scope.ServiceProvider.GetRequiredService<IUserDomainService>();
-            var unitOfWorkManager = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+            var unitOfWorkManager = scope.ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
 
+            using var uow = unitOfWorkManager.Begin();
             var find = await domainService.GetUserByUsernameAsync(new UserNameValue("admin"));
 
             if (find.IsSuccess)
@@ -38,7 +39,7 @@ public class IdentitySeedService : BackgroundService
                 await domainService.Create(user);
             }
 
-            await unitOfWorkManager.CommitAsync();
+            await uow.CommitAsync();
         }
     }
 }

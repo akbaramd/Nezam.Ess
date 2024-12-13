@@ -1,9 +1,11 @@
 ﻿using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
+using Payeh.SharedKernel.Domain;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents
 {
-    public class DocumentAttachmentEntity : BonEntity<DocumentAttachmentId>
+    public class DocumentAttachmentEntity : Entity
     {
+        public DocumentAttachmentId Id { get; set; }
         public string FileName { get; private set; }
         public string FileType { get; private set; }
         public long FileSize { get; private set; }
@@ -66,6 +68,11 @@ namespace Nezam.Modular.ESS.Secretariat.Domain.Documents
                 throw new ArgumentException("File path cannot be empty or whitespace.", nameof(filePath));
 
             FilePath = filePath;
+        }
+
+        public override object GetKey()
+        {
+            return Id;
         }
     }
 }

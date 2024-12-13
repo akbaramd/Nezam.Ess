@@ -1,10 +1,11 @@
 ﻿using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.Enumerations;
 using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
+using Payeh.SharedKernel.Domain;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents
 {
-    public class DocumentReferralEntity : BonEntity<DocumentReferralId>
+    public class DocumentReferralEntity : Entity
     {
         public DocumentId DocumentId { get; private set; }
         public UserId ReferrerUserId { get; private set; }
@@ -75,6 +76,12 @@ namespace Nezam.Modular.ESS.Secretariat.Domain.Documents
         public bool IsProcessed()
         {
             return Status == ReferralStatus.Responded;
+        }
+
+        public DocumentReferralId Id { get; set; }
+        public override object GetKey()
+        {
+            return Id;
         }
     }
 }

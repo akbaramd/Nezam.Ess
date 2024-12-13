@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Payeh\Payeh.SharedKernel\Payeh.SharedKernel.csproj" />
+        <ProjectReference Include="..\New\Payeh.SharedKernel\Payeh.SharedKernel.csproj" />
         <ProjectReference Include="..\New\modules\Nezam.Modular.ESS.Identity.Domain.Shared\Nezam.Modular.ESS.Identity.Domain.Shared.csproj" />
     </ItemGroup>
 
