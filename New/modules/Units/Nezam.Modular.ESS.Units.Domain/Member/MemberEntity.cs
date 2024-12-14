@@ -1,5 +1,4 @@
-﻿using Nezam.Modular.ESS.Identity.Domain.Shared.User;
-using Nezam.Modular.ESS.Units.Domain.Shared.Members;
+﻿using Nezam.Modular.ESS.Units.Domain.Shared.Members;
 using Payeh.SharedKernel.Domain;
 
 namespace Nezam.Modular.ESS.Units.Domain.Member

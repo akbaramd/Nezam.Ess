@@ -1,7 +1,6 @@
 ﻿using System.Security.Claims;
 using FastEndpoints;
 using FastEndpoints.Security;
-using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Nezam.Modular.ESS.Identity.Domain.User;
 using Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork;
 

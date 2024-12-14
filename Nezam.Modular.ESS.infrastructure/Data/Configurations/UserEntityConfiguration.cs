@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nezam.Modular.ESS.Identity.Domain.User;
-using Payeh.SharedKernel.EntityFrameworkCore.Domain;
 
 namespace Nezam.Modular.ESS.Infrastructure.Data.Configurations;
 

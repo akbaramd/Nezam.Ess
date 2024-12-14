@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Payeh.SharedKernel.Domain;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork
 {

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace Payeh.SharedKernel.Domain.ValueObjects;
 
 /// <summary>
-/// JSON converter factory for BusinessId to handle various generic instantiations.
+/// JSON converter factory for GuidBusinessId to handle various generic instantiations.
 /// </summary>
 public class BusinessIdJsonConverterFactory : JsonConverterFactory
 {

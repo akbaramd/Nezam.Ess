@@ -1,6 +1,4 @@
 using Nezam.Modular.ESS.Identity.Domain.Roles;
-using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
-using Nezam.Modular.ESS.Identity.Domain.Shared.User;
 using Payeh.SharedKernel.Results;
 
 namespace Nezam.Modular.ESS.Identity.Domain.User
@@ -26,7 +24,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
 
             foreach (var roleId in roles)
             {
-                var role = await _roleRepository.GetRoleByIdAsync(roleId);
+                var role = await _roleRepository.FindRoleByIdAsync(roleId);
                 if (role == null)
                     return PayehResult.Failure($"Role with ID {roleId} not found.");
 
@@ -53,7 +51,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
             if (user == null || role == null)
                 return PayehResult.Failure("User or role cannot be null.");
 
-            var roleEntity = await _roleRepository.GetRoleByIdAsync(role);
+            var roleEntity = await _roleRepository.FindRoleByIdAsync(role);
             if (roleEntity == null)
                 return PayehResult.Failure("Role not found.");
 
@@ -87,7 +85,7 @@ namespace Nezam.Modular.ESS.Identity.Domain.User
 
             foreach (var roleId in roles)
             {
-                var role = await _roleRepository.GetRoleByIdAsync(roleId);
+                var role = await _roleRepository.FindRoleByIdAsync(roleId);
                 if (role == null)
                     return PayehResult.Failure($"Role with ID {roleId} not found.");
 

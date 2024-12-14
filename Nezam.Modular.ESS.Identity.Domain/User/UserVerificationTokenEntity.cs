@@ -1,5 +1,4 @@
-﻿using Nezam.Modular.ESS.Identity.Domain.Shared.User;
-using Payeh.SharedKernel.Domain;
+﻿using Payeh.SharedKernel.Domain;
 using Payeh.SharedKernel.Domain.Enumerations;
 using Payeh.SharedKernel.Domain.ValueObjects;
 

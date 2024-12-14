@@ -1,0 +1,11 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://samid-apigateway:5000"
+  },
+  "ServiceDiscovery": {
+    "Consul": {
+      "Host": "localhost",
+      "Port": 8500
+    }
+  }
+}

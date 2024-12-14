@@ -1,5 +1,4 @@
-﻿using Nezam.Modular.ESS.Identity.Domain.Shared.User;
-using Nezam.Modular.ESS.Identity.Domain.User;
+﻿using Nezam.Modular.ESS.Identity.Domain.User;
 using Payeh.SharedKernel.EntityFrameworkCore.Domain;
 using Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork;
 

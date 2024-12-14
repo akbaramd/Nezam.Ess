@@ -1,8 +1,5 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Threading.Tasks;
 
 namespace Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork
 {

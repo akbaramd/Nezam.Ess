@@ -1,5 +1,4 @@
 ﻿using Nezam.Modular.ESS.Identity.Domain.Roles;
-using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
 using Payeh.SharedKernel.EntityFrameworkCore.Domain;
 using Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork;
 
@@ -11,8 +10,8 @@ public class RoleRepository : EntityFrameworkRepository<RoleEntity,AppDbContext>
     {
     }
 
-    public Task<RoleEntity> GetRoleByIdAsync(RoleId roleId)
+    public Task<RoleEntity?> FindRoleByIdAsync(RoleId roleId)
     {
-        return GetOneAsync(x=>x.RoleId == roleId);
+        return FindOneAsync(x=>x.RoleId == roleId);
     }
 }

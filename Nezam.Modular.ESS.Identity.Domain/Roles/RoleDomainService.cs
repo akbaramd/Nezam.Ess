@@ -1,5 +1,3 @@
-using Nezam.Modular.ESS.Identity.Domain.Roles;
-using Nezam.Modular.ESS.Identity.Domain.Shared.Roles;
 using Payeh.SharedKernel.Results;
 
 namespace Nezam.Modular.ESS.Identity.Domain.Roles;
@@ -21,7 +19,7 @@ public class RoleDomainService : IRoleDomainService
         if (role == null)
             return PayehResult<RoleEntity>.Failure("Role cannot be null.");
 
-        var find =  await _roleRepository.GetRoleByIdAsync(role.RoleId);
+        var find =  await _roleRepository.FindRoleByIdAsync(role.RoleId);
         if (find != null)
         {
             return PayehResult.Failure("role already exists.");
@@ -53,7 +51,7 @@ public class RoleDomainService : IRoleDomainService
     // Get a role by ID
     public async Task<PayehResult<RoleEntity>> GetRoleByIdAsync(RoleId roleId)
     {
-        var role = await _roleRepository.GetRoleByIdAsync(roleId);
+        var role = await _roleRepository.FindRoleByIdAsync(roleId);
         if (role == null)
             return PayehResult<RoleEntity>.Failure("Role not found.");
 

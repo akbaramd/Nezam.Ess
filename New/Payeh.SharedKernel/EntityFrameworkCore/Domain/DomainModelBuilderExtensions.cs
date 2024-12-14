@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Payeh.SharedKernel.Domain;
@@ -9,6 +10,45 @@ namespace Payeh.SharedKernel.EntityFrameworkCore.Domain
 {
     public static class EntityTypeBuilderExtensions
     {
+        public static PropertyBuilder<TBussinedId> HasBusinessIdConversion<TBussinedId, TKey>(
+            this PropertyBuilder<TBussinedId> propertyBuilder)
+            where TBussinedId : BusinessId<TBussinedId, TKey>, new()
+        {
+            // Convert BusinessId to its underlying value (TKey)
+            Expression<Func<TBussinedId, TKey>> convertToProviderExpression = c => c.Value;
+
+            // Convert TKey to BusinessId using the FromValue method of the BusinessId class
+            Expression<Func<TKey, TBussinedId>> convertFromProviderExpression = v => BusinessId<TBussinedId, TKey>.NewId(v);
+
+            return propertyBuilder.HasConversion(
+                convertToProviderExpression,
+                convertFromProviderExpression
+            );
+        }
+
+        public static PropertyBuilder<TBussinedId> HasBusinessIdConversion<TBussinedId>(
+            this PropertyBuilder<TBussinedId> propertyBuilder)
+            where TBussinedId : GuidBusinessId<TBussinedId>, new()
+        {
+            return propertyBuilder.HasBusinessIdConversion<TBussinedId, Guid>();
+        }
+        public static PropertyBuilder<TBussinedId> HasStringBusinessIdConversion<TBussinedId>(
+            this PropertyBuilder<TBussinedId> propertyBuilder)
+            where TBussinedId : StringBusinessId<TBussinedId>, new()
+        {
+            propertyBuilder.HasBusinessIdConversion<TBussinedId, string>();
+            return propertyBuilder;
+
+        }
+
+        public static PropertyBuilder<TBussinedId> HasIntBusinessIdConversion<TBussinedId>(
+            this PropertyBuilder<TBussinedId> propertyBuilder)
+            where TBussinedId : IntBusinessId<TBussinedId>, new()
+        {
+            return propertyBuilder.HasBusinessIdConversion<TBussinedId, int>();
+        }
+
+  
         public static EntityTypeBuilder DomainConfiguration(this EntityTypeBuilder b)
         {
             Console.WriteLine($"Configuring entity: {b.Metadata.ClrType.Name}");
@@ -43,7 +83,6 @@ namespace Payeh.SharedKernel.EntityFrameworkCore.Domain
 
             foreach (var property in enumerationProperties)
             {
-                
                 try
                 {
                     Console.WriteLine($"Configuring Enumeration property: {property.Name}");
@@ -53,10 +92,9 @@ namespace Payeh.SharedKernel.EntityFrameworkCore.Domain
                     var underlyingType = isNullable ? Nullable.GetUnderlyingType(propertyType) : propertyType;
 
                     if (underlyingType == null) continue;
-                    
+
                     builder.OwnsOne(propertyType, property.Name, c =>
                     {
-                        
                         c.Property<int>("Id") // Map the `Id` property
                             .HasColumnName($"{property.Name}Id")
                             .IsRequired(!isNullable);
@@ -94,7 +132,7 @@ namespace Payeh.SharedKernel.EntityFrameworkCore.Domain
                     Console.WriteLine($"Configuring BusinessId property: {property.Name}");
                     var propertyType = property.PropertyType;
 
-                    if (IsGenericBonBusinessIdWithKey(propertyType))
+                    if (IsGenericBusinessIdWithKey(propertyType))
                     {
                         var keyType = GetKeyType(propertyType);
 
@@ -107,7 +145,7 @@ namespace Payeh.SharedKernel.EntityFrameworkCore.Domain
                                 .HasColumnName(property.Name);
                         }
                     }
-                    else if (IsGenericBonBusinessId(propertyType))
+                    else if (IsGenericBusinessId(propertyType))
                     {
                         var converterType = typeof(BusinessIdConverter<>).MakeGenericType(propertyType);
                         if (Activator.CreateInstance(converterType) is ValueConverter converterInstance)
@@ -129,7 +167,7 @@ namespace Payeh.SharedKernel.EntityFrameworkCore.Domain
             return builder;
         }
 
-        private static bool IsGenericBonBusinessIdWithKey(Type type)
+        private static bool IsGenericBusinessIdWithKey(Type type)
         {
             while (type != null)
             {
@@ -144,11 +182,11 @@ namespace Payeh.SharedKernel.EntityFrameworkCore.Domain
             return false;
         }
 
-        private static bool IsGenericBonBusinessId(Type type)
+        private static bool IsGenericBusinessId(Type type)
         {
             while (type != null)
             {
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(BusinessId<>))
+                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(GuidBusinessId<>))
                 {
                     return true;
                 }
@@ -178,13 +216,13 @@ namespace Payeh.SharedKernel.EntityFrameworkCore.Domain
         {
             if (type == null) return false;
 
-            if (IsGenericBonBusinessId(type) || IsGenericBonBusinessIdWithKey(type))
+            if (IsGenericBusinessId(type) || IsGenericBusinessIdWithKey(type))
                 return true;
 
             var baseType = type.BaseType;
             while (baseType != null)
             {
-                if (IsGenericBonBusinessId(baseType) || IsGenericBonBusinessIdWithKey(baseType))
+                if (IsGenericBusinessId(baseType) || IsGenericBusinessIdWithKey(baseType))
                     return true;
 
                 baseType = baseType.BaseType;

@@ -1,6 +1,4 @@
 ﻿using Nezam.Modular.ESS.Identity.Domain.Roles;
-using Nezam.Modular.ESS.Identity.Domain.Shared.User;
-using Nezam.Modular.ESS.Identity.Domain.Shared.User.DomainEvents;
 using Payeh.SharedKernel.Domain;
 
 namespace Nezam.Modular.ESS.Identity.Domain.User

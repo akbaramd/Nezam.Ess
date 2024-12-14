@@ -7,11 +7,11 @@ public class BusinessIdConverter<T,TKey> : ValueConverter<T, TKey> where T : Bus
 {
     public BusinessIdConverter()
         : base(
-            id => id.Value, // Convert BusinessId<T> to string for database storage
-            str => (T)BusinessId<T,TKey>.FromValue(str)) // Convert string back to BusinessId<T>
+            id => id.Value, // Convert GuidBusinessId<T> to string for database storage
+            str => (T)BusinessId<T,TKey>.NewId(str)) // Convert string back to GuidBusinessId<T>
     {
     }
 }
     
-public class BusinessIdConverter<T> :BusinessIdConverter<T,Guid> where T : BusinessId<T>, new()
+public class BusinessIdConverter<T> :BusinessIdConverter<T,Guid> where T : GuidBusinessId<T>, new()
 {} 

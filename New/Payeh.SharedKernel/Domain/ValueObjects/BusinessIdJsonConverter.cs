@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace Payeh.SharedKernel.Domain.ValueObjects;
 
 /// <summary>
-/// Generic JSON converter for BusinessId to handle serialization and deserialization.
+/// Generic JSON converter for GuidBusinessId to handle serialization and deserialization.
 /// </summary>
 public class BusinessIdJsonConverter<T, TKey> : JsonConverter<BusinessId<T, TKey>>
     where T : BusinessId<T, TKey>, new()
@@ -20,7 +20,7 @@ public class BusinessIdJsonConverter<T, TKey> : JsonConverter<BusinessId<T, TKey
 
         if (typeof(TKey) == typeof(Guid) && Guid.TryParse(value, out var guid))
         {
-            return BusinessId<T, TKey>.FromValue((TKey)(object)guid);
+            return BusinessId<T, TKey>.NewId((TKey)(object)guid);
         }
 
         throw new JsonException("Invalid format for Business ID.");

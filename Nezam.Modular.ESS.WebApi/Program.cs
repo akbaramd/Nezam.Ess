@@ -19,13 +19,10 @@ builder.Services.AddUnitsApplication();
 builder.Services.AddInfrastructure();
 
 // Add DbContext and configure it for SQLite
-builder.Services.AddPayehDbContext<AppDbContext>(
-    options =>
-    {
-        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"),c=>c.MigrationsAssembly("Nezam.Modular.ESS.WebApi"));
-        
-    }
-);
+builder.Services.AddPayehDbContext<AppDbContext>(options =>
+{
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"), c => c.MigrationsAssembly("Nezam.Modular.ESS.WebApi"));
+});
 
 // Configure request localization for Persian language
 builder.Services.Configure<RequestLocalizationOptions>(options =>
@@ -36,15 +33,26 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.SupportedUICultures = supportedCultures;
 });
 
+// Configure CORS policy to allow any origin, method, and header
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()  // Allow requests from any origin (necessary for React and other frontends)
+               .AllowAnyMethod()  // Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
+               .AllowAnyHeader(); // Allow any headers (necessary for API requests)
+    });
+});
+
 // Configure FastEndpoints, Swagger, and JWT Authentication
 builder.Services.AddAuthorization();
 builder.Services.AddAuthenticationJwtBearer(s =>
-    {
-        s.SigningKey = builder.Configuration["Jwt:SecretKey"]; // Fetch from configuration
-    })
-    .AddAuthorization()
-    .SwaggerDocument()
-    .AddFastEndpoints();
+{
+    s.SigningKey = builder.Configuration["Jwt:SecretKey"]; // Fetch from configuration
+})
+.AddAuthorization()
+.SwaggerDocument()
+.AddFastEndpoints();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -62,8 +70,9 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseAuthentication()
-    .UseAuthorization()
-    .UseFastEndpoints()
-    .UseSwaggerGen();
+   .UseAuthorization()
+   .UseFastEndpoints()
+   .UseSwaggerGen()
+   .UseCors(); // Apply CORS middleware globally
 
 await app.RunAsync();

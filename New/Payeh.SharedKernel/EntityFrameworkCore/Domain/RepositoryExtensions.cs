@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using Payeh.SharedKernel.Domain;
 using Payeh.SharedKernel.Domain.Repositories;
 

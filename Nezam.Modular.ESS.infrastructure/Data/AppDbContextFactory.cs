@@ -9,7 +9,7 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
-        optionsBuilder.UseSqlServer($"Data Source=../Nezam.Modular.ESS.WebApi/NezamEes.db");
+        optionsBuilder.UseSqlite($"EntityFrameworkCore Source=../Nezam.Modular.ESS.WebApi/NezamEes.db");
 
         var xtx =  new AppDbContext(optionsBuilder.Options);
         return xtx;

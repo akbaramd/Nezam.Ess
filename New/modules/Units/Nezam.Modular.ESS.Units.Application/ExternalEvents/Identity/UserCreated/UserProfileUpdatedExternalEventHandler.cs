@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using Nezam.Modular.ESS.Identity.Domain.Shared.User.DomainEvents;
 using Nezam.Modular.ESS.Units.Domain.Member;
 using Nezam.Modular.ESS.Units.Domain.Shared.Members;
 using Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork;

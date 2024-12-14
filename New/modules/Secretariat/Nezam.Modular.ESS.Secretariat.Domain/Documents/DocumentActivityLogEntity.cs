@@ -1,5 +1,4 @@
-﻿using Nezam.Modular.ESS.Identity.Domain.Shared.User;
-using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
+﻿using Nezam.Modular.ESS.Secretariat.Domain.Shared.Documents.ValueObjects;
 using Payeh.SharedKernel.Domain;
 
 namespace Nezam.Modular.ESS.Secretariat.Domain.Documents;
