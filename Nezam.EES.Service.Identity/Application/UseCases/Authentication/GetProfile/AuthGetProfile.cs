@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using Nezam.EES.Service.Identity.Application.Dto.Users;
 using Nezam.EES.Service.Identity.Infrastructure.EntityFrameworkCore;
 using Nezam.EEs.Shared.Domain.Identity.User;
-using Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork;
+using Payeh.SharedKernel.UnitOfWork;
 
-namespace Nezam.EES.Service.Identity.Application.UseCases.Authentication;
+namespace Nezam.EES.Service.Identity.Application.UseCases.Authentication.GetProfile;
 
 
 public class AutGetProfileEndpoint : EndpointWithoutRequest<UserDto>
 {
-    private readonly IdentityDbContext _dbContext;
-    public AutGetProfileEndpoint(IdentityDbContext dbContext, IUnitOfWorkManager workManager)
+    private readonly IIdentityDbContext _dbContext;
+    public AutGetProfileEndpoint(IIdentityDbContext dbContext, IUnitOfWorkManager workManager)
     {
         _dbContext = dbContext;
     }

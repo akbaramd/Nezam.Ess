@@ -1,0 +1,43 @@
+﻿services:
+  consul:
+    image: hashicorp/consul:latest
+    ports:
+      - "8500:8500"
+    command: "agent -dev -client=0.0.0.0"
+    networks:
+      - app-network
+  gateway:
+    image: nezam.ees.gateway
+    build:
+      context: .
+      dockerfile: Nezam.EES.Gateway/Dockerfile
+    ports:
+      - "5000:5000" # Expose Gateway port
+    networks:
+      - app-network
+    depends_on:
+      - consul
+    environment:
+      - CONSUL_ADDRESS=http://consul:8500
+
+  # Identity Service
+  identity:
+    image: nezam.ees.service.identity
+    build:
+      context: .
+      dockerfile: Nezam.EES.Service.Identity/Dockerfile
+    ports:
+      - "5001:5001" # Expose Identity Service port
+    networks:
+      - app-network
+    depends_on:
+      - consul
+    environment:
+      - CONSUL_ADDRESS=http://consul:8500
+    volumes:
+      - ./data/sqlite:/app/data # Persist SQLite database file
+
+networks:
+  app-network:
+    driver: bridge
+

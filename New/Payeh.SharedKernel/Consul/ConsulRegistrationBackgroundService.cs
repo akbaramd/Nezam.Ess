@@ -41,6 +41,12 @@ public class ConsulRegistrationBackgroundService : BackgroundService
                 Name = _serviceName,
                 Address = _host,
                 Port = _port,
+                Check = new AgentCheckRegistration()
+                {
+                    HTTP = $"http://{_host}:{_port}{_healthCheckUrl}",
+                    Timeout = TimeSpan.FromSeconds(15),
+                    Interval = TimeSpan.FromSeconds(15),
+                }
             };
 
             _logger.LogInformation("Registering service {ServiceName} with ID {ServiceId} at {Host}:{Port}", _serviceName, _serviceId, _host, _port);

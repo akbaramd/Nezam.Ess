@@ -1,18 +1,40 @@
+using FastEndpoints;
+using FastEndpoints.Security;
+using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using MMLib.SwaggerForOcelot.DependencyInjection;
-using Ocelot.DependencyInjection;
-using Ocelot.Middleware;
-using Ocelot.Provider.Consul;
+using Nezam.EES.Gateway;
+using Nezam.EES.Service.Identity;
+using Nezam.EES.Service.Identity.Infrastructure.EntityFrameworkCore;
 using Payeh.SharedKernel.Consul;
+using Payeh.SharedKernel.EntityFrameworkCore;
+using Payeh.SharedKernel.UnitOfWork;
 
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddMediatR(c=>c.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
-builder.Services.AddControllers();
-builder.Services.AddConsulClient(c=> {c.Address = new Uri("http://127.0.0.1:8500");});
-builder.Services.AddConsulServiceRegistration("gateway", "Nezam.EES.Gateway", "localhost", 5000);
+builder.Services.AddIdentitySlice(builder.Configuration);
+//EntityFramework 
+builder.Services.AddPayehDbContext<AppDbContext>(c =>
+{
+    c.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+builder.Services.AddPayehUnitOfWork(c =>
+{
+    c.IsUnitOfWorkEnabled = true;
+    c.IsTransactional = false;
+});
+
+builder.Services.AddAuthenticationJwtBearer(s =>
+    {
+        s.SigningKey = builder.Configuration["Jwt:SecretKey"]; // Fetch from configuration
+    })
+    .AddAuthorization()
+    .SwaggerDocument()
+    .AddFastEndpoints();
 // Configure CORS
 builder.Services
     .AddCors(options =>
@@ -30,32 +52,15 @@ builder.Services
 // Configure health checks
 builder.Services
     .AddHealthChecks()
-    .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"])
-    ;
+    .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"]);
 
-
-// Add Ocelot
-var routes = "Routes";
-builder.Configuration.AddOcelotWithSwaggerSupport(options => { options.Folder = routes; });
-builder.Services.AddOcelot(builder.Configuration)
-    .AddConsul();
-
-builder.Services.AddSwaggerForOcelot(builder.Configuration);
-// Add Ocelot json file configuration
-builder.Configuration.AddJsonFile("ocelot.json");
 
 var app = builder.Build();
 
 
-app.UseRouting();
-app.UseEndpoints(_ => { });
-
-
-app.MapHealthChecks("/health", new HealthCheckOptions { Predicate = r => r.Name.Contains("self") });
-
+app.UseAuthentication()
+    .UseAuthorization()
+    .UseFastEndpoints()
+    .UseSwaggerGen();
 app.UseCors("CorsPolicy");
-app.MapGet("/services", async ([FromServices] IConsulService consulService) => await consulService.GetCurrentNodeHealthAsync());
-app.UseSwagger();
-await app.UseSwaggerForOcelotUI(options => { options.PathToSwaggerGenerator = "/swagger/docs"; }).UseOcelot();
-
 await app.RunAsync();

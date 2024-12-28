@@ -4,7 +4,7 @@ using Payeh.SharedKernel.Domain;
 
 namespace Payeh.SharedKernel.EntityFrameworkCore;
 
-public class PayehDbContext<TDbContext> : DbContext where TDbContext : DbContext
+public class PayehDbContext<TDbContext> : DbContext,IPayehDbContext where TDbContext : DbContext
 {
     private readonly IMediator _mediator;
 

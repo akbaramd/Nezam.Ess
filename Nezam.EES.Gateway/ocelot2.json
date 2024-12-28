@@ -1,0 +1,37 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "ServiceName": "identity", 
+      "UpstreamPathTemplate": "/identity/{everything}",
+      "UpstreamHttpMethod": [
+        "POST",
+        "PUT",
+        "GET",
+        "DELETE"
+      ],
+      "SwaggerKey": "identity"
+    }
+  ],
+  "GlobalConfiguration": {
+    "ServiceDiscoveryProvider": {
+      "Host": "consul",
+      "Port": 8500,
+      "Type": "Consul",
+      "PollingInterval": 1000
+    }
+  },
+  "SwaggerEndPoints": [
+    {
+      "Key": "identity",
+      "Config": [
+        {
+          "Name": "Identity API",
+          "Version": "v1",
+          "Url": "http://identity:5001/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}

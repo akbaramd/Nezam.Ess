@@ -1,7 +1,7 @@
 using FastEndpoints;
 using FluentValidation;
 
-namespace Nezam.EES.Service.Identity.Application.UseCases.Authentication.AuthLogin;
+namespace Nezam.EES.Service.Identity.Application.UseCases.Authentication.Login;
 
 public class AuthLoginValidator : Validator<AuthLoginRequest>
 {

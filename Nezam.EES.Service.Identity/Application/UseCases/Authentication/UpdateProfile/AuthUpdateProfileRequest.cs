@@ -1,6 +1,6 @@
 using Nezam.EEs.Shared.Domain.Identity.User.ValueObjects;
 
-namespace Nezam.EES.Service.Identity.Application.UseCases.Authentication;
+namespace Nezam.EES.Service.Identity.Application.UseCases.Authentication.UpdateProfile;
 
 public class AuthUpdateProfileRequest
 {

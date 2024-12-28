@@ -32,6 +32,7 @@
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=New_002FModules_002FSecretariat_002FNezam_002EModular_002EESS_002ESecretariat_002EApplication_002FResources_002FDocumentTranslates/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/Initialized/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=01d4ac8d_002D7250_002D49ce_002Da258_002Da34f720f6958_0023Nezam_002EModular_002EESS_002EUnits_002EApplication/@EntryIndexedValue">True</s:Boolean>
+	
 	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=20d97822_002De6d6_002D45f2_002D8f55_002D5b51a24a4f57_0023Nezam_002EModular_002EESS_002EIdentity_002EDomain_002EShared/@EntryIndexedValue">True</s:Boolean>
 	
 	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=5f8b3e4c_002D7a26_002D4172_002Db90c_002Da994e2dd1652_0023Nezam_002EModular_002EESS_002ESecretariat_002EDomain_002EShared/@EntryIndexedValue">True</s:Boolean>
@@ -46,6 +47,9 @@
 	
 	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=cfed0853_002Dfba9_002D4542_002Db788_002D0cbfb9c91388_0023Nezam_002EModular_002EESS_002EUnits_002EDomain_002EShared/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=de8e3328_002Db212_002D4978_002Dba91_002D078f70949064_0023Nezam_002EModular_002EESS_002EWebApi/@EntryIndexedValue">True</s:Boolean>
+	
+	
+	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=ee6a1441_002Deebb_002D4804_002D8053_002De576c94a82cb_0023Nezam_002EESS/@EntryIndexedValue">True</s:Boolean>
 	
 	
 	

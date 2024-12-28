@@ -2,9 +2,9 @@
 using FastEndpoints;
 using Nezam.EES.Service.Identity.Domains.Users.DomainServices;
 using Nezam.EEs.Shared.Domain.Identity.User;
-using Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork;
+using Payeh.SharedKernel.UnitOfWork;
 
-namespace Nezam.EES.Service.Identity.Application.UseCases.Authentication;
+namespace Nezam.EES.Service.Identity.Application.UseCases.Authentication.UpdateProfile;
 
 public class AutUpdateProfileEndpoint : Endpoint<AuthUpdateProfileRequest, AuthUpdateUserResponse>
 {
@@ -60,7 +60,7 @@ public class AutUpdateProfileEndpoint : Endpoint<AuthUpdateProfileRequest, AuthU
         }
 
         // Commit the transaction
-        await uow.CommitAsync();
+        await uow.CommitAsync(ct);
 
         // Send successful response
         await SendAsync(new AuthUpdateUserResponse

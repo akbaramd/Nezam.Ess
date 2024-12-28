@@ -3,9 +3,9 @@ using FastEndpoints;
 using FastEndpoints.Security;
 using Nezam.EES.Service.Identity.Domains.Users.DomainServices;
 using Nezam.EEs.Shared.Domain.Identity.User;
-using Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork;
+using Payeh.SharedKernel.UnitOfWork;
 
-namespace Nezam.EES.Service.Identity.Application.UseCases.Authentication;
+namespace Nezam.EES.Service.Identity.Application.UseCases.Authentication.Login;
 
 public class AuthLoginEndpoint : Endpoint<AuthLoginRequest, AuthLoginResponse>
 {
@@ -52,6 +52,6 @@ public class AuthLoginEndpoint : Endpoint<AuthLoginRequest, AuthLoginResponse>
             });
 
         await SendAsync(new AuthLoginResponse { AccessToken = token }, cancellation: ct);
-        await uow.CommitAsync();
+        await uow.CommitAsync(ct);
     }
 }

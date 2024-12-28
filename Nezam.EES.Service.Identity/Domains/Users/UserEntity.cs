@@ -13,10 +13,10 @@ namespace Nezam.EES.Service.Identity.Domains.Users
         public UserPasswordValue Password { get; private set; }
         public UserEmailValue? Email { get; private set; }
         public UserProfileValue? Profile { get; private set; }
-        public ICollection<UserTokenEntity> Tokens { get; private set; }
+        public ICollection<UserTokenEntity> Tokens { get; private set; } = [];
         
         // Collection to hold assigned roles
-        public ICollection<RoleEntity> Roles { get; private set; }
+        public ICollection<RoleEntity> Roles { get; private set; } = [];
         protected UserEntity() { }
 
         // Constructor for creating a new user with profile and tokens
