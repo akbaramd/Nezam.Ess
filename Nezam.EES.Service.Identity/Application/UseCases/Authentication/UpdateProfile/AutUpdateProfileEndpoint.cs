@@ -30,7 +30,7 @@ public class AutUpdateProfileEndpoint : Endpoint<AuthUpdateProfileRequest, AuthU
         {
             AddError("User is not authenticated.");
             await SendErrorsAsync(cancellation: ct);
-            return;
+            return;    
         }
         
         // Start Unit of Work
