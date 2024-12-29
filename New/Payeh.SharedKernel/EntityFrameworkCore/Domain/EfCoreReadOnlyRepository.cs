@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Payeh.SharedKernel.Domain;
 using Payeh.SharedKernel.Domain.Repositories;
 using Payeh.SharedKernel.EntityFrameworkCore.UnitofWork;
-using Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork;
 
 namespace Payeh.SharedKernel.EntityFrameworkCore.Domain;
 

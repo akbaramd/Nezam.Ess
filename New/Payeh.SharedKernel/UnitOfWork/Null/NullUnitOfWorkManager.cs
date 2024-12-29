@@ -1,6 +1,4 @@
-﻿using Payeh.SharedKernel.UnitOfWork.Null;
-
-namespace Payeh.SharedKernel.UnitOfWork;
+﻿namespace Payeh.SharedKernel.UnitOfWork.Null;
 
 /// <summary>
 ///     A null implementation of the Unit of Work Manager that returns a NullUnitOfWork.

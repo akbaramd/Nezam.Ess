@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
-using Payeh.SharedKernel.EntityFrameworkCore.UnitofWork;
 using Payeh.SharedKernel.UnitOfWork;
+using Payeh.SharedKernel.UnitOfWork.Null;
 
-namespace Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork;
+namespace Payeh.SharedKernel.EntityFrameworkCore.UnitofWork;
 
 /// <summary>
 ///     Provides a DbContext instance tied to the current Unit of Work.

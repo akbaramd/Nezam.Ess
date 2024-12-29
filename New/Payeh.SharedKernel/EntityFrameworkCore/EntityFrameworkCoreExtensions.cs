@@ -2,7 +2,6 @@
 using System.Linq;
 using Payeh.SharedKernel.EntityFrameworkCore.Domain;
 using Payeh.SharedKernel.EntityFrameworkCore.UnitofWork;
-using Payeh.SharedKernel.EntityFrameworkCore.UnitOfWork;
 using Payeh.SharedKernel.UnitOfWork;
 
 namespace Payeh.SharedKernel.EntityFrameworkCore;

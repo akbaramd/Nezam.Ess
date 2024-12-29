@@ -1,6 +1,8 @@
 using Starterkit._keenthemes;
 using Starterkit._keenthemes.libs;
-    
+
+namespace Starterkit;
+
 public class ThemeMiddleware {
     private readonly RequestDelegate _next;
 

@@ -25,10 +25,23 @@ namespace Payeh.SharedKernel.EntityFrameworkCore.Domain
                 convertFromProviderExpression
             );
         }
+        public static PropertyBuilder<TBussinedId> HasEnumeration<TBussinedId>(
+            this PropertyBuilder<TBussinedId> propertyBuilder)
+            where TBussinedId : Enumeration
+        {
+            Expression<Func<TBussinedId, int>> convertToProviderExpression = c => c.Id;
 
+            // Convert TKey to BusinessId using the FromValue method of the BusinessId class
+            Expression<Func<int, TBussinedId>> convertFromProviderExpression = v => Enumeration.FromId<TBussinedId>(v)!;
+
+            return propertyBuilder.HasConversion(
+                convertToProviderExpression,
+                convertFromProviderExpression
+            );
+        }
         public static PropertyBuilder<TBussinedId> HasBusinessIdConversion<TBussinedId>(
             this PropertyBuilder<TBussinedId> propertyBuilder)
-            where TBussinedId : GuidBusinessId<TBussinedId>, new()
+            where TBussinedId : GuidBusinessId<TBussinedId>?, new()
         {
             return propertyBuilder.HasBusinessIdConversion<TBussinedId, Guid>();
         }

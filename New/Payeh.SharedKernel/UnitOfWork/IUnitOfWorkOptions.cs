@@ -1,6 +1,8 @@
 ﻿
 using System.Data;
 
+namespace Payeh.SharedKernel.UnitOfWork;
+
 public interface IUnitOfWorkOptions
 {
         public bool IsUnitOfWorkEnabled { get; set; } 
