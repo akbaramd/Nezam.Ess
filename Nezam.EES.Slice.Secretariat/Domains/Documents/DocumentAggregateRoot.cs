@@ -105,7 +105,7 @@ public class DocumentAggregateRoot : AggregateRoot
         AddDomainEvent(new DocumentRevertedToDraftEvent(this.DocumentId));
     }
 
-    public void AddAttachment(string fileName, string fileType, long fileSize, string filePath, UserId UserId)
+    public void AddAttachment(string fileName, string fileType, long fileSize, string filePath)
     {
         EnsureNotArchived();
         if (string.IsNullOrWhiteSpace(fileName)) throw new PayehException("File name cannot be empty.");

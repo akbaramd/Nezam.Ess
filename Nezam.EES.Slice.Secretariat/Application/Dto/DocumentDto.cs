@@ -14,6 +14,7 @@ public class DocumentDto
     public DocumentStatus Status { get; set; }
     public ParticipantDto Owner { get; set; }
     public ParticipantDto Receiver { get; set; }
+    public List<DocumentAttachmentDto> Attachments { get; set; } = new();
 
     // Method to map from Document entity
     public static DocumentDto FromEntity(DocumentAggregateRoot document)
@@ -26,7 +27,28 @@ public class DocumentDto
             Type = document.Type,
             Status = document.Status,
             Owner = ParticipantDto.FromEntity(document.OwnerParticipant),
-            Receiver = ParticipantDto.FromEntity(document.ReceiverParticipant)
+            Receiver = ParticipantDto.FromEntity(document.ReceiverParticipant),
+            Attachments = document.Attachments.Select(DocumentAttachmentDto.FromEntity).ToList()
+        };
+    }
+}
+
+public class DocumentAttachmentDto
+{
+    public string FileName { get; set; }
+    public string FileType { get; set; }
+    public long FileSize { get; set; }
+    public string FilePath { get; set; }
+
+    // Method to map from DocumentAttachmentEntity
+    public static DocumentAttachmentDto FromEntity(DocumentAttachmentEntity attachment)
+    {
+        return new DocumentAttachmentDto
+        {
+            FileName = attachment.FileName,
+            FileType = attachment.FileType,
+            FileSize = attachment.FileSize,
+            FilePath = attachment.FilePath
         };
     }
 }

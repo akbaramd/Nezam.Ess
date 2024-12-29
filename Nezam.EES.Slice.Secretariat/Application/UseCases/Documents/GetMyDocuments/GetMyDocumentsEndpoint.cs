@@ -45,6 +45,7 @@ public class GetMyDocumentsEndpoint : Endpoint<GetMyDocumentsRequest, GetMyDocum
         // Query documents with pagination
         var query = _dbContext.Documents
             .AsNoTracking()
+            .Include(d => d.Attachments)
             .Include(d => d.OwnerParticipant)
             .Include(d => d.ReceiverParticipant)
             .Include(d => d.Referrals)
