@@ -42,7 +42,7 @@ public class DeleteUserEndpoint : EndpointWithoutRequest
                 ThrowError("User not found.");
             }
             
-            var deleteResult = await _userDomainService.DeleteAsync(existingUserResult.Data);
+            var deleteResult = await _userDomainService.SoftDeleteAsync(existingUserResult.Data);
 
             if (deleteResult.IsFailure)
             {

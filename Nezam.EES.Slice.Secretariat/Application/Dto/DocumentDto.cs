@@ -3,6 +3,8 @@ using Nezam.EES.Slice.Secretariat.Domains.Documents.Enumerations;
 using Nezam.EES.Slice.Secretariat.Domains.Documents.ValueObjects;
 using Nezam.EES.Slice.Secretariat.Domains.Participant;
 
+namespace Nezam.EES.Slice.Secretariat.Application.Dto;
+
 public class DocumentDto
 {
     public DocumentId DocumentId { get; set; }

@@ -12,6 +12,7 @@ public interface IUserDomainService
     Task<PayehResult<UserEntity>> Create(UserEntity user);
     Task<PayehResult> UpdateAsync(UserEntity user);
     Task<PayehResult> DeleteAsync(UserEntity user);
+    Task<PayehResult> SoftDeleteAsync(UserEntity user);
     Task<PayehResult<UserEntity>> GetUserByIdAsync(UserId userId);
     Task<PayehResult<UserEntity>> GetUserByUsernameAsync(UserNameId username);
 }

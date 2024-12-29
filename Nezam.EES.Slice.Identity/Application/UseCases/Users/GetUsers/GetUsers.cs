@@ -31,6 +31,7 @@ public class GetUsersEndpoint : Endpoint<GetUsersRequest, GetUsersResponse>
         {
             string searchTerm = req.Search.Trim();
             query = query.Where(u =>
+                u.IsSoftDeleted  == false &&
                 u.Email != null &&
                 (u.UserName.Value.Contains(searchTerm) || u.Email.Value.Contains(searchTerm)));
         }

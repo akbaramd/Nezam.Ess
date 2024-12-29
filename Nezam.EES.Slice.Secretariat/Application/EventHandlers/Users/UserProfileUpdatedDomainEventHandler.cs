@@ -4,20 +4,21 @@ using Nezam.EES.Slice.Secretariat.Domains.Participant;
 using Nezam.EES.Slice.Secretariat.Domains.Participant.Repositories;
 using Payeh.SharedKernel.UnitOfWork;
 
-namespace Nezam.EES.Slice.Secretariat.Applciation.DomainHandlers;
+namespace Nezam.EES.Slice.Secretariat.Application.EventHandlers.Users;
 
-public class UserCreatedEventHandler : INotificationHandler<UserCreatedEvent>
+public class UserProfileUpdatedDomainEventHandler : INotificationHandler<UserProfileUpdatedEvent>
 {
     private readonly IParticipantRepository _participantRepository;
     private readonly IUnitOfWorkManager _unitOfWorkManager;
 
-    public UserCreatedEventHandler(IParticipantRepository participantRepository, IUnitOfWorkManager unitOfWorkManager)
+    public UserProfileUpdatedDomainEventHandler(IParticipantRepository participantRepository,
+        IUnitOfWorkManager unitOfWorkManager)
     {
         _participantRepository = participantRepository;
         _unitOfWorkManager = unitOfWorkManager;
     }
 
-    public async Task Handle(UserCreatedEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(UserProfileUpdatedEvent notification, CancellationToken cancellationToken)
     {
         using var uow = _unitOfWorkManager.Begin();
 
@@ -30,23 +31,24 @@ public class UserCreatedEventHandler : INotificationHandler<UserCreatedEvent>
             if (existingParticipant != null)
             {
                 // Update the existing participant
-                if (notification.Profile != null)
+                if (notification.NewProfile != null)
                 {
-                    existingParticipant.UpdateName($"{notification.Profile.FirstName} {notification.Profile.LastName}");
+                    existingParticipant.UpdateName(
+                        $"{notification.NewProfile.FirstName} {notification.NewProfile.LastName}");
                     await _participantRepository.UpdateAsync(existingParticipant, autoSave: true);
                 }
-              
             }
             else
             {
                 // Create a new participant
-                var newParticipant = new Participant(
-                    $"{notification.Profile.FirstName} {notification.Profile.LastName}");
-                newParticipant.UpdateUserId(notification.UserId);
-                
-                await _participantRepository.AddAsync(newParticipant, autoSave: true);
+                if (notification.NewProfile != null)
+                {
+                    var newParticipant = new Participant(
+                        $"{notification.NewProfile.FirstName} {notification.NewProfile.LastName}");
+                    newParticipant.UpdateUserId(notification.UserId);
+                    await _participantRepository.AddAsync(newParticipant, autoSave: true);
+                }
             }
-
             await uow.CommitAsync(cancellationToken);
         }
         catch (Exception ex)

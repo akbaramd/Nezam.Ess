@@ -36,7 +36,7 @@ public class DocumentAggregateRoot : AggregateRoot
         Title = title ?? throw new ArgumentNullException(nameof(title));
         Content = content ?? throw new ArgumentNullException(nameof(content));
         OwnerParticipantId = senderUserId ?? throw new ArgumentNullException(nameof(senderUserId));
-        ReceiverParticipantId = ReceiverParticipantId ?? throw new ArgumentNullException(nameof(senderUserId));
+        ReceiverParticipantId = reciverUserId ?? throw new ArgumentNullException(nameof(reciverUserId));
         Type = type;
         Status = DocumentStatus.Draft;
 

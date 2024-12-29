@@ -1,11 +1,11 @@
 using System.Security.Claims;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
-using Nezam.EES.Service.Identity.Application.UseCases.Users.GetUsers;
 using Nezam.EEs.Shared.Domain.Identity.User;
+using Nezam.EES.Slice.Secretariat.Application.Dto;
 using Nezam.EES.Slice.Secretariat.Infrastructure.EntityFrameworkCore;
 
-namespace Nezam.EES.Slice.Secretariat.Applciation.UseCases.Documents.GetMyDocuments;
+namespace Nezam.EES.Slice.Secretariat.Application.UseCases.Documents.GetMyDocuments;
 
 public class GetMyDocumentsEndpoint : Endpoint<GetMyDocumentsRequest, GetMyDocumentsResponse>
 {
@@ -55,8 +55,8 @@ public class GetMyDocumentsEndpoint : Endpoint<GetMyDocumentsRequest, GetMyDocum
         var totalDocuments = await query.CountAsync(ct);
 
         var documents = await query
-            .Skip(req.PageIndex * req.PageSize)
-            .Take(req.PageSize)
+            .Skip(req.Skip)
+            .Take(req.Take)
             .Select(c=>DocumentDto.FromEntity(c))
             .ToListAsync(ct);
 

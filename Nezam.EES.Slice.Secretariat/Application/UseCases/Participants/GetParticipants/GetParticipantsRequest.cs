@@ -1,3 +1,5 @@
+namespace Nezam.EES.Slice.Secretariat.Application.UseCases.Participants.GetParticipants;
+
 public class GetParticipantsRequest
 {
     public string? Search { get; set; } // Optional search term

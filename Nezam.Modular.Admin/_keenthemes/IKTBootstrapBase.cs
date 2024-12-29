@@ -1,6 +1,6 @@
-using Starterkit._keenthemes.libs;
+using Nezam.Admin._keenthemes.libs;
 
-namespace Starterkit._keenthemes;
+namespace Nezam.Admin._keenthemes;
 
 public interface IKTBootstrapBase
 {

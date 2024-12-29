@@ -1,4 +1,4 @@
-namespace Starterkit._keenthemes.libs;
+namespace Nezam.Admin._keenthemes.libs;
 
 // Base type class for theme settings
 class KTThemeBase

@@ -14,6 +14,8 @@ namespace Nezam.EES.Service.Identity.Domains.Users
         public UserEmailValue? Email { get; private set; }
         public UserProfileValue? Profile { get; private set; }
         public ICollection<UserTokenEntity> Tokens { get; private set; } = [];
+
+        public bool IsSoftDeleted { get; private set; } = false;
         
         // Collection to hold assigned roles
         public ICollection<RoleEntity> Roles { get; private set; } = [];
@@ -86,6 +88,10 @@ namespace Nezam.EES.Service.Identity.Domains.Users
             }
         }
 
+        public void SoftDelete()
+        {
+            IsSoftDeleted = true;
+        }
 
 
         // Method to check if the user has a specific role

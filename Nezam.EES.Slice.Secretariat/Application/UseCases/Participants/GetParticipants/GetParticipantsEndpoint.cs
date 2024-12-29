@@ -1,7 +1,7 @@
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
+using Nezam.EES.Slice.Secretariat.Application.Dto;
 using Nezam.EES.Slice.Secretariat.Infrastructure.EntityFrameworkCore;
-using Nezam.EES.Slice.Secretariat.Domains.Participant;
 
 namespace Nezam.EES.Slice.Secretariat.Application.UseCases.Participants.GetParticipants;
 

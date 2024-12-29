@@ -135,7 +135,15 @@ namespace Nezam.EES.Service.Identity.Domains.Users.DomainServices
             await _userRepository.DeleteAsync(user, true); // Delete the user (with auto-save flag)
             return PayehResult.Success();
         }
+        public async Task<PayehResult> SoftDeleteAsync(UserEntity user)
+        {
+            if (user == null)
+                return PayehResult.Failure("User cannot be null.");
 
+            user.SoftDelete();
+            await _userRepository.UpdateAsync(user, true); // Delete the user (with auto-save flag)
+            return PayehResult.Success();
+        }
         // Get a user by ID
         public async Task<PayehResult<UserEntity>> GetUserByIdAsync(UserId userId)
         {

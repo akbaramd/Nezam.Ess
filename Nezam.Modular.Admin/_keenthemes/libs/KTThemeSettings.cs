@@ -1,4 +1,4 @@
-namespace Starterkit._keenthemes.libs;
+namespace Nezam.Admin._keenthemes.libs;
 
 class KTThemeSettings
 {

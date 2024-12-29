@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Nezam.EES.Service.Identity.Application.Dto;
+namespace Nezam.EEs.Shared.Application.Dto;
 
 public class PaginatedRequest
 {

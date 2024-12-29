@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Starterkit._keenthemes.libs;
+using Nezam.Admin._keenthemes.libs;
 
-namespace Starterkit.Controllers;
+namespace Nezam.Admin.Controllers;
 
 public class DashboardsController : Controller
 {
