@@ -8,7 +8,7 @@ namespace Payeh.SharedKernel.UnitOfWork
         private readonly Dictionary<string, IUnitOfWOrtDatabaseManager> _dataStorages = new();
         private readonly IMediator _mediator;
         private bool _isDisposed;
-
+        public Guid Id { get; set; } = Guid.NewGuid();
         public IUnitOfWorkOptions Options { get; set; }
         public event EventHandler? Disposed;
 

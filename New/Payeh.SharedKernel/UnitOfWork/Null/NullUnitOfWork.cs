@@ -4,6 +4,7 @@ namespace Payeh.SharedKernel.UnitOfWork.Null
 {
     public class NullUnitOfWork : IUnitOfWork
     {
+        public Guid Id { get; set; } = Guid.NewGuid();
         public IUnitOfWorkOptions Options { get; } = new UnitOfWorkOptions();
         public event EventHandler? Disposed;
 

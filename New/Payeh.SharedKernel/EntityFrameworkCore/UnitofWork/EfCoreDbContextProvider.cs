@@ -53,7 +53,7 @@ public class EfCoreDbContextProvider<TDbContext> : IEfCoreDbContextProvider<TDbC
             throw new InvalidOperationException("DbContext must be used inside an active Unit of Work.");
 
         // Check if the DbContext is already registered in the Unit of Work
-        var dbContextKey = typeof(TDbContext).FullName
+        var dbContextKey = typeof(TDbContext).FullName + "." + unitOfWork.Id.ToString()
                            ?? throw new InvalidOperationException("The type name for the DbContext is null.");
 
         if (unitOfWork.GetDataStorage(dbContextKey) is EfCoreUnitOfWOrtDatabaseManager existingStorage)

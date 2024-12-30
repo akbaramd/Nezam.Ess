@@ -2,6 +2,7 @@
 {
     public interface IUnitOfWork : IDisposable
     {
+        public Guid Id { get; set; }
         public IUnitOfWorkOptions Options { get; }   
         public event EventHandler? Disposed;
         // Transaction Management
