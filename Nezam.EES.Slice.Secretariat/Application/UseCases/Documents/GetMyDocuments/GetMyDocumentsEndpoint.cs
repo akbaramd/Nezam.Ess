@@ -53,6 +53,20 @@ public class GetMyDocumentsEndpoint : Endpoint<GetMyDocumentsRequest, GetMyDocum
                         d.ReceiverParticipantId == participantId ||
                         d.Referrals.Any(r => r.ReceiverUserId == participantId));
 
+        if (!string.IsNullOrWhiteSpace(req.TrackingCode))
+        {
+         query=  query.Where(x=>x.TrackingCode.Contains(req.TrackingCode));
+        }
+        
+        if (req.LetterNumber.HasValue)
+        {
+            query=  query.Where(x=>x.LetterNumber == req.LetterNumber);
+        }
+        if (req.LetterDate.HasValue)
+        {
+            var filterDate = req.LetterDate.Value.Date; // Use the date part for comparison
+            query = query.Where(x => x.LetterDate.Date == filterDate);
+        }
         var totalDocuments = await query.CountAsync(ct);
 
         var documents = await query

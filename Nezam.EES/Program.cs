@@ -1,3 +1,5 @@
+using System.Data;
+using System.Data.SqlClient;
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
@@ -13,6 +15,7 @@ using Payeh.SharedKernel.Consul;
 using Payeh.SharedKernel.EntityFrameworkCore;
 using Payeh.SharedKernel.UnitOfWork;
 
+ const string ConnectionString = "Data Source=85.185.6.4;Initial Catalog=map;User ID=new_site_user;Password=111qqqAAAn;";
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMediatR(c=>c.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
@@ -22,7 +25,7 @@ builder.Services.AddSecretariatSlice(builder.Configuration);
 //EntityFramework 
 builder.Services.AddPayehDbContext<AppDbContext>(c =>
 {
-    c.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    c.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddPayehUnitOfWork(c =>
 {
@@ -55,8 +58,8 @@ builder.Services
 builder.Services
     .AddHealthChecks()
     .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"]);
-
-
+builder.Services.AddScoped<IDbConnection>(sp => new SqlConnection(ConnectionString));
+builder.Services.AddHostedService<EngineerUserSyncService>();
 var app = builder.Build();
 
 

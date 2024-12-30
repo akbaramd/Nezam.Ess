@@ -45,7 +45,7 @@ public class CreateDocumentEndpoint : Endpoint<CreateDocumentRequest>
             ThrowError("Participant not found for the current user.");
         }
 
-        // Find the participant ID associated with the user ID
+        // Find the participant ID associated with the receiver ID
         var participantReceiverId = await _dbContext.Participants
             .Where(p => p.ParticipantId == ParticipantId.NewId(req.ReceiverParticipantId))
             .Select(p => p.ParticipantId)
@@ -53,25 +53,47 @@ public class CreateDocumentEndpoint : Endpoint<CreateDocumentRequest>
 
         if (participantReceiverId == null)
         {
-            ThrowError("Participant not found for the current user.");
+            ThrowError("Receiver participant not found.");
         }
 
-        var document = new DocumentAggregateRoot(req.Title, req.Content, participantId, participantReceiverId,
-            DocumentType.Internal);
+        // Generate a unique document number for the current year
+        var currentYear = DateTime.UtcNow.Year;
+        var documentNumber = await GenerateDocumentNumberAsync(currentYear, ct);
 
+        // Create the document with the generated number
+        var document = new DocumentAggregateRoot(
+            req.Title,
+            req.Content,
+            participantId,
+            participantReceiverId,
+            DocumentType.Internal,
+            documentNumber
+        );
+
+        // Save the document
         await _dbContext.Documents.AddAsync(document, ct);
         await _dbContext.SaveChangesAsync(ct);
 
-        // Return paginated response
-        await SendOkAsync( ct);
+        // Return response
+        await SendOkAsync(DocumentDto.FromEntity(document), ct);
+    }
+
+    private async Task<int> GenerateDocumentNumberAsync(int year, CancellationToken ct)
+    {
+        // Count documents created in the current year
+        var count = await _dbContext.Documents
+            .Where(d => d.LetterDate.Year == year)
+            .CountAsync(ct);
+
+        // Increment by 1 to generate the new document number
+        return count + 1;
     }
 
     private UserId? GetCurrentUserId()
     {
         // Retrieve user ID from claims
-        var userIdClaim =
-            User.Claims.FirstOrDefault(c =>
-                c.Type == ClaimTypes.NameIdentifier); // Adjust claim type as per your system
+        var userIdClaim = User.Claims.FirstOrDefault(c =>
+            c.Type == ClaimTypes.NameIdentifier); // Adjust claim type as per your system
         return userIdClaim != null ? UserId.NewId(Guid.Parse(userIdClaim.Value)) : null;
     }
 }

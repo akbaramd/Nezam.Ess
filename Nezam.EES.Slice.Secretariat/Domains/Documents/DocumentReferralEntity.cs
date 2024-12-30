@@ -17,7 +17,7 @@ public class DocumentReferralEntity : Entity
     public DateTime ReferralDate { get; private set; }
     public DateTime? ViewedDate { get; private set; }
     public DateTime? RespondedDate { get; private set; }
-    public string ResponseContent { get; private set; }
+    public string? ResponseContent { get; private set; }
     public DocumentReferralId? ParentReferralId { get; private set; } // Parent referral for hierarchy management
 
     // Constructor with validation

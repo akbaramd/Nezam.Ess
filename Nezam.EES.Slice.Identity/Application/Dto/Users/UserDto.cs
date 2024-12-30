@@ -12,7 +12,7 @@ public class UserDto
     public UserEmailValue? Email { get; set; } 
     public UserProfileValue Profile { get; set; } // Optional profile info
     public List<RoleDto> Roles { get; set; } // Optional profile info
-
+    public bool IsCanDelete { get; set; }
     // Static method for mapping UserEntity to UserDto
     public static UserDto FromEntity(UserEntity user)
     {
@@ -22,6 +22,7 @@ public class UserDto
             UserName = user.UserName, // Assuming UserName is a value object
             Email = user.Email,      // Assuming Email is a value object
             Profile = user.Profile,
+            IsCanDelete = user.IsCanDelete,
             Roles = user.Roles.Select(x => RoleDto.FromEntity(x)).ToList()
         };
     }

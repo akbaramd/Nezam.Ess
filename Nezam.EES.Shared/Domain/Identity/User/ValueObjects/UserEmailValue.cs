@@ -18,7 +18,7 @@ namespace Nezam.EEs.Shared.Domain.Identity.User.ValueObjects
         }
 
         // Check if the email format is valid
-        private bool IsValidEmail(string email)
+        public static bool IsValidEmail(string email)
         {
             var emailRegex = new Regex(@"^[^@]+@[^@]+\.[^@]+$");
             return emailRegex.IsMatch(email);

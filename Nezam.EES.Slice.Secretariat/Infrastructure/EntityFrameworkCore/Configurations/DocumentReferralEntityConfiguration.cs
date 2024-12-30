@@ -16,7 +16,7 @@ public class DocumentReferralEntityConfiguration : IEntityTypeConfiguration<Docu
         builder.Property(x => x.ReferralDate).IsRequired();
         builder.Property(x => x.Status).IsRequired();
 
-        builder.Property(x => x.ResponseContent).HasMaxLength(1000);
+        builder.Property(x => x.ResponseContent).IsRequired(false).HasMaxLength(1000);
         builder.Property(x => x.Status).HasEnumeration();
         
         builder.HasOne(x => x.ReferrerUser)

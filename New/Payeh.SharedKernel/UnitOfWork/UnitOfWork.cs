@@ -94,6 +94,8 @@ namespace Payeh.SharedKernel.UnitOfWork
                 }
 
                 await PublishDomainEventsAsync();
+                
+                Dispose();
             }
             catch
             {

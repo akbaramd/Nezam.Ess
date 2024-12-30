@@ -37,6 +37,7 @@ public class IdentitySeedService : BackgroundService
             {
                 var user = find.Data;
                 user.UpdateProfile(new UserProfileValue( "admin", "administrator"));
+                user.CanNotDelete();
                 await domainService.UpdateAsync(user);
                 
                 await domainService.AssignRoleAsync(user, [roleId]);

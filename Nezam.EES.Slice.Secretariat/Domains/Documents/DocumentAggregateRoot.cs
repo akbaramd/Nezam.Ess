@@ -20,6 +20,9 @@ public class DocumentAggregateRoot : AggregateRoot
     public Participant.Participant ReceiverParticipant { get; private set; }
     public DocumentType Type { get; private set; }
     public DocumentStatus Status { get; private set; }
+    public string TrackingCode { get; private set; } // Unique tracking code
+    public int LetterNumber { get; private set; } // Sequential number, can repeat annually
+    public DateTime LetterDate { get; private set; } // Current date when document is created
 
     private readonly List<DocumentAttachmentEntity> _attachments = new List<DocumentAttachmentEntity>();
     public IReadOnlyList<DocumentAttachmentEntity> Attachments => _attachments;
@@ -30,7 +33,13 @@ public class DocumentAggregateRoot : AggregateRoot
 
     protected DocumentAggregateRoot(){}
 
-    public DocumentAggregateRoot(string title, string content, ParticipantId senderUserId,ParticipantId reciverUserId, DocumentType type)
+    public DocumentAggregateRoot(
+        string title,
+        string content,
+        ParticipantId senderUserId,
+        ParticipantId reciverUserId,
+        DocumentType type,
+        int letterNumber)
     {
         DocumentId = DocumentId.NewId();
         Title = title ?? throw new ArgumentNullException(nameof(title));
@@ -40,12 +49,35 @@ public class DocumentAggregateRoot : AggregateRoot
         Type = type;
         Status = DocumentStatus.Draft;
 
+        LetterDate = DateTime.UtcNow; // Automatically set to current date
+        LetterNumber = letterNumber > 0 ? letterNumber : throw new ArgumentException("Letter number must be greater than zero.", nameof(letterNumber));
+        TrackingCode = GenerateTrackingCode(LetterDate, letterNumber);
+
+        AddInitialReferral(ReceiverParticipantId, OwnerParticipantId);
     }
 
+    private string GenerateTrackingCode(DateTime letterDate, int letterNumber)
+    {
+        return $"{letterDate:yyyyMMddHHmmss}-{letterNumber}";
+    }
     private void EnsureNotArchived()
     {
         if (Status == DocumentStatus.Archive)
             throw new PayehException("Operation cannot be performed on an archived document.");
+    }
+    public void SetTrackingCode(string trackingCode)
+    {
+        if (string.IsNullOrWhiteSpace(trackingCode))
+        {
+            throw new PayehException("Tracking code cannot be null or empty.");
+        }
+
+        if (TrackingCode == trackingCode)
+        {
+            throw new PayehException("The new tracking code must be different from the current one.");
+        }
+
+        TrackingCode = trackingCode;
     }
 
     public void UpdateContent(string newContent, UserId editorId)
@@ -67,9 +99,6 @@ public class DocumentAggregateRoot : AggregateRoot
 
     public DocumentReferralEntity AddInitialReferral(ParticipantId initialReceiverUserId, ParticipantId createdBy)
     {
-        if (Status != DocumentStatus.Published)
-            throw new PayehException("Cannot add referral to an unpublished document.");
-
         var initialReferral = new DocumentReferralEntity(this.DocumentId, OwnerParticipantId, initialReceiverUserId, null);
         _referrals.Add(initialReferral);
 

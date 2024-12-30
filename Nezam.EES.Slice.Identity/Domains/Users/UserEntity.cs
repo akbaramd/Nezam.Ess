@@ -15,6 +15,7 @@ namespace Nezam.EES.Service.Identity.Domains.Users
         public UserProfileValue? Profile { get; private set; }
         public ICollection<UserTokenEntity> Tokens { get; private set; } = [];
 
+        public bool IsCanDelete { get; private set; } = true;
         public bool IsSoftDeleted { get; private set; } = false;
         
         // Collection to hold assigned roles
@@ -31,8 +32,9 @@ namespace Nezam.EES.Service.Identity.Domains.Users
             Email = email;
             Tokens = new List<UserTokenEntity>(); // Initialize the token collection
             Roles = new List<RoleEntity>(); // Initialize the roles collection
-            
+            CanDelete();
             AddDomainEvent(new UserCreatedEvent(userId, userName.Value, email?.Value, profile));
+            
         }
 
         // Method for changing the username
@@ -93,7 +95,14 @@ namespace Nezam.EES.Service.Identity.Domains.Users
             IsSoftDeleted = true;
         }
 
-
+        public void CanDelete()
+        {
+            IsCanDelete = true;
+        }
+        public void CanNotDelete()
+        {
+            IsCanDelete = false;
+        }
         // Method to check if the user has a specific role
         public bool HasRole(RoleEntity role)
         {
