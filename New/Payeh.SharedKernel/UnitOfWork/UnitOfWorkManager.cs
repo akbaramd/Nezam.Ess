@@ -1,75 +1,105 @@
-﻿using Payeh.SharedKernel.UnitOfWork.Child;
+﻿using System;
+using System.Threading;
+using Microsoft.Extensions.DependencyInjection;
 using Payeh.SharedKernel.UnitOfWork.Null;
 
 namespace Payeh.SharedKernel.UnitOfWork
 {
-    public class UnitOfWorkManager : IUnitOfWorkManager 
+    /// <summary>
+    /// Manages Unit of Work instances, ensuring proper scope and lifecycle management.
+    /// </summary>
+    public class UnitOfWorkManager : IUnitOfWorkManager
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
-        private readonly IServiceScopeFactory _serviceProvider;
-        private readonly IUnitOfWorkOptions _unitOfWorkOptions;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IUnitOfWorkOptions _defaultOptions;
         private bool _disposed;
 
-        // Using AsyncLocal to store the current UnitOfWork per async flow
-        private static readonly AsyncLocal<IUnitOfWork?> _currentUnitOfWork = new AsyncLocal<IUnitOfWork?>();
+        // AsyncLocal to store the current UnitOfWork per async flow
+        private static readonly AsyncLocal<IUnitOfWork?> Current = new AsyncLocal<IUnitOfWork?>();
 
-        public UnitOfWorkManager(IServiceScopeFactory serviceProvider, IUnitOfWorkOptions unitOfWorkOptions)
+        /// <summary>
+        /// Unique identifier for the UnitOfWorkManager instance.
+        /// </summary>
+        public Guid Id { get; } = Guid.NewGuid();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnitOfWorkManager"/> class.
+        /// </summary>
+        /// <param name="serviceScopeFactory">Factory to create service scopes for UnitOfWork instances.</param>
+        /// <param name="defaultOptions">Default options for UnitOfWork initialization.</param>
+        public UnitOfWorkManager(IServiceScopeFactory serviceScopeFactory, IUnitOfWorkOptions defaultOptions)
         {
-            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-            _unitOfWorkOptions = unitOfWorkOptions;
+            _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
+            _defaultOptions = defaultOptions ?? throw new ArgumentNullException(nameof(defaultOptions));
         }
 
+        /// <summary>
+        /// Tracks the currently active UnitOfWork within the async context.
+        /// Provides a mechanism to manage transactional operations scoped to the async flow.
+        /// </summary>
         public IUnitOfWork CurrentUnitOfWork
         {
             get
             {
-                return _currentUnitOfWork.Value ?? throw new InvalidOperationException(
+                return Current.Value ?? throw new InvalidOperationException(
                     "No active UnitOfWork. Call Begin() to start a new UnitOfWork.");
             }
         }
 
+        /// <summary>
+        /// Begins a new UnitOfWork or creates a child UnitOfWork if one is already active.
+        /// </summary>
+        /// <param name="options">Options for the UnitOfWork.</param>
+        /// <returns>A new or child UnitOfWork instance.</returns>
         public IUnitOfWork Begin(IUnitOfWorkOptions? options = null)
         {
             if (_disposed)
-            {
                 throw new ObjectDisposedException(nameof(UnitOfWorkManager));
+
+            if (Current.Value != null)
+            {
+                return new ChildUnitOfWork(Current.Value);
             }
 
-              
-            if (_currentUnitOfWork.Value != null)
-            {
-                return new ChildUnitOfWork(_currentUnitOfWork.Value);
-            }
-            // Create a new scope for the UnitOfWork
-            return CreateNewUnitOfWork();
+            return CreateNewUnitOfWork(options ?? _defaultOptions);
         }
 
+        /// <summary>
+        /// Disposes the UnitOfWorkManager and clears the current UnitOfWork.
+        /// Releases any associated resources.
+        /// </summary>
         public void Dispose()
         {
             if (_disposed) return;
 
-            if (_currentUnitOfWork.Value != null)
+            if (Current.Value != null)
             {
-                _currentUnitOfWork.Value.Dispose();
-                _currentUnitOfWork.Value = null;
+                Current.Value.Dispose();
+                Current.Value = null;
             }
 
             _disposed = true;
         }
-        
-        private IUnitOfWork CreateNewUnitOfWork()
+
+        /// <summary>
+        /// Creates a new UnitOfWork with its own service scope.
+        /// </summary>
+        /// <param name="options">Options for the UnitOfWork.</param>
+        /// <returns>A new UnitOfWork instance.</returns>
+        private IUnitOfWork CreateNewUnitOfWork(IUnitOfWorkOptions options)
         {
-            var scope = _serviceProvider.CreateScope();
+            var scope = _serviceScopeFactory.CreateScope();
+
             try
             {
-
                 var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+                unitOfWork.Initialize(options);
 
-
-                _currentUnitOfWork.Value = unitOfWork;
+                Current.Value = unitOfWork;
 
                 unitOfWork.Disposed += (sender, args) =>
-                {      _currentUnitOfWork.Value = null;
+                {
+                    Current.Value = null;
                     scope.Dispose();
                 };
 

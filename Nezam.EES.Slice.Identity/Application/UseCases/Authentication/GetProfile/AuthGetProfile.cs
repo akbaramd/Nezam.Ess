@@ -39,6 +39,7 @@ public class AutGetProfileEndpoint : EndpointWithoutRequest<UserDto>
         // Retrieve user from DbContext by ID, using AsNoTracking for better performance
         var user = await _dbContext.Users
             .AsNoTracking()
+            .Include(x=>x.Roles)
             .Where(u => u.UserId == UserId.NewId(userId))
             .FirstOrDefaultAsync(ct);
 
@@ -48,10 +49,6 @@ public class AutGetProfileEndpoint : EndpointWithoutRequest<UserDto>
             await SendErrorsAsync(cancellation: ct);
             return;
         }
-
-        
-
-
         // Send successful response
         await SendAsync(UserDto.FromEntity(user), cancellation: ct);
     }

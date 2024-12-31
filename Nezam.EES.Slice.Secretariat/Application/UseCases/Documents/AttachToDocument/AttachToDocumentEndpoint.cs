@@ -1,17 +1,18 @@
 ﻿using FastEndpoints;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
-using Nezam.EES.Slice.Secretariat.Domains.Documents;
+using Nezam.EES.Slice.Secretariat.Domains.Documents.Repositories;
 using Nezam.EES.Slice.Secretariat.Domains.Documents.ValueObjects;
-using Payeh.SharedKernel.Exceptions;
+using Payeh.SharedKernel.UnitOfWork;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentValidation;
-using Nezam.EES.Slice.Secretariat.Domains.Documents.Repositories;
-using Payeh.SharedKernel.UnitOfWork;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Nezam.EES.Slice.Secretariat.Application.UseCases.Documents.AttachToDocument;
 
 [AllowFileUploads]
-public class AttachToDocumentEndpoint : EndpointWithoutRequest
+public class AttachToDocumentEndpoint : Endpoint<AttachToDocumentRequest>
 {
     private readonly IDocumentRepository _documentRepository;
     private readonly IWebHostEnvironment _webHostEnvironment;
@@ -30,13 +31,12 @@ public class AttachToDocumentEndpoint : EndpointWithoutRequest
         AllowFileUploads();
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(AttachToDocumentRequest req, CancellationToken ct)
     {
         using var uow = _unitOfWorkManager.Begin();
 
         // Validate Document ID from route
-        var documentIdStr = Route<string>("DocumentId");
-        var documentId = DocumentId.NewId(Guid.Parse(documentIdStr ?? throw new InvalidOperationException()));
+        var documentId = DocumentId.NewId(req.DocumentId);
 
         // Fetch the document
         var document = await _documentRepository.FindOneAsync(x => x.DocumentId == documentId);
@@ -47,10 +47,12 @@ public class AttachToDocumentEndpoint : EndpointWithoutRequest
         }
 
         // Validate files
-        if (Files.Count == 0 || Files[0].Length == 0)
-            throw new ValidationException("No file provided or file is empty.");
-
-        var file = Files[0];
+        if (req.File == null || req.File.Length == 0)
+        {
+            AddError("File", "No file provided or file is empty.");
+            await SendErrorsAsync(cancellation: ct);
+            return;
+        }
 
         // Save file to wwwroot/uploads
         var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
@@ -64,20 +66,32 @@ public class AttachToDocumentEndpoint : EndpointWithoutRequest
 
         await using (var stream = new FileStream(filePath, FileMode.Create))
         {
-            await file.CopyToAsync(stream, ct);
+            await req.File.CopyToAsync(stream, ct);
         }
 
         // Attach file to document
         document.AddAttachment(
-            file.FileName,
-            file.ContentType,
-            file.Length,
+            req.File.FileName,
+            req.File.ContentType,
+            req.File.Length,
             filePath
         );
 
         // Save changes
         await _documentRepository.UpdateAsync(document, true);
         await uow.CommitAsync(ct);
-        await SendOkAsync(new { Message = "File uploaded and attached successfully.", FilePath = filePath }, ct);
+
+        await SendOkAsync(ct);
     }
 }
+
+public class AttachToDocumentRequest
+{
+    [FromRoute]
+    public Guid DocumentId { get; set; }
+
+    [FastEndpoints.FromForm]
+    public IFormFile File { get; set; } = default!;
+}
+
+

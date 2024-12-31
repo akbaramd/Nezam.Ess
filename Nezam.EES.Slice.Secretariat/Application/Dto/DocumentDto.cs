@@ -1,121 +1,127 @@
 using Nezam.EES.Slice.Secretariat.Domains.Documents;
-using Nezam.EES.Slice.Secretariat.Domains.Documents.Enumerations;
-using Nezam.EES.Slice.Secretariat.Domains.Documents.ValueObjects;
 using Nezam.EES.Slice.Secretariat.Domains.Participant;
 
-namespace Nezam.EES.Slice.Secretariat.Application.Dto;
-
-public class DocumentDto
+namespace Nezam.EES.Slice.Secretariat.Application.Dto
 {
-    public DocumentId DocumentId { get; set; }
-    public string Title { get; set; }
-    public string Content { get; set; }
-    public string TrackingCode { get; set; }
-    public int LetterNumber { get; set; }
-    public DateTime LetterDate { get; set; }
-    public DocumentType Type { get; set; }
-    public DocumentStatus Status { get; set; }
-    public ParticipantDto Owner { get; set; }
-    public ParticipantDto Receiver { get; set; }
-    public List<DocumentAttachmentDto> Attachments { get; set; } = new();
-
-    // Method to map from Document entity
-    public static DocumentDto FromEntity(DocumentAggregateRoot document)
+    public class DocumentDto
     {
-        return new DocumentDto
+        public Guid DocumentId { get; set; } // Using raw GUID for external compatibility
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public Guid OwnerParticipantId { get; set; } // Using raw GUID for external compatibility
+        public string OwnerParticipantName { get; set; }
+        public Guid ReceiverParticipantId { get; set; } // Using raw GUID for external compatibility
+        public string ReceiverParticipantName { get; set; }
+        public string Type { get; set; } // Enum as string for external compatibility
+        public string Status { get; set; } // Enum as string for external compatibility
+        public string TrackingCode { get; set; }
+        public int LetterNumber { get; set; }
+        public DateTime LetterDate { get; set; }
+        public List<DocumentAttachmentDto> Attachments { get; set; } = new();
+        public List<DocumentReferralDto> Referrals { get; set; } = new();
+
+        public static DocumentDto FromEntity(DocumentAggregateRoot entity)
         {
-            DocumentId = document.DocumentId,
-            Title = document.Title,
-            TrackingCode = document.TrackingCode,
-            LetterNumber = document.LetterNumber,
-            LetterDate = document.LetterDate,
-            Content = document.Content,
-            Type = document.Type,
-            Status = document.Status,
-            Owner = ParticipantDto.FromEntity(document.OwnerParticipant),
-            Receiver = ParticipantDto.FromEntity(document.ReceiverParticipant),
-            Attachments = document.Attachments.Select(DocumentAttachmentDto.FromEntity).ToList()
-        };
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            return new DocumentDto
+            {
+                DocumentId = entity.DocumentId.Value,
+                Title = entity.Title,
+                Content = entity.Content,
+                OwnerParticipantId = entity.OwnerParticipantId.Value,
+                OwnerParticipantName = entity.OwnerParticipant?.Name,
+                ReceiverParticipantId = entity.ReceiverParticipantId.Value,
+                ReceiverParticipantName = entity.ReceiverParticipant?.Name,
+                Type = entity.Type.ToString(),
+                Status = entity.Status.ToString(),
+                TrackingCode = entity.TrackingCode,
+                LetterNumber = entity.LetterNumber,
+                LetterDate = entity.LetterDate,
+                Attachments = entity.Attachments.Select(DocumentAttachmentDto.FromEntity).ToList(),
+                Referrals = entity.Referrals.Select(DocumentReferralDto.FromEntity).ToList()
+            };
+        }
     }
-}
 
-public class DocumentAttachmentDto
-{
-    public string FileName { get; set; }
-    public string FileType { get; set; }
-    public long FileSize { get; set; }
-    public string FilePath { get; set; }
-
-    // Method to map from DocumentAttachmentEntity
-    public static DocumentAttachmentDto FromEntity(DocumentAttachmentEntity attachment)
+    public class DocumentAttachmentDto
     {
-        return new DocumentAttachmentDto
+        public Guid DocumentAttachmentId { get; set; } // Using raw GUID for external compatibility
+        public string FileName { get; set; }
+        public string FileType { get; set; }
+        public long FileSize { get; set; }
+        public string FilePath { get; set; }
+        public DateTime UploadDate { get; set; }
+
+        public static DocumentAttachmentDto FromEntity(DocumentAttachmentEntity entity)
         {
-            FileName = attachment.FileName,
-            FileType = attachment.FileType,
-            FileSize = attachment.FileSize,
-            FilePath = attachment.FilePath
-        };
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            return new DocumentAttachmentDto
+            {
+                DocumentAttachmentId = entity.DocumentAttachmentId.Value,
+                FileName = entity.FileName,
+                FileType = entity.FileType,
+                FileSize = entity.FileSize,
+                FilePath = entity.FilePath,
+                UploadDate = entity.UploadDate
+            };
+        }
     }
-}
 
-public class ParticipantDto
-{
-    public ParticipantId Id { get; set; }
-    public string Name { get; set; }
-    public string Email { get; set; }
-
-    // Method to map from Participant entity
-    public static ParticipantDto FromEntity(Participant participant)
+    public class DocumentReferralDto
     {
-        return (participant == null)?null: new ParticipantDto
+        public Guid DocumentReferralId { get; set; } // Using raw GUID for external compatibility
+        public Guid DocumentId { get; set; } // Using raw GUID for external compatibility
+        public Guid ReferrerUserId { get; set; } // Using raw GUID for external compatibility
+        public string ReferrerUserName { get; set; }
+        public Guid ReceiverUserId { get; set; } // Using raw GUID for external compatibility
+        public string ReceiverUserName { get; set; }
+        public string Status { get; set; } // Enum as string for external compatibility
+        public DateTime ReferralDate { get; set; }
+        public DateTime? ViewedDate { get; set; }
+        public DateTime? RespondedDate { get; set; }
+        public string? ResponseContent { get; set; }
+        public Guid? ParentReferralId { get; set; } // Using raw GUID for external compatibility
+
+        public static DocumentReferralDto FromEntity(DocumentReferralEntity entity)
         {
-            Id = participant.ParticipantId,
-            Name = participant.Name,
-        };
-    }
-}
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-
-public class DocumentReferralDto
-{
-    // Properties for the DTO using business IDs
-    public DocumentReferralId DocumentReferralId { get; set; }
-    public DocumentId DocumentId { get; set; }
-    public ParticipantId ReferrerUserId { get; set; }
-    public string ReferrerUserFullName { get; set; } // Full name of the referrer (can be mapped from Participant)
-    public ParticipantId ReceiverUserId { get; set; }
-    public string ReceiverUserFullName { get; set; } // Full name of the receiver (can be mapped from Participant)
-    public ReferralStatus Status { get; set; }
-    public DateTime ReferralDate { get; set; }
-    public DateTime? ViewedDate { get; set; }
-    public DateTime? RespondedDate { get; set; }
-    public string ResponseContent { get; set; }
-    public DocumentReferralId? ParentReferralId { get; set; }
-
-    // Constructor to map the entity to the DTO
-    public DocumentReferralDto(DocumentReferralEntity entity)
-    {
-        DocumentReferralId = entity.DocumentReferralId;
-        DocumentId = entity.DocumentId;
-        ReferrerUserId = entity.ReferrerUserId;
-        ReceiverUserId = entity.ReceiverUserId;
-        Status = entity.Status;
-        ReferralDate = entity.ReferralDate;
-        ViewedDate = entity.ViewedDate;
-        RespondedDate = entity.RespondedDate;
-        ResponseContent = entity.ResponseContent;
-        ParentReferralId = entity.ParentReferralId;
-
-        // Optionally, populate the full names for users if you have access to them
-        // (You can either fetch them separately or include them in the entity via navigation properties)
-        ReferrerUserFullName = entity.ReferrerUser?.Name ?? string.Empty;
-        ReceiverUserFullName = entity.ReceiverUser?.Name ?? string.Empty;
+            return new DocumentReferralDto
+            {
+                DocumentReferralId = entity.DocumentReferralId.Value,
+                DocumentId = entity.DocumentId.Value,
+                ReferrerUserId = entity.ReferrerUserId.Value,
+                ReferrerUserName = entity.ReferrerUser?.Name,
+                ReceiverUserId = entity.ReceiverUserId.Value,
+                ReceiverUserName = entity.ReceiverUser?.Name,
+                Status = entity.Status.ToString(),
+                ReferralDate = entity.ReferralDate,
+                ViewedDate = entity.ViewedDate,
+                RespondedDate = entity.RespondedDate,
+                ResponseContent = entity.ResponseContent,
+                ParentReferralId = entity.ParentReferralId?.Value
+            };
+        }
     }
 
-    // Static method to create the DTO from a DocumentReferralEntity
-    public static DocumentReferralDto FromEntity(DocumentReferralEntity entity)
+    public class ParticipantDto
     {
-        return new DocumentReferralDto(entity);
+        public Guid ParticipantId { get; set; } // Using raw GUID for external compatibility
+        public Guid? UserId { get; set; } // Using raw GUID for external compatibility
+        public string Name { get; set; }
+
+        public static ParticipantDto FromEntity(Participant entity)
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            return new ParticipantDto
+            {
+                ParticipantId = entity.ParticipantId.Value,
+                UserId = entity.UserId?.Value,
+                Name = entity.Name
+            };
+        }
     }
 }

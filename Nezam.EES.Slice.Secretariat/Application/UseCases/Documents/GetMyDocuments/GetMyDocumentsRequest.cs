@@ -1,6 +1,6 @@
 using FastEndpoints;
-using System.Collections.Generic;
-using Nezam.EES.Slice.Secretariat.Domains.Documents.Enumerations;
+
+namespace Nezam.EES.Slice.Secretariat.Application.UseCases.Documents.GetMyDocuments;
 
 public class GetMyDocumentsRequest
 {

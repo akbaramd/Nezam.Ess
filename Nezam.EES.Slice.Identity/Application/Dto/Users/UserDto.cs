@@ -7,23 +7,25 @@ namespace Nezam.EES.Service.Identity.Application.Dto.Users;
 
 public class UserDto
 {
-    public UserId UserId { get; set; }
-    public UserNameId UserName { get; set; } 
-    public UserEmailValue? Email { get; set; } 
-    public UserProfileValue Profile { get; set; } // Optional profile info
-    public List<RoleDto> Roles { get; set; } // Optional profile info
-    public bool IsCanDelete { get; set; }
-    // Static method for mapping UserEntity to UserDto
+    public Guid UserId { get; set; } // Using raw GUID for external compatibility
+    public string UserName { get; set; } // Assuming the string value for simplicity in DTOs
+    public string? Email { get; set; } // Nullable email as string for external systems
+    public string Profile { get; set; } // Optional profile info as a string representation
+    public List<RoleDto> Roles { get; set; } = new(); // List of associated roles
+    public bool IsCanDelete { get; set; } // Indicates if the user can be deleted
+
     public static UserDto FromEntity(UserEntity user)
     {
+        if (user == null) throw new ArgumentNullException(nameof(user));
+
         return new UserDto
         {
-            UserId = user.UserId,
-            UserName = user.UserName, // Assuming UserName is a value object
-            Email = user.Email,      // Assuming Email is a value object
-            Profile = user.Profile,
+            UserId = user.UserId.Value,
+            UserName = user.UserName.Value,
+            Email = user.Email?.Value,
+            Profile = user.Profile?.ToString(),
             IsCanDelete = user.IsCanDelete,
-            Roles = user.Roles.Select(x => RoleDto.FromEntity(x)).ToList()
+            Roles = user.Roles.Select(RoleDto.FromEntity).ToList()
         };
     }
 }

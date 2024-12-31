@@ -1,7 +1,5 @@
 using System.Data;
 using Dapper;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Nezam.EES.Service.Identity.Domains.Roles;
 using Nezam.EES.Service.Identity.Domains.Roles.DomainServices;
 using Nezam.EES.Service.Identity.Domains.Users;
@@ -11,7 +9,9 @@ using Nezam.EEs.Shared.Domain.Identity.User;
 using Nezam.EEs.Shared.Domain.Identity.User.ValueObjects;
 using Payeh.SharedKernel.UnitOfWork;
 
-public class EngineerUserSyncService : BackgroundService
+namespace Nezam.EES.Gateway.BackgroundService;
+
+public class EngineerUserSyncService : Microsoft.Extensions.Hosting.BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
 

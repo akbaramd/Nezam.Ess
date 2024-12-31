@@ -7,12 +7,12 @@ public class NullUnitofWOrkTransactionManager : IUnitofWOrkTransactionManager
 
     public void BeginTransaction() { }
 
-    public Task CommitTransactionAsync()
+    public Task CommitTransactionAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }
 
-    public Task RollbackTransactionAsync()
+    public Task RollbackTransactionAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }

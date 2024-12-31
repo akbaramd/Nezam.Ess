@@ -1,7 +1,6 @@
 using MediatR;
-using Payeh.SharedKernel.EntityFrameworkCore;
 
-namespace Payeh.SharedKernel.UnitOfWork.Child
+namespace Payeh.SharedKernel.UnitOfWork
 {
     /// <summary>
     /// A child UnitOfWork that delegates all operations to a parent <see cref="IUnitOfWork"/>.
@@ -53,14 +52,13 @@ namespace Payeh.SharedKernel.UnitOfWork.Child
         public IEnumerable<string> GetTransactionKeys()
             => _parentUow.GetTransactionKeys();
 
-        public void CommitTransaction(string key)
-            => _parentUow.CommitTransaction(key);
+    
+
 
         public Task CommitTransactionAsync(string key, CancellationToken cancellationToken = default)
             => _parentUow.CommitTransactionAsync(key, cancellationToken);
 
-        public void RollbackTransaction(string key)
-            => _parentUow.RollbackTransaction(key);
+
 
         public Task RollbackTransactionAsync(string key, CancellationToken cancellationToken = default)
             => _parentUow.RollbackTransactionAsync(key, cancellationToken);
@@ -86,28 +84,28 @@ namespace Payeh.SharedKernel.UnitOfWork.Child
         /// Typically, a child does not finalize (commit) the entire UoW. 
         /// However, you can choose to delegate it to the parent if desired.
         /// </summary>
-        public void CommitAll()
-            => _parentUow.CommitAll();
+       
 
         public Task CommitAsync(CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }
-        public void RollbackAll()
-            => _parentUow.RollbackAll();
+   
 
         public Task RollbackAsync(CancellationToken cancellationToken = default)
             => _parentUow.RollbackAsync(cancellationToken);
 
-        public void Initialize(IUnitOfWorkOptions options)
-            => _parentUow.Initialize(options);
+  
 
         public void AddDomainEvent(INotification domainEvent)
         {
             _parentUow.AddDomainEvent(domainEvent);
         }
 
-      
+        public void Initialize(IUnitOfWorkOptions options)
+        {
+            _parentUow.Initialize(options);
+        }
 
         #endregion
 

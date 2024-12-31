@@ -22,9 +22,7 @@ namespace Payeh.SharedKernel.UnitOfWork
         void AddTransaction(string key, IUnitofWOrkTransactionManager unitofWOrkTransactionManager);
         IUnitofWOrkTransactionManager? GetTransaction(string key);
         IEnumerable<string> GetTransactionKeys();
-        void CommitTransaction(string key);
         Task CommitTransactionAsync(string key, CancellationToken cancellationToken = default);
-        void RollbackTransaction(string key);
         Task RollbackTransactionAsync(string key, CancellationToken cancellationToken = default);
 
         // Database/Storage Management
@@ -33,11 +31,10 @@ namespace Payeh.SharedKernel.UnitOfWork
         IEnumerable<string> GetDataStorageKeys();
 
         // Global Operations
-        void CommitAll();
+
         Task CommitAsync(CancellationToken cancellationToken = default);
-        void RollbackAll();
+      
         Task RollbackAsync(CancellationToken cancellationToken = default);
-        void Initialize(IUnitOfWorkOptions options);
 
         // Domain Events Management
         /// <summary>
@@ -46,7 +43,7 @@ namespace Payeh.SharedKernel.UnitOfWork
         /// <param name="domainEvent">The domain event to add.</param>
         void AddDomainEvent(INotification domainEvent);
 
-
+        void Initialize(IUnitOfWorkOptions options);
     }
 
     // Supporting Interfaces for Transaction and Data Storage Managers

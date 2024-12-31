@@ -1,81 +1,82 @@
 using System.Security.Claims;
 using FastEndpoints;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nezam.EEs.Shared.Domain.Identity.User;
 using Nezam.EES.Slice.Secretariat.Application.Dto;
 using Nezam.EES.Slice.Secretariat.Domains.Documents.ValueObjects;
 using Nezam.EES.Slice.Secretariat.Infrastructure.EntityFrameworkCore;
 
-namespace Nezam.EES.Slice.Secretariat.Application.UseCases.Documents.GetDocumentReferrals
+namespace Nezam.EES.Slice.Secretariat.Application.UseCases.Documents.GetDocumentDetail
 {
     public class GetDocumentDetailRequest
     {
+        [FromRoute]
         public Guid DocumentId { get; set; }
     }
-
-
-    public class GetDocumentEndpoint : Endpoint<GetDocumentDetailRequest, DocumentDto>
+    public class GetDocumentEndpoint(ISecretariatDbContext dbContext) : Endpoint<GetDocumentDetailRequest, DocumentDto>
     {
-        private readonly ISecretariatDbContext _dbContext;
-
-        public GetDocumentEndpoint(ISecretariatDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+        private readonly ISecretariatDbContext _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
         public override void Configure()
         {
             Get("/api/documents/{documentId}");
-            // Note: The {documentId} part should map to the DocumentId parameter.
         }
 
         public override async Task HandleAsync(GetDocumentDetailRequest req, CancellationToken ct)
         {
-            // Extract current user ID from claims
             var userId = GetCurrentUserId();
 
             if (userId == null)
             {
-                ThrowError("User ID not found in claims.");
+                ValidationFailures.Add(new("UserId", "User ID not found in claims."));
+                await SendErrorsAsync(cancellation: ct);
+                return;
             }
+
             var documentId = DocumentId.NewId(req.DocumentId);
-            // Query the document to ensure the user has access
+
             var document = await _dbContext.Documents
                 .AsNoTracking()
                 .Include(d => d.OwnerParticipant)
                 .Include(d => d.ReceiverParticipant)
+                .Include(d => d.Attachments)
+                .Include(d => d.Referrals)
+                .ThenInclude(r => r.ReceiverUser) // Ensure referral access verification
+                .Include(d => d.Referrals)
+                .ThenInclude(r => r.ReferrerUser) // Ensure referral access verification
                 .Where(d => d.DocumentId == documentId)
                 .FirstOrDefaultAsync(ct);
 
             if (document == null)
             {
-                ThrowError("Document not found.");
+                ValidationFailures.Add(new("Document", "Document not found."));
+                await SendErrorsAsync(cancellation: ct);
+                return;
             }
 
-            // Ensure user is authorized to access this document (customize this check)
             var participantId = await _dbContext.Participants
                 .Where(p => p.UserId == userId)
                 .Select(p => p.ParticipantId)
                 .FirstOrDefaultAsync(ct);
 
-            if (participantId == null || 
-                (document.OwnerParticipantId != participantId && document.ReceiverParticipantId != participantId))
+            if (participantId == null ||
+                (document.OwnerParticipantId != participantId && document.ReceiverParticipantId != participantId &&
+                 !document.Referrals.Any(r => r.ReceiverUserId == participantId)))
             {
-                ThrowError("Unauthorized access to the document.");
+                ValidationFailures.Add(new("Authorization", "Unauthorized access to the document or its referrals."));
+                await SendErrorsAsync(cancellation: ct);
+                return;
             }
 
+            var documentDto = DocumentDto.FromEntity(document);
 
-
-            // Send the response with document referrals
-            await SendOkAsync(DocumentDto.FromEntity(document), ct);
+            await SendOkAsync(documentDto, ct);
         }
 
         private UserId? GetCurrentUserId()
         {
-            // Retrieve user ID from claims
-            var userIdClaim =
-                User.Claims.FirstOrDefault(c =>
-                    c.Type == ClaimTypes.NameIdentifier); // Adjust claim type as per your system
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             return userIdClaim != null ? UserId.NewId(Guid.Parse(userIdClaim.Value)) : null;
         }
     }
