@@ -1,16 +1,16 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Payeh.SharedKernel.Domain;
+using Payeh.SharedKernel.UnitOfWork;
 
 namespace Payeh.SharedKernel.EntityFrameworkCore;
 
 public class PayehDbContext<TDbContext> : DbContext,IPayehDbContext where TDbContext : DbContext
 {
-    private readonly IMediator _mediator;
-
-    public PayehDbContext(DbContextOptions<TDbContext> options, IMediator mediator) : base(options)
+    private readonly IUnitOfWorkManager _unitOfWorkManager;
+    public PayehDbContext(DbContextOptions<TDbContext> options , IUnitOfWorkManager unitOfWorkManager) : base(options)
     {
-        _mediator = mediator;
+        _unitOfWorkManager =unitOfWorkManager;
     }
 
     public override int SaveChanges()
@@ -43,7 +43,7 @@ public class PayehDbContext<TDbContext> : DbContext,IPayehDbContext where TDbCon
         // Publish domain events
         foreach (var domainEvent in domainEvents)
         {
-            await _mediator.Publish(domainEvent);
+           _unitOfWorkManager.CurrentUnitOfWork.AddDomainEvent(domainEvent);
         }
 
         // Clear domain events

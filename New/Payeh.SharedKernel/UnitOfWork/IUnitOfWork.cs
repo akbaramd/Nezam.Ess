@@ -1,10 +1,23 @@
-﻿namespace Payeh.SharedKernel.UnitOfWork
+﻿using MediatR;
+using Payeh.SharedKernel.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Payeh.SharedKernel.UnitOfWork
 {
+    /// <summary>
+    /// Represents the Unit of Work pattern, encapsulating transaction and data storage management.
+    /// Includes support for domain events.
+    /// </summary>
     public interface IUnitOfWork : IDisposable
     {
-        public Guid Id { get; set; }
-        public IUnitOfWorkOptions Options { get; }   
-        public event EventHandler? Disposed;
+        // Core Properties
+        Guid Id { get; }
+        IUnitOfWorkOptions Options { get; }
+        event EventHandler? Disposed;
+
         // Transaction Management
         void AddTransaction(string key, IUnitofWOrkTransactionManager unitofWOrkTransactionManager);
         IUnitofWOrkTransactionManager? GetTransaction(string key);
@@ -25,7 +38,17 @@
         void RollbackAll();
         Task RollbackAsync(CancellationToken cancellationToken = default);
         void Initialize(IUnitOfWorkOptions options);
+
+        // Domain Events Management
+        /// <summary>
+        /// Adds a domain event to be published upon committing the Unit of Work.
+        /// </summary>
+        /// <param name="domainEvent">The domain event to add.</param>
+        void AddDomainEvent(INotification domainEvent);
+
+
     }
 
-    // Supporting Interface for Transaction
+    // Supporting Interfaces for Transaction and Data Storage Managers
+    // (Assumed to be defined elsewhere)
 }

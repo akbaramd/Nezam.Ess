@@ -11,6 +11,7 @@ using Nezam.EES.Gateway;
 using Nezam.EES.Service.Identity;
 using Nezam.EES.Service.Identity.Infrastructure.EntityFrameworkCore;
 using Nezam.EES.Slice.Secretariat;
+using Nezam.EEs.Slice.Secretariat.Services;
 using Payeh.SharedKernel.Consul;
 using Payeh.SharedKernel.EntityFrameworkCore;
 using Payeh.SharedKernel.UnitOfWork;
@@ -19,7 +20,6 @@ using Payeh.SharedKernel.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMediatR(c=>c.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
-
 builder.Services.AddIdentitySlice(builder.Configuration);
 builder.Services.AddSecretariatSlice(builder.Configuration);
 //EntityFramework 
@@ -59,10 +59,11 @@ builder.Services
     .AddHealthChecks()
     .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"]);
 builder.Services.AddScoped<IDbConnection>(sp => new SqlConnection(ConnectionString));
-builder.Services.AddHostedService<EngineerUserSyncService>();
+// builder.Services.AddHostedService<EngineerUserSyncService>();
+ builder.Services.AddHostedService<DocumentSyncService>();
 var app = builder.Build();
 
-
+app.UseStaticFiles();
 app.UseAuthentication()
     .UseAuthorization()
     .UseFastEndpoints()

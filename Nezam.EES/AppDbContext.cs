@@ -5,16 +5,18 @@ using Nezam.EES.Service.Identity.Infrastructure.EntityFrameworkCore;
 using Nezam.EES.Slice.Secretariat.Domains.Documents;
 using Nezam.EES.Slice.Secretariat.Domains.Participant;
 using Nezam.EES.Slice.Secretariat.Infrastructure.EntityFrameworkCore;
+using Payeh.SharedKernel.EntityFrameworkCore;
+using Payeh.SharedKernel.UnitOfWork;
 
 namespace Nezam.EES.Gateway;
 
-public class AppDbContext : DbContext , IIdentityDbContext , ISecretariatDbContext
+public class AppDbContext : PayehDbContext<AppDbContext>, IIdentityDbContext , ISecretariatDbContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options):base(options)
+ 
+    public AppDbContext(DbContextOptions<AppDbContext> options , IUnitOfWorkManager unitOfWorkManager) : base(options,unitOfWorkManager)
     {
-        
+       
     }
-    
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<RoleEntity> Roles { get; set; }
 

@@ -54,7 +54,6 @@ public class UserCreatedDomainEventHandler : INotificationHandler<UserCreatedEve
         }
         catch (Exception ex)
         {
-            await uow.RollbackAsync(cancellationToken);
             throw new InvalidOperationException("Failed to handle UserCreatedEvent", ex);
         }
     }

@@ -86,8 +86,11 @@ public class DocumentAggregateRoot : AggregateRoot
         Content = newContent;
         AddDomainEvent(new DocumentContentUpdatedEvent(this.DocumentId));
     }
-
-    public void Publish(UserId UserId)
+    public void UpdateLetterDate(DateTime now)
+    {
+        LetterDate = now;
+    }
+    public void Publish(ParticipantId participantId)
     {
         EnsureNotArchived();
         if (Status == DocumentStatus.Published)

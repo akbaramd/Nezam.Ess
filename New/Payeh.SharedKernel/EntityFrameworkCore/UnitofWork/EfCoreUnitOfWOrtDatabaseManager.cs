@@ -75,4 +75,9 @@ public class EfCoreUnitOfWOrtDatabaseManager : IUnitOfWOrtDatabaseManager
             throw new InvalidOperationException("Failed to clear domain events from the DbContext.", ex);
         }
     }
+
+    public void Dispose()
+    {
+        DbContext.Dispose();
+    }
 }

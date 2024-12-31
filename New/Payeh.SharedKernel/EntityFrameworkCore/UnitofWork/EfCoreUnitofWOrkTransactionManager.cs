@@ -22,11 +22,11 @@ public class EfCoreUnitofWOrkTransactionManager : IUnitofWOrkTransactionManager
     /// <summary>
     /// Commits the current transaction.
     /// </summary>
-    public void CommitTransaction()
+    public async Task CommitTransactionAsync()
     {
         try
         {
-            _transaction?.Commit();
+           await _transaction?.CommitAsync()!;
         }
         catch (Exception ex)
         {
@@ -37,11 +37,11 @@ public class EfCoreUnitofWOrkTransactionManager : IUnitofWOrkTransactionManager
     /// <summary>
     /// Rolls back the current transaction.
     /// </summary>
-    public void RollbackTransaction()
+    public async Task RollbackTransactionAsync()
     {
         try
         {
-            _transaction?.Rollback();
+            await _transaction?.RollbackAsync()!;
         }
         catch (Exception ex)
         {

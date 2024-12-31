@@ -24,29 +24,30 @@ public class EngineerUserSyncService : BackgroundService
     {
         using (var scope = _serviceProvider.CreateScope())
         {
-            
             var dbConnection = scope.ServiceProvider.GetRequiredService<IDbConnection>();
             var userDomainService = scope.ServiceProvider.GetRequiredService<IUserDomainService>();
             var roleDomainService = scope.ServiceProvider.GetRequiredService<IRoleDomainService>();
-
-            using var uowInit = scope.ServiceProvider.GetRequiredService<IUnitOfWorkManager>().Begin();
-            
-            // Ensure the Engineer role exists
             var engineerRoleId = RoleId.NewId("engineer");
-            var roleCheck = await roleDomainService.GetRoleByIdAsync(engineerRoleId);
-            if (!roleCheck.IsSuccess)
+            using (var uowInit = scope.ServiceProvider.GetRequiredService<IUnitOfWorkManager>().Begin())
             {
-                await roleDomainService.CreateRoleAsync(new RoleEntity(engineerRoleId, "مهندس"));
-            }
-            else
-            {
-                engineerRoleId = roleCheck.Data.RoleId;
+                // Ensure the Engineer role exists
+
+                var roleCheck = await roleDomainService.GetRoleByIdAsync(engineerRoleId);
+                if (!roleCheck.IsSuccess)
+                {
+                    await roleDomainService.CreateRoleAsync(new RoleEntity(engineerRoleId, "مهندس"));
+                }
+                else
+                {
+                    engineerRoleId = roleCheck.Data.RoleId;
+                }
+
+                await uowInit.CommitAsync(stoppingToken);
             }
 
-            await uowInit.CommitAsync(stoppingToken);
 
             // Fetch the top 500 engineers from the tbl_engineers table
-            const string query = "SELECT TOP 500 ozviyat_no, name, password, fname, e_mail FROM tbl_engineers";
+            const string query = "SELECT  ozviyat_no, name, password, fname, e_mail FROM tbl_engineers";
             var engineers = await dbConnection.QueryAsync(query);
 
             int index = 0; // Initialize the index
@@ -57,51 +58,56 @@ public class EngineerUserSyncService : BackgroundService
                 using (var innerScope = _serviceProvider.CreateScope())
                 {
                     // Ensure a new UnitOfWork with a separate DbContext
-                    var uow = innerScope.ServiceProvider.GetRequiredService<IUnitOfWorkManager>().Begin();
-
-                    try
+                    using (var uow = innerScope.ServiceProvider.GetRequiredService<IUnitOfWorkManager>().Begin())
                     {
-                        var username = engineer.ozviyat_no.ToString();
-                        var firstName = engineer.name;
-                        var password = engineer.password ?? username; // Fallback to ozviyat_no if no password
-                        var lastName = engineer.fname;
-                        var email = engineer.e_mail;
-
-                         userDomainService = innerScope.ServiceProvider.GetRequiredService<IUserDomainService>();
-
-                        // Check if the user already exists
-                        var userCheck = await userDomainService.GetUserByUsernameAsync(UserNameId.NewId(username));
-                        if (!userCheck.IsSuccess)
+                        try
                         {
-                            // Create a new user
-                            var profile = new UserProfileValue(firstName, lastName);
-                            var user = new UserEntity(
-                                UserId.NewId(),
-                                UserNameId.NewId(username),
-                                new UserPasswordValue(password), // Default password
-                                profile,
-                                !string.IsNullOrWhiteSpace(email) && UserEmailValue.IsValidEmail(email) ? new UserEmailValue(email) : null
-                            );
-                            var userCreateResult = await userDomainService.Create(user);
+                            var username = engineer.ozviyat_no.ToString();
+                            var firstName = engineer.name;
+                            var password = !string.IsNullOrWhiteSpace(engineer.password) &&
+                                           UserPasswordValue.IsValidPassword(engineer.password)
+                                ? engineer.password
+                                : username; // Fallback to ozviyat_no if no password
+                            var lastName = engineer.fname;
+                            var email = engineer.e_mail;
 
-                            // Assign the Engineer role to the new user
-                             roleDomainService = innerScope.ServiceProvider.GetRequiredService<IRoleDomainService>();
-                            await userDomainService.AssignRoleAsync(userCreateResult.Data, new[] { engineerRoleId });
+                            userDomainService = innerScope.ServiceProvider.GetRequiredService<IUserDomainService>();
+
+                            // Check if the user already exists
+                            var userCheck = await userDomainService.GetUserByUsernameAsync(UserNameId.NewId(username));
+                            if (!userCheck.IsSuccess)
+                            {
+                                // Create a new user
+                                var profile = new UserProfileValue(firstName, lastName);
+                                var user = new UserEntity(
+                                    UserId.NewId(),
+                                    UserNameId.NewId(username),
+                                    new UserPasswordValue(password), // Default password
+                                    profile,
+                                    !string.IsNullOrWhiteSpace(email) && UserEmailValue.IsValidEmail(email)
+                                        ? new UserEmailValue(email)
+                                        : null
+                                );
+                                var userCreateResult = await userDomainService.Create(user);
+
+                    
+                                await userDomainService.AssignRoleAsync(userCreateResult.Data,
+                                    new[] { engineerRoleId });
+                            }
+
+                            // Commit changes for this engineer
+                            await uow.CommitAsync(stoppingToken);
+
+                            // Log the progress
+                            Console.WriteLine($"Processed Engineer {index + 1}: {total}");
+
+                            index++; // Increment the index after processing each engineer
                         }
-
-                        // Commit changes for this engineer
-                        await uow.CommitAsync(stoppingToken);
-
-                        // Log the progress
-                        Console.WriteLine($"Processed Engineer {index + 1}: {total}");
-
-                        index++; // Increment the index after processing each engineer
-                    }
-                    catch (Exception ex)
-                    {
-                        // Rollback on error
-                        await uow.RollbackAsync(stoppingToken);
-                        Console.WriteLine($"Error processing engineer {engineer.ozviyat_no}: {ex.Message}");
+                        catch (Exception ex)
+                        {
+                            // Rollback on error
+                            Console.WriteLine($"Error processing engineer {engineer.ozviyat_no}: {ex.Message}");
+                        }
                     }
                 } // Disposes the inner scope and commits the UnitOfWork
             }

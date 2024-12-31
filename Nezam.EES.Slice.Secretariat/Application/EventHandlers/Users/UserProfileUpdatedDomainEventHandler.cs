@@ -53,7 +53,6 @@ public class UserProfileUpdatedDomainEventHandler : INotificationHandler<UserPro
         }
         catch (Exception ex)
         {
-            await uow.RollbackAsync(cancellationToken);
             throw new InvalidOperationException("Failed to handle UserCreatedEvent", ex);
         }
     }

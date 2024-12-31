@@ -15,7 +15,7 @@ public static class IdentitySliceExtensions
         services.AddTransient<IUserDomainService, UserDomainService>();
         services.AddTransient<IRoleDomainService, RoleDomainService>();
         
-        // services.AddHostedService<IdentitySeedService>();
+        services.AddHostedService<IdentitySeedService>();
         services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<IRoleRepository, RoleRepository>();
         return services;

@@ -3,6 +3,7 @@
 public interface IUnitofWOrkTransactionManager
 {
     
-    void CommitTransaction();
-    void RollbackTransaction();
+    Task CommitTransactionAsync();
+    Task RollbackTransactionAsync();
+    void Dispose();
 }

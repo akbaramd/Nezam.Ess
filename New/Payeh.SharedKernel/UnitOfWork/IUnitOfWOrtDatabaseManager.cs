@@ -6,6 +6,6 @@ public interface IUnitOfWOrtDatabaseManager
 {
     Task SaveChangesAsync(CancellationToken cancellationToken = default);
     IEnumerable<IDomainEvent> GetDomainEvents();
-    void ClearDomainEvents
-        ();
+    void ClearDomainEvents();
+    void Dispose();
 }

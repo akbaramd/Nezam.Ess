@@ -6,6 +6,18 @@ public class NullUnitofWOrkTransactionManager : IUnitofWOrkTransactionManager
     private NullUnitofWOrkTransactionManager() { }
 
     public void BeginTransaction() { }
-    public void CommitTransaction() { }
-    public void RollbackTransaction() { }
+
+    public Task CommitTransactionAsync()
+    {
+        return Task.CompletedTask;
+    }
+
+    public Task RollbackTransactionAsync()
+    {
+        return Task.CompletedTask;
+    }
+    public void Dispose()
+    {
+        
+    }
 }

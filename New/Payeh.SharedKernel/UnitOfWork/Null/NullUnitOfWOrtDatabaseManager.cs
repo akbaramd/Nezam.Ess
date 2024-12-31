@@ -19,4 +19,9 @@ public class NullUnitOfWOrtDatabaseManager : IUnitOfWOrtDatabaseManager
     {
         // Do nothing, as there are no domain events to clear
     }
+
+    public void Dispose()
+    {
+        
+    }
 }

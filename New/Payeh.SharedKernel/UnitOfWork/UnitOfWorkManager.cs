@@ -1,16 +1,19 @@
-﻿using Payeh.SharedKernel.UnitOfWork.Null;
+﻿using Payeh.SharedKernel.UnitOfWork.Child;
+using Payeh.SharedKernel.UnitOfWork.Null;
 
 namespace Payeh.SharedKernel.UnitOfWork
 {
     public class UnitOfWorkManager : IUnitOfWorkManager 
     {
-        private readonly IServiceProvider _serviceProvider;
-        private IServiceScope? _currentScope;
-        private IUnitOfWork? _currentUnitOfWork;
-        private IUnitOfWorkOptions _unitOfWorkOptions;
+        public Guid Id { get; set; } = Guid.NewGuid();
+        private readonly IServiceScopeFactory _serviceProvider;
+        private readonly IUnitOfWorkOptions _unitOfWorkOptions;
         private bool _disposed;
 
-        public UnitOfWorkManager(IServiceProvider serviceProvider, IUnitOfWorkOptions unitOfWorkOptions)
+        // Using AsyncLocal to store the current UnitOfWork per async flow
+        private static readonly AsyncLocal<IUnitOfWork?> _currentUnitOfWork = new AsyncLocal<IUnitOfWork?>();
+
+        public UnitOfWorkManager(IServiceScopeFactory serviceProvider, IUnitOfWorkOptions unitOfWorkOptions)
         {
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _unitOfWorkOptions = unitOfWorkOptions;
@@ -20,13 +23,8 @@ namespace Payeh.SharedKernel.UnitOfWork
         {
             get
             {
-                if (_currentUnitOfWork == null)
-                {
-                    throw new InvalidOperationException(
-                        "No active UnitOfWork. Call Begin() to start a new UnitOfWork.");
-                }
-
-                return _currentUnitOfWork;
+                return _currentUnitOfWork.Value ?? throw new InvalidOperationException(
+                    "No active UnitOfWork. Call Begin() to start a new UnitOfWork.");
             }
         }
 
@@ -36,51 +34,52 @@ namespace Payeh.SharedKernel.UnitOfWork
             {
                 throw new ObjectDisposedException(nameof(UnitOfWorkManager));
             }
-            
-            if (_currentUnitOfWork != null)
+
+              
+            if (_currentUnitOfWork.Value != null)
             {
-                return new NullUnitOfWork();
+                return new ChildUnitOfWork(_currentUnitOfWork.Value);
             }
-
-            _currentScope = _serviceProvider.CreateScope();
-
-            var unitOfWork = _currentScope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-
-            options ??= _unitOfWorkOptions;
-
-            unitOfWork.Initialize(options);
-            
-            if (unitOfWork == null)
-            {
-                throw new ArgumentNullException();
-            }
-            
-            unitOfWork.Disposed += OnUnitOfWorkDisposed;
-            _currentUnitOfWork = unitOfWork;
-
-            return _currentUnitOfWork;
-        }
-
-        private void OnUnitOfWorkDisposed(object? sender, EventArgs e)
-        {
-            if (sender == _currentUnitOfWork)
-            {
-                _currentUnitOfWork = null;
-                _currentScope?.Dispose();
-                _currentScope = null;
-            }
+            // Create a new scope for the UnitOfWork
+            return CreateNewUnitOfWork();
         }
 
         public void Dispose()
         {
             if (_disposed) return;
 
-            _currentUnitOfWork?.Dispose();
-            _currentScope?.Dispose();
+            if (_currentUnitOfWork.Value != null)
+            {
+                _currentUnitOfWork.Value.Dispose();
+                _currentUnitOfWork.Value = null;
+            }
 
-            _currentUnitOfWork = null;
-            _currentScope = null;
             _disposed = true;
+        }
+        
+        private IUnitOfWork CreateNewUnitOfWork()
+        {
+            var scope = _serviceProvider.CreateScope();
+            try
+            {
+
+                var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+
+                _currentUnitOfWork.Value = unitOfWork;
+
+                unitOfWork.Disposed += (sender, args) =>
+                {      _currentUnitOfWork.Value = null;
+                    scope.Dispose();
+                };
+
+                return unitOfWork;
+            }
+            catch
+            {
+                scope.Dispose();
+                throw;
+            }
         }
     }
 }

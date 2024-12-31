@@ -9,9 +9,9 @@ using Payeh.SharedKernel.EntityFrameworkCore.UnitofWork;
 
 namespace Nezam.EES.Slice.Secretariat.Infrastructure.EntityFrameworkCore.Repositories;
 
-public class DocumentRepository : EfCoreRepository<DocumentAggregateRoot,IPayehDbContext>,IDocumentRepository
+public class DocumentRepository : EfCoreRepository<DocumentAggregateRoot,ISecretariatDbContext>,IDocumentRepository
 {
-    public DocumentRepository(IEfCoreDbContextProvider<IPayehDbContext> contextProvider) : base(contextProvider)
+    public DocumentRepository(IEfCoreDbContextProvider<ISecretariatDbContext> contextProvider) : base(contextProvider)
     {
     }
 

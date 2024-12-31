@@ -20,6 +20,7 @@ namespace Nezam.EES.Slice.Secretariat.Domains.Documents
         // Constructor with validation
         public DocumentAttachmentEntity(DocumentId documentId,string fileName, string fileType, long fileSize, string filePath)
         {
+            DocumentAttachmentId = DocumentAttachmentId.NewId();
             DocumentId = documentId;
             SetFileName(fileName);
             SetFileType(fileType);
