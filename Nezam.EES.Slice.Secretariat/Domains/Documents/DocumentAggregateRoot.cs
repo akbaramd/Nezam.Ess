@@ -108,27 +108,27 @@ public class DocumentAggregateRoot : AggregateRoot
         return initialReferral;
     }
 
-    public void Archive(UserId UserId)
+    public void Archive()
     {
         Status = DocumentStatus.Archive;
         AddDomainEvent(new DocumentArchivedEvent(this.DocumentId));
     }
 
-    public void UpdateTitle(string newTitle, UserId editorId)
+    public void UpdateTitle(string newTitle)
     {
         EnsureNotArchived();
         Title = newTitle;
         AddDomainEvent(new DocumentTitleUpdatedEvent(this.DocumentId));
     }
 
-    public void ChangeType(DocumentType newType, UserId UserId)
+    public void ChangeType(DocumentType newType)
     {
         EnsureNotArchived();
         Type = newType;
         AddDomainEvent(new DocumentTypeChangedEvent(this.DocumentId));
     }
 
-    public void RevertToDraft(UserId UserId)
+    public void RevertToDraft()
     {
         if (Status != DocumentStatus.Published && Status != DocumentStatus.Draft)
             throw new PayehException("Only published or draft documents can be reverted to draft.");
@@ -173,9 +173,10 @@ public class DocumentAggregateRoot : AggregateRoot
     }
 
     public DocumentReferralEntity AddReferral(
-        DocumentReferralId? parentReferralId,
         ParticipantId receiverUserId,
-        ParticipantId creatorId)
+        ParticipantId creatorId,
+        string? content = null,
+        DocumentReferralId? parentReferralId = null)
     {
         if (Status != DocumentStatus.Published)
             throw new PayehException("Referrals can only be added to published documents.");
@@ -187,14 +188,14 @@ public class DocumentAggregateRoot : AggregateRoot
         if (parentReferralId != null && parentReferral == null)
             throw new PayehException("Parent referral not found or invalid.");
 
-        var referral = new DocumentReferralEntity(this.DocumentId, creatorId, receiverUserId, parentReferralId);
+        var referral = new DocumentReferralEntity(this.DocumentId, creatorId, receiverUserId,content, parentReferralId);
         _referrals.Add(referral);
 
         return referral;
     }
 
 
-    public void RespondToReferral(DocumentReferralId referralId, string responseContent, UserId responderId)
+    public void RespondToReferral(DocumentReferralId referralId, UserId responderId)
     {
         var referral = _referrals.FirstOrDefault(r => r.DocumentReferralId == referralId)
                        ?? throw new PayehException("Referral not found.");
@@ -205,7 +206,7 @@ public class DocumentAggregateRoot : AggregateRoot
         if (referral.Status == ReferralStatus.Responded)
             throw new PayehException("Referral already responded.");
 
-        referral.Respond(responseContent);
+        referral.Respond();
         AddDomainEvent(new DocumentReferralRespondedEvent(this.DocumentId, referralId));
     }
 

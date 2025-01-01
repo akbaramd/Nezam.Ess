@@ -19,14 +19,14 @@ public class DocumentReferralEntityConfiguration : IEntityTypeConfiguration<Docu
         builder.Property(x => x.ResponseContent).IsRequired(false).HasMaxLength(1000);
         builder.Property(x => x.Status).HasEnumeration();
         
-        builder.HasOne(x => x.ReferrerUser)
+        builder.HasOne(x => x.ReferrerParticipant)
             .WithMany()
-            .HasForeignKey(x => x.ReferrerUserId)
+            .HasForeignKey(x => x.ReferrerParticipantId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne(x => x.ReceiverUser)
+        builder.HasOne(x => x.ReceiverParticipant)
             .WithMany()
-            .HasForeignKey(x => x.ReceiverUserId)
+            .HasForeignKey(x => x.ReceiverParticipantId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne<DocumentReferralEntity>()

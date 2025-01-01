@@ -7,6 +7,7 @@ using Nezam.EES.Slice.Secretariat.Domains.Documents;
 using Nezam.EES.Slice.Secretariat.Domains.Documents.Enumerations;
 using Nezam.EES.Slice.Secretariat.Domains.Participant;
 using Nezam.EES.Slice.Secretariat.Infrastructure.EntityFrameworkCore;
+using Payeh.SharedKernel.Domain.Enumerations;
 
 namespace Nezam.EES.Slice.Secretariat.Application.UseCases.Documents.CreateDocument;
 
@@ -57,7 +58,7 @@ public class CreateDocumentEndpoint : Endpoint<CreateDocumentRequest>
         var documentNumber = await GenerateDocumentNumberAsync(DateTime.UtcNow.Year, ct);
 
         var document = CreateDocument(req, participantId, receiverParticipantId, documentNumber);
-
+        document.ChangeType(Enumeration.FromId<DocumentType>(req.Type) ?? DocumentType.Internal);
         await _dbContext.Documents.AddAsync(document, ct);
         await _dbContext.SaveChangesAsync(ct);
 
@@ -89,7 +90,8 @@ public class CreateDocumentEndpoint : Endpoint<CreateDocumentRequest>
         return count + 1;
     }
 
-    private DocumentAggregateRoot CreateDocument(CreateDocumentRequest req, ParticipantId participantId, ParticipantId receiverParticipantId, int documentNumber)
+    private DocumentAggregateRoot CreateDocument(CreateDocumentRequest req, ParticipantId participantId,
+        ParticipantId receiverParticipantId, int documentNumber)
     {
         return new DocumentAggregateRoot(
             req.Title,

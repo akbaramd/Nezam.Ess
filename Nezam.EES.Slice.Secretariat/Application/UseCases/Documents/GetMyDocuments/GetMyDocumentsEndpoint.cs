@@ -51,7 +51,7 @@ public class GetMyDocumentsEndpoint : Endpoint<GetMyDocumentsRequest, GetMyDocum
             .Include(d => d.Referrals)
             .Where(d => d.OwnerParticipantId == participantId ||
                         d.ReceiverParticipantId == participantId ||
-                        d.Referrals.Any(r => r.ReceiverUserId == participantId));
+                        d.Referrals.Any(r => r.ReceiverParticipantId == participantId));
 
         if (!string.IsNullOrWhiteSpace(req.TrackingCode))
         {

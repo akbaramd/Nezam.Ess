@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Nezam.EES.Slice.Secretariat.Domains.Documents;
 using Nezam.EES.Slice.Secretariat.Domains.Documents.Enumerations;
 using Nezam.EES.Slice.Secretariat.Domains.Documents.Repositories;
@@ -15,5 +16,11 @@ public class DocumentRepository : EfCoreRepository<DocumentAggregateRoot,ISecret
     {
     }
 
- 
+    protected override IQueryable<DocumentAggregateRoot> PrepareQuery(DbSet<DocumentAggregateRoot> dbSet)
+    {
+        return base.PrepareQuery(dbSet)
+            .Include(x=>x.Referrals).ThenInclude(x=>x.ReceiverParticipant)
+            .Include(x=>x.Referrals).ThenInclude(x=>x.ReferrerParticipant)
+            .Include(x=>x.Attachments);
+    }
 }

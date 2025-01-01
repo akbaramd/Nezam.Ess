@@ -112,7 +112,7 @@ public class DocumentSyncService : Microsoft.Extensions.Hosting.BackgroundServic
                                     content: string.Empty, // Adjust content as needed
                                     senderUserId: userParticipant.ParticipantId,
                                     reciverUserId: adminParticipant.ParticipantId,
-                                    type: DocumentType.Incoming,
+                                    type: doc.type == 1 ? DocumentType.FalseReport : DocumentType.Internal,
                                     letterNumber: doc.Id
                                 );
                                 newDocument.UpdateLetterDate(doc.createdAt);
@@ -173,4 +173,5 @@ public class DocumentDto
     public string filePath { get; set; }
     public string trackingCode { get; set; }
     public DateTime createdAt { get; set; }
+    public int type { get; set; }
 }

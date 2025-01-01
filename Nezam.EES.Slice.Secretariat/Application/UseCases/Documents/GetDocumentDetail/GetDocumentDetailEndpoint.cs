@@ -42,9 +42,9 @@ namespace Nezam.EES.Slice.Secretariat.Application.UseCases.Documents.GetDocument
                 .Include(d => d.ReceiverParticipant)
                 .Include(d => d.Attachments)
                 .Include(d => d.Referrals)
-                .ThenInclude(r => r.ReceiverUser) // Ensure referral access verification
+                .ThenInclude(r => r.ReceiverParticipant) // Ensure referral access verification
                 .Include(d => d.Referrals)
-                .ThenInclude(r => r.ReferrerUser) // Ensure referral access verification
+                .ThenInclude(r => r.ReferrerParticipant) // Ensure referral access verification
                 .Where(d => d.DocumentId == documentId)
                 .FirstOrDefaultAsync(ct);
 
@@ -61,11 +61,10 @@ namespace Nezam.EES.Slice.Secretariat.Application.UseCases.Documents.GetDocument
                 .FirstOrDefaultAsync(ct);
 
             if (participantId == null ||
-                (document.OwnerParticipantId != participantId && document.ReceiverParticipantId != participantId &&
-                 !document.Referrals.Any(r => r.ReceiverUserId == participantId)))
+                (document.OwnerParticipantId != participantId && document.ReceiverParticipantId != participantId && document.Referrals.All(r => r.ReceiverParticipantId != participantId)))
             {
                 ValidationFailures.Add(new("Authorization", "Unauthorized access to the document or its referrals."));
-                await SendErrorsAsync(cancellation: ct);
+                await SendUnauthorizedAsync(cancellation: ct);
                 return;
             }
 
