@@ -115,8 +115,9 @@ namespace Nezam.EES.Slice.Secretariat.Application.Dto
         public Guid ParticipantId { get; set; }
         public Guid? UserId { get; set; }
         public string Name { get; set; } = string.Empty;
+        public string Authority { get; set; } = string.Empty;
 
-        public static ParticipantDto FromEntity(Participant? entity)
+        public static ParticipantDto? FromEntity(Participant? entity)
         {
             if (entity == null) return null;
 
@@ -124,7 +125,8 @@ namespace Nezam.EES.Slice.Secretariat.Application.Dto
             {
                 ParticipantId = entity.ParticipantId?.Value ?? Guid.Empty,
                 UserId = entity.UserId?.Value,
-                Name = entity.Name ?? string.Empty
+                Name = entity.Name ?? string.Empty,
+                Authority = entity.Authority ?? string.Empty
             };
         }
     }

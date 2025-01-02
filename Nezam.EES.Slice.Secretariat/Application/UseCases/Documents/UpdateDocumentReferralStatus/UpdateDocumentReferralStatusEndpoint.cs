@@ -1,16 +1,12 @@
 using FastEndpoints;
-using FluentValidation;
-using Microsoft.AspNetCore.Http;
-using Nezam.EES.Slice.Secretariat.Domains.Documents.Repositories;
-using Nezam.EES.Slice.Secretariat.Domains.Documents.ValueObjects;
-using Payeh.SharedKernel.UnitOfWork;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Nezam.EES.Slice.Secretariat.Domains.Documents.Enumerations;
+using Nezam.EES.Slice.Secretariat.Domains.Documents.Repositories;
+using Nezam.EES.Slice.Secretariat.Domains.Documents.ValueObjects;
 using Payeh.SharedKernel.Domain.Enumerations;
+using Payeh.SharedKernel.UnitOfWork;
 
-namespace Nezam.EES.Slice.Secretariat.Application.UseCases.Documents.UpdateReferralStatus;
+namespace Nezam.EES.Slice.Secretariat.Application.UseCases.Documents.UpdateDocumentReferralStatus;
 
 public class UpdateDocumentReferralStatusEndpoint : Endpoint<UpdateDocumentReferralStatusRequest>
 {

@@ -1,19 +1,16 @@
 using System.Security.Claims;
 using FastEndpoints;
 using FluentValidation;
-using Microsoft.AspNetCore.Http;
-using Nezam.EES.Slice.Secretariat.Domains.Documents.Repositories;
-using Nezam.EES.Slice.Secretariat.Domains.Documents.ValueObjects;
-using Payeh.SharedKernel.UnitOfWork;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Nezam.EEs.Shared.Domain.Identity.User;
 using Nezam.EES.Slice.Secretariat.Domains.Documents;
+using Nezam.EES.Slice.Secretariat.Domains.Documents.Repositories;
+using Nezam.EES.Slice.Secretariat.Domains.Documents.ValueObjects;
 using Nezam.EES.Slice.Secretariat.Domains.Participant;
 using Nezam.EES.Slice.Secretariat.Domains.Participant.Repositories;
+using Payeh.SharedKernel.UnitOfWork;
 
-namespace Nezam.EES.Slice.Secretariat.Application.UseCases.Documents.AddReferral;
+namespace Nezam.EES.Slice.Secretariat.Application.UseCases.Documents.AddReferralEndpoint;
 
 public class AddReferralEndpoint : Endpoint<AddReferralRequest>
 {

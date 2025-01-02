@@ -42,14 +42,20 @@ public class AuthLoginEndpoint : Endpoint<AuthLoginRequest, AuthLoginResponse>
             return;
         }
 
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.Name, user.Data.UserName.Value),
+            new Claim(ClaimTypes.NameIdentifier, user.Data.UserId.Value.ToString())
+
+        }.ToList();
+        
+        claims.AddRange(user.Data.Roles.Select(x => new Claim(ClaimTypes.Role, x.RoleId.Value)));
+        
         var token = JWTBearer.CreateToken(
             signingKey: _configuration["Jwt:SecretKey"],
             expireAt: DateTime.UtcNow.AddHours(1),
-            claims: new[]
-            {
-                new Claim(ClaimTypes.Name, user.Data.UserName.Value),
-                new Claim(ClaimTypes.NameIdentifier, user.Data.UserId.Value.ToString())
-            });
+            claims: claims,
+            roles:user.Data.Roles.Select(x=>x.RoleId.Value));
 
         await SendAsync(new AuthLoginResponse { AccessToken = token }, cancellation: ct);
         await uow.CommitAsync(ct);

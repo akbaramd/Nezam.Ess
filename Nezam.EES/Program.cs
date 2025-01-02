@@ -60,7 +60,7 @@ builder.Services
     .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"]);
 builder.Services.AddScoped<IDbConnection>(sp => new SqlConnection(ConnectionString));
 // builder.Services.AddHostedService<EngineerUserSyncService>();
- builder.Services.AddHostedService<DocumentSyncService>();
+ // builder.Services.AddHostedService<DocumentSyncService>();
 var app = builder.Build();
 
 app.UseStaticFiles();
@@ -70,3 +70,6 @@ app.UseAuthentication()
     .UseSwaggerGen();
 app.UseCors("CorsPolicy");
 await app.RunAsync();
+
+//143001982
+//13580430

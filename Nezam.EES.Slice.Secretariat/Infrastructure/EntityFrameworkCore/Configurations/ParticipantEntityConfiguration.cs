@@ -13,6 +13,10 @@ public class ParticipantEntityConfiguration : IEntityTypeConfiguration<Participa
 
         builder.Property(x => x.ParticipantId).HasBusinessIdConversion();
         builder.Property(x => x.UserId).HasBusinessIdConversion();
+        builder.Property(x => x.DepartmentId).HasBusinessIdConversion();
         builder.Property(x => x.Name).IsRequired().HasMaxLength(100);
+        builder.Property(x => x.ParticipantType).HasEnumeration();
+        builder.Property(x => x.ParticipantType).IsRequired();
+        builder.Property(x=>x.ParticipantType).HasDefaultValue(ParticipantType.User);
     }
 }

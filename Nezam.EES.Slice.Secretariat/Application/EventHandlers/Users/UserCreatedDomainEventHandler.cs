@@ -43,6 +43,7 @@ public class UserCreatedDomainEventHandler : INotificationHandler<UserCreatedEve
                 if (notification.Profile!=null)
                 {
                     var newParticipant = new Participant(
+                        notification.UserId,
                         $"{notification.Profile.FirstName} {notification.Profile.LastName}");
                     newParticipant.UpdateUserId(notification.UserId);
                 
@@ -54,7 +55,7 @@ public class UserCreatedDomainEventHandler : INotificationHandler<UserCreatedEve
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException("Failed to handle UserCreatedEvent", ex);
+            throw new InvalidOperationException("Failed to handle DepartmentCreatedEvent", ex);
         }
     }
 }

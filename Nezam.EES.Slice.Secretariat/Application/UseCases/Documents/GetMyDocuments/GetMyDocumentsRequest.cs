@@ -10,21 +10,9 @@ public class GetMyDocumentsRequest
 
     // Filtering
     [QueryParam]
-    public string? TrackingCode { get; set; }
-    [QueryParam]
-    public int? LetterNumber { get; set; }
-    [QueryParam]
-    public DateTime? LetterDate { get; set; }
-    [QueryParam]
-    public string? Title { get; set; }
-
+    public string? Filters { get; set; } // e.g., "TrackingCode:ABC,Title:Report"
+    
     // Sorting
     [QueryParam]
-    public List<SortOption>? SortOptions { get; set; }
-}
-
-public class SortOption
-{
-    public string Field { get; set; } = string.Empty; // e.g., "Title", "LetterDate"
-    public bool IsDescending { get; set; } = false;
+    public string? Sorting { get; set; } // e.g., "Title:asc,LetterDate:desc"
 }

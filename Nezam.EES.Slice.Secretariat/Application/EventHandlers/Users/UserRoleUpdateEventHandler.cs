@@ -6,19 +6,19 @@ using Payeh.SharedKernel.UnitOfWork;
 
 namespace Nezam.EES.Slice.Secretariat.Application.EventHandlers.Users;
 
-public class UserProfileUpdatedDomainEventHandler : INotificationHandler<UserProfileUpdatedEvent>
+public class UserRoleUpdateEventHandler : INotificationHandler<UserRoleUpdatedEvent>
 {
     private readonly IParticipantRepository _participantRepository;
     private readonly IUnitOfWorkManager _unitOfWorkManager;
 
-    public UserProfileUpdatedDomainEventHandler(IParticipantRepository participantRepository,
+    public UserRoleUpdateEventHandler(IParticipantRepository participantRepository,
         IUnitOfWorkManager unitOfWorkManager)
     {
         _participantRepository = participantRepository;
         _unitOfWorkManager = unitOfWorkManager;
     }
 
-    public async Task Handle(UserProfileUpdatedEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(UserRoleUpdatedEvent notification, CancellationToken cancellationToken)
     {
         using var uow = _unitOfWorkManager.Begin();
 
@@ -31,24 +31,13 @@ public class UserProfileUpdatedDomainEventHandler : INotificationHandler<UserPro
             if (existingParticipant != null)
             {
                 // Update the existing participant
-                if (notification.NewProfile != null)
+                if (notification.Roles.Length != 0)
                 {
-                    existingParticipant.UpdateName(
-                        $"{notification.NewProfile.FirstName} {notification.NewProfile.LastName}");
+                    existingParticipant.UpdateAuthority(string.Join(",",notification.Roles));
                     await _participantRepository.UpdateAsync(existingParticipant, autoSave: true);
                 }
             }
-            else
-            {
-                // Create a new participant
-                if (notification.NewProfile != null)
-                {
-                    var newParticipant = new Participant(
-                        notification.UserId, $"{notification.NewProfile.FirstName} {notification.NewProfile.LastName}");
-              
-                    await _participantRepository.AddAsync(newParticipant, autoSave: true);
-                }
-            }
+           
             await uow.CommitAsync(cancellationToken);
         }
         catch (Exception ex)

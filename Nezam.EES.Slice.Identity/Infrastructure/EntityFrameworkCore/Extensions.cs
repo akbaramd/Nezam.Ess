@@ -14,6 +14,7 @@ public static class Extensions
         // Example: Apply configuration classes in the Identity slice
         modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
         modelBuilder.ApplyConfiguration(new RoleEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new DepartmentEntityConfiguration());
         modelBuilder.ApplyConfiguration(new UserTokenEntityConfiguration());
         
         // Add additional configurations here

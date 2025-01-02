@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Nezam.EES.Service.Identity.Domains.Departments;
 using Nezam.EES.Service.Identity.Domains.Roles;
 using Nezam.EES.Service.Identity.Domains.Users;
 using Nezam.EES.Service.Identity.Infrastructure.EntityFrameworkCore;
@@ -19,6 +20,7 @@ public class AppDbContext : PayehDbContext<AppDbContext>, IIdentityDbContext , I
     }
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<RoleEntity> Roles { get; set; }
+    public DbSet<DepartmentEntity> Departments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

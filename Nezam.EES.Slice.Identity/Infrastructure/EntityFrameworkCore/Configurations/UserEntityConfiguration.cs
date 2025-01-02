@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nezam.EES.Service.Identity.Domains.Users;
+using Nezam.EEs.Shared.Domain.Identity.User;
 using Payeh.SharedKernel.EntityFrameworkCore.Domain;
 
 namespace Nezam.EES.Service.Identity.Infrastructure.EntityFrameworkCore.Configurations;
@@ -38,5 +39,10 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
         builder.HasMany(x => x.Roles)
             .WithMany(x => x.Users)
             .UsingEntity("UserRoles");
+        
+        // Configure the many-to-many relationship between User and Role
+        builder.HasMany(x => x.Departments)
+            .WithMany(x => x.Users)
+            .UsingEntity("UserDepartments");
     }
 }

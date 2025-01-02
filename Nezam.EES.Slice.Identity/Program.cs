@@ -1,3 +1,4 @@
+using Nezam.EES.Service.Identity.Domains.Departments.Repositories;
 using Nezam.EES.Service.Identity.Domains.Roles.DomainServices;
 using Nezam.EES.Service.Identity.Domains.Roles.Repositories;
 using Nezam.EES.Service.Identity.Domains.Users.DomainServices;
@@ -18,6 +19,7 @@ public static class IdentitySliceExtensions
         services.AddHostedService<IdentitySeedService>();
         services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<IRoleRepository, RoleRepository>();
+        services.AddTransient<IDepartmentRepository,DepartmentRepository>();
         return services;
     }
 }

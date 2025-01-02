@@ -24,7 +24,10 @@ public class UserRepository : EntityFrameworkRepository<UserEntity,IIdentityDbCo
 
     protected override IQueryable<UserEntity> PrepareQuery(DbSet<UserEntity> dbset)
     {
-        return base.PrepareQuery(dbset).Include(x=>x.Roles).Include(x=>x.Tokens);
+        return base.PrepareQuery(dbset)
+            .Include(x=>x.Departments)
+            .Include(x=>x.Roles)
+            .Include(x=>x.Tokens);
     }
 
     public UserRepository(IEfCoreDbContextProvider<IIdentityDbContext> contextProvider) : base(contextProvider)

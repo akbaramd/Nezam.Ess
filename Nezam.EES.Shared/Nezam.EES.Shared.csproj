@@ -11,8 +11,4 @@
       <ProjectReference Include="..\New\Payeh.SharedKernel\Payeh.SharedKernel.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Domain\Identity\" />
-    </ItemGroup>
-
 </Project>
