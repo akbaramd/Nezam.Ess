@@ -1,5 +1,6 @@
 using System.Data;
 using Dapper;
+using Nezam.EES.Service.Identity.Domains.Departments.Repositories;
 using Nezam.EES.Service.Identity.Domains.Users.DomainServices;
 using Nezam.EEs.Shared.Domain.Identity.User;
 using Nezam.EES.Slice.Secretariat.Domains.Documents;
@@ -39,21 +40,22 @@ public class DocumentSyncService : Microsoft.Extensions.Hosting.BackgroundServic
                     var documentRepository = scope.ServiceProvider.GetRequiredService<IDocumentRepository>();
                     var userDomainService = scope.ServiceProvider.GetRequiredService<IUserDomainService>();
                     var participantRepository = scope.ServiceProvider.GetRequiredService<IParticipantRepository>();
+                    var departmentRepository = scope.ServiceProvider.GetRequiredService<IDepartmentRepository>();
                     var unitOfWorkManager = scope.ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
 
-                    Participant adminParticipant;
+                    Participant? adminParticipant;
 
                     // Ensure admin participant exists
                     using (var uow = unitOfWorkManager.Begin())
                     {
-                        var adminUser = await userDomainService.GetUserByUsernameAsync(UserNameId.NewId("admin"));
-                        if (!adminUser.IsSuccess || adminUser.Data == null)
+                        var adminUser = await departmentRepository.FindOneAsync(x=>x.Title.Equals("خدمات مهندسی (نظارت)"));
+                        if (adminUser == null)
                         {
                             Console.WriteLine("Admin user not found. Skipping synchronization.");
                             return;
                         }
 
-                        adminParticipant = await participantRepository.FindOneAsync(x => x.UserId == adminUser.Data.UserId);
+                        adminParticipant = await participantRepository.FindOneAsync(x => x.DepartmentId== adminUser.DepartmentId);
                         if (adminParticipant == null)
                         {
                             Console.WriteLine($"Participant for admin user not found. Skipping synchronization.");

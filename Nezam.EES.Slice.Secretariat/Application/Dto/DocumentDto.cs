@@ -83,7 +83,6 @@ namespace Nezam.EES.Slice.Secretariat.Application.Dto
         public DateTime? RespondedDate { get; set; }
         public string? ResponseContent { get; set; }
         public Guid? ParentReferralId { get; set; }
-
         public static DocumentReferralDto FromEntity(DocumentReferralEntity? entity)
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
@@ -114,6 +113,8 @@ namespace Nezam.EES.Slice.Secretariat.Application.Dto
     {
         public Guid ParticipantId { get; set; }
         public Guid? UserId { get; set; }
+        public Guid? DepartmentId { get; set; }
+        public string? Type { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Authority { get; set; } = string.Empty;
 
@@ -126,7 +127,9 @@ namespace Nezam.EES.Slice.Secretariat.Application.Dto
                 ParticipantId = entity.ParticipantId?.Value ?? Guid.Empty,
                 UserId = entity.UserId?.Value,
                 Name = entity.Name ?? string.Empty,
-                Authority = entity.Authority ?? string.Empty
+                Authority = entity.Authority ?? string.Empty,
+                DepartmentId = entity.DepartmentId?.Value,
+                Type = entity.ParticipantType?.ToString() ?? string.Empty,
             };
         }
     }

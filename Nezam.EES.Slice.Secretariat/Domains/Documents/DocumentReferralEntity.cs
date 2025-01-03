@@ -61,9 +61,6 @@
         /// <param name="responseContent">The response content.</param>
         public void Respond()
         {
-            if (Status == ReferralStatus.Responded)
-                throw new InvalidOperationException("Document Refferal already responded");
-
             Status = ReferralStatus.Responded;
             RespondedDate = DateTime.UtcNow;
         }

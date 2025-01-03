@@ -40,6 +40,7 @@ public class AutGetProfileEndpoint : EndpointWithoutRequest<UserDto>
         var user = await _dbContext.Users
             .AsNoTracking()
             .Include(x=>x.Roles)
+            .Include(x=>x.Departments)
             .Where(u => u.UserId == UserId.NewId(userId))
             .FirstOrDefaultAsync(ct);
 

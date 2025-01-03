@@ -13,14 +13,24 @@ namespace Nezam.EES.Service.Identity.Infrastructure.EntityFrameworkCore.Seeds
 {
     /// <summary>
     /// This background service seeds some initial data for identity:
-    /// - Creates an 'admin' role.
-    /// - Ensures an admin user.
-    /// - Creates a 'توسعه نرم افزار' department if not exists.
-    /// - Adds the admin user to that department.
+    /// 1) Creates an 'admin' role.
+    /// 2) Ensures an 'admin' user (username='admin' / pass='Admin@123456').
+    /// 3) Seeds a static array of Persian department names.
+    /// 4) Adds the admin user to the "توسعه نرم افزار" department.
     /// </summary>
     public class IdentitySeedService : BackgroundService
     {
         private readonly IServiceProvider _serviceProvider;
+
+        // A static list of Persian department names to seed in the system
+        private static readonly string[] _departmentNames = new[]
+        {
+            "خدمات مهندسی (نظارت)",
+            "خدمات مهندسی (مجریان)",
+            "خدمات مهندسی (طراحی)",
+            "دبیرخانه",
+            "پشتیبانی فنی"
+        };
 
         public IdentitySeedService(IServiceProvider serviceProvider)
         {
@@ -45,61 +55,76 @@ namespace Nezam.EES.Service.Identity.Infrastructure.EntityFrameworkCore.Seeds
             // Begin a unit of work
             using var uow = unitOfWorkManager.Begin();
 
-            // ----------------------------
+            // -----------------------------------------------------------------------
             // 1) Create or ensure 'admin' role
-            // ----------------------------
-            var roleId = RoleId.NewId("admin");
-            await roleDomainService.CreateRoleAsync(new RoleEntity(roleId, "مدیر سیستم"));
+            // -----------------------------------------------------------------------
+            var adminRoleId = RoleId.NewId("admin");
+            await roleDomainService.CreateRoleAsync(new RoleEntity(adminRoleId, "مدیر سیستم"));
 
-            // ----------------------------
-            // 2) Create or ensure 'توسعه نرم افزار' department
-            // ----------------------------
-            DepartmentEntity department  = null;
-            var departmentName = "توسعه نرم افزار";
-            var existingDeptResult = await departmentRepository.FindOneAsync(x=>x.Title == departmentName);
-      
-            
-            if ( existingDeptResult != null)
+            // -----------------------------------------------------------------------
+            // 2) Seed Departments from static list
+            // -----------------------------------------------------------------------
+            var seededDepartments = new List<DepartmentEntity>();
+
+            // Iterate over each department name in the static array
+            foreach (var departmentName in _departmentNames)
             {
-                department = existingDeptResult;
-            }
-            else
-            {
-                department =  new DepartmentEntity(
-                    DepartmentId.NewId(), // or any unique string 
-                    departmentName
-                );;
-                
-                await departmentRepository.AddAsync(department,true);
+                var existingDepartment = await departmentRepository
+                    .FindOneAsync(dep => dep.Title == departmentName);
+
+                if (existingDepartment == null)
+                {
+                    // Department does not exist, so create a new one
+                    var newDepartment = new DepartmentEntity(
+                        DepartmentId.NewId(),
+                        departmentName
+                    );
+
+                    await departmentRepository.AddAsync(newDepartment, true);
+                    seededDepartments.Add(newDepartment);
+                }
+                else
+                {
+                    // Already exists in DB
+                    seededDepartments.Add(existingDepartment);
+                }
             }
 
-            // ----------------------------
+            // Retrieve a reference to "توسعه نرم افزار" after seeding
+            // (Should be guaranteed to exist now)
+            var developmentDepartment = seededDepartments
+                .FirstOrDefault(x => x.Title == "پشتیبانی فنی");
+
+            // -----------------------------------------------------------------------
             // 3) Check or create 'admin' user
-            // ----------------------------
+            // -----------------------------------------------------------------------
             var findUserResult = await userDomainService.GetUserByUsernameAsync(UserNameId.NewId("admin"));
             
             if (findUserResult.IsSuccess && findUserResult.Data != null)
             {
                 // User already exists
-                var user = findUserResult.Data;
-                
+                var adminUser = findUserResult.Data;
+
                 // Update admin profile info
-                user.UpdateProfile(new UserProfileValue("admin", "administrator"));
-                user.CanNotDelete(); // Prevent deletion
-                await userDomainService.UpdateAsync(user);
+                adminUser.UpdateProfile(new UserProfileValue("admin", "administrator"));
+                adminUser.CanNotDelete(); // Prevent deletion
+                await userDomainService.UpdateAsync(adminUser);
 
                 // Assign admin role if not already assigned
-                await userDomainService.AssignRoleAsync(user, new[] { roleId });
+                await userDomainService.AssignRoleAsync(adminUser, new[] { adminRoleId });
 
-                // Assign to 'توسعه نرم افزار' department
-                user.AddDepartment(department);
-                await userDomainService.UpdateAsync(user);
+                // Assign the user to the "توسعه نرم افزار" department (if found)
+                if (developmentDepartment != null)
+                {
+                    adminUser.AddDepartment(developmentDepartment);
+                    await userDomainService.UpdateAsync(adminUser);
+                }
             }
             else
             {
                 // Create new user
                 var profile = new UserProfileValue("admin", "administrator");
-                var user = new UserEntity(
+                var newAdminUser = new UserEntity(
                     UserId.NewId(),
                     UserNameId.NewId("admin"),
                     new UserPasswordValue("Admin@123456"), // Password in plain text here (should be hashed in production!)
@@ -108,19 +133,22 @@ namespace Nezam.EES.Service.Identity.Infrastructure.EntityFrameworkCore.Seeds
                 );
                 
                 // Create the new user via domain service
-                var createUserResult = await userDomainService.Create(user);
+                var createUserResult = await userDomainService.Create(newAdminUser);
                 
                 // Assign admin role
-                await userDomainService.AssignRoleAsync(createUserResult.Data, new[] { roleId });
+                await userDomainService.AssignRoleAsync(createUserResult.Data, new[] { adminRoleId });
 
-                // Assign to 'توسعه نرم افزار' department
-                createUserResult.Data.AddDepartment(department);
-                await userDomainService.UpdateAsync(createUserResult.Data);
+                // Add user to "توسعه نرم افزار" department (if found)
+                if (developmentDepartment != null)
+                {
+                    createUserResult.Data.AddDepartment(developmentDepartment);
+                    await userDomainService.UpdateAsync(createUserResult.Data);
+                }
             }
 
-            // ----------------------------
-            // Commit transaction
-            // ----------------------------
+            // -----------------------------------------------------------------------
+            // 4) Commit transaction
+            // -----------------------------------------------------------------------
             await uow.CommitAsync(stoppingToken);
         }
     }

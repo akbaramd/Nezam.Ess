@@ -1,3 +1,4 @@
+using Nezam.EES.Service.Identity.Application.Dto.Departments;
 using Nezam.EES.Service.Identity.Application.Dto.Roles;
 using Nezam.EES.Service.Identity.Domains.Users;
 using Nezam.EEs.Shared.Domain.Identity.User;
@@ -13,6 +14,7 @@ public class UserDto
     public string FirstName { get; set; } // Optional profile info as a string representation
     public string? LastName { get; set; } // Optional profile info as a string representation
     public List<RoleDto> Roles { get; set; } = new(); // List of associated roles
+    public List<DepartmentDto> Departments { get; set; } = new(); // List of associated roles
     public bool IsCanDelete { get; set; } // Indicates if the user can be deleted
 
     public static UserDto FromEntity(UserEntity user)
@@ -27,7 +29,8 @@ public class UserDto
             FirstName = user.Profile?.FirstName??"",
             LastName = user.Profile?.LastName,
             IsCanDelete = user.IsCanDelete,
-            Roles = user.Roles.Select(RoleDto.FromEntity).ToList()
+            Roles = user.Roles.Select(RoleDto.FromEntity).ToList(),
+            Departments = user.Departments.Select(DepartmentDto.FromEntity).ToList()
         };
     }
 }
